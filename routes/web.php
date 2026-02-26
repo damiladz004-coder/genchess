@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [\App\Http\Controllers\Public\PageController::class, 'home'])->name('home');
 Route::get('/about', [\App\Http\Controllers\Public\PageController::class, 'about'])->name('about');
 Route::get('/contact', [\App\Http\Controllers\Public\PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [\App\Http\Controllers\Public\ContactController::class, 'store'])->name('contact.store');
 Route::get('/chess-in-schools', [\App\Http\Controllers\Public\PageController::class, 'chessInSchools'])
     ->name('chess.in.schools');
 Route::get('/chess-in-schools/primary-1-6', [\App\Http\Controllers\Public\PageController::class, 'chessInSchoolsPrimary'])
@@ -37,6 +38,20 @@ Route::get('/chess-communities-homes', [\App\Http\Controllers\Public\PageControl
     ->name('chess.communities.homes');
 Route::get('/instructor-training', [\App\Http\Controllers\Public\PageController::class, 'instructorTraining'])
     ->name('instructor.training');
+Route::get('/training/preview', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'preview'])
+    ->name('training.preview');
+Route::middleware('auth')->group(function () {
+    Route::get('/training/checkout', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'checkout'])
+        ->name('training.checkout');
+    Route::post('/training/checkout/apply-coupon', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'applyCoupon'])
+        ->name('training.checkout.apply-coupon');
+    Route::post('/training/checkout/initialize', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'initialize'])
+        ->name('training.checkout.initialize');
+});
+Route::get('/training/checkout/callback', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'callback'])
+    ->name('training.checkout.callback');
+Route::post('/payments/paystack/webhook', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'webhook'])
+    ->name('payments.paystack.webhook');
 Route::get('/careers', [\App\Http\Controllers\Public\CareerController::class, 'index'])->name('careers');
 Route::get('/careers/chess-instructors', [\App\Http\Controllers\Public\PageController::class, 'careersInstructors'])
     ->name('careers.instructors');
@@ -61,6 +76,25 @@ Route::get('/products/chess-clocks', [\App\Http\Controllers\Public\PageControlle
     ->name('products.clocks');
 Route::get('/products/books-materials', [\App\Http\Controllers\Public\PageController::class, 'productsBooks'])
     ->name('products.books');
+Route::get('/store', [\App\Http\Controllers\Public\StoreController::class, 'index'])->name('store.index');
+Route::get('/store/category/{category:slug}', [\App\Http\Controllers\Public\StoreController::class, 'category'])
+    ->name('store.category');
+Route::get('/store/product/{product:slug}', [\App\Http\Controllers\Public\StoreController::class, 'product'])
+    ->name('store.product');
+Route::get('/cart', [\App\Http\Controllers\Public\CartController::class, 'index'])->name('store.cart');
+Route::post('/cart/add/{product}', [\App\Http\Controllers\Public\CartController::class, 'add'])->name('store.cart.add');
+Route::patch('/cart/item/{lineKey}', [\App\Http\Controllers\Public\CartController::class, 'update'])->name('store.cart.update');
+Route::delete('/cart/item/{lineKey}', [\App\Http\Controllers\Public\CartController::class, 'remove'])->name('store.cart.remove');
+Route::get('/checkout', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'show'])->name('store.checkout');
+Route::post('/checkout', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'placeOrder'])->name('store.checkout.place');
+Route::get('/checkout/callback', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'callback'])
+    ->name('store.checkout.callback');
+Route::post('/payments/store/paystack/webhook', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'webhook'])
+    ->name('store.paystack.webhook');
+Route::get('/checkout/success/{order}', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'success'])
+    ->name('store.checkout.success');
+Route::post('/store/bulk-order', [\App\Http\Controllers\Public\BulkOrderController::class, 'store'])
+    ->name('store.bulk-order.store');
 Route::get('/tournaments', [\App\Http\Controllers\Public\PageController::class, 'tournaments'])->name('tournaments');
 Route::get('/register-school', [\App\Http\Controllers\Public\PageController::class, 'registerSchool'])
     ->name('register.school');
@@ -121,6 +155,21 @@ Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(fu
 
     Route::get('/training', [\App\Http\Controllers\Instructor\TrainingController::class, 'index'])
         ->name('training.index');
+    Route::get('/training/{enrollment}', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'show'])
+        ->middleware('training.paid')
+        ->name('training.show');
+    Route::get('/training/{enrollment}/topics/{topic}/quiz', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'showQuiz'])
+        ->middleware('training.paid')
+        ->name('training.topics.quiz.show');
+    Route::post('/training/{enrollment}/topics/{topic}/quiz', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitQuiz'])
+        ->middleware('training.paid')
+        ->name('training.topics.quiz.submit');
+    Route::post('/training/{enrollment}/topics/{topic}', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitTopic'])
+        ->middleware('training.paid')
+        ->name('training.topics.submit');
+    Route::post('/training/{enrollment}/capstone', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitCapstone'])
+        ->middleware('training.paid')
+        ->name('training.capstone.submit');
 
     Route::get('/lesson-plans', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'index'])
         ->name('lesson-plans.index');
@@ -132,6 +181,8 @@ Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(fu
         ->name('lesson-plans.edit');
     Route::patch('/lesson-plans/{lessonPlan}', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'update'])
         ->name('lesson-plans.update');
+    Route::post('/lesson-plans/{lessonPlan}/submit', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'submit'])
+        ->name('lesson-plans.submit');
     Route::delete('/lesson-plans/{lessonPlan}', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'destroy'])
         ->name('lesson-plans.destroy');
 
@@ -145,6 +196,8 @@ Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(fu
         ->name('timetable.edit');
     Route::patch('/timetable/{timetable}', [\App\Http\Controllers\Instructor\TimetableController::class, 'update'])
         ->name('timetable.update');
+    Route::post('/school-timetables/{timetable}/respond', [\App\Http\Controllers\Instructor\TimetableController::class, 'respondToSchoolTimetable'])
+        ->name('school-timetables.respond');
     Route::delete('/timetable/{timetable}', [\App\Http\Controllers\Instructor\TimetableController::class, 'destroy'])
         ->name('timetable.destroy');
 
@@ -194,6 +247,38 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.training.index');
         Route::post('/training/courses', [\App\Http\Controllers\Admin\TrainingController::class, 'storeCourse'])
             ->name('admin.training.courses.store');
+        Route::get('/training/courses/{course}/curriculum', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'showCourse'])
+            ->name('admin.training.courses.curriculum');
+        Route::post('/training/courses/{course}/modules', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'storeModule'])
+            ->name('admin.training.modules.store');
+        Route::patch('/training/modules/{module}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'updateModule'])
+            ->name('admin.training.modules.update');
+        Route::delete('/training/modules/{module}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'destroyModule'])
+            ->name('admin.training.modules.destroy');
+        Route::post('/training/modules/{module}/topics', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'storeTopic'])
+            ->name('admin.training.topics.store');
+        Route::patch('/training/topics/{topic}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'updateTopic'])
+            ->name('admin.training.topics.update');
+        Route::delete('/training/topics/{topic}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'destroyTopic'])
+            ->name('admin.training.topics.destroy');
+        Route::post('/training/topics/{topic}/quiz', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'upsertQuiz'])
+            ->name('admin.training.quizzes.upsert');
+        Route::post('/training/quizzes/{quiz}/questions', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'storeQuizQuestion'])
+            ->name('admin.training.quiz-questions.store');
+        Route::patch('/training/quiz-questions/{question}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'updateQuizQuestion'])
+            ->name('admin.training.quiz-questions.update');
+        Route::delete('/training/quiz-questions/{question}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'destroyQuizQuestion'])
+            ->name('admin.training.quiz-questions.destroy');
+        Route::post('/training/topics/{topic}/assignments', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'storeAssignment'])
+            ->name('admin.training.assignments.store');
+        Route::patch('/training/assignments/{assignment}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'updateAssignment'])
+            ->name('admin.training.assignments.update');
+        Route::delete('/training/assignments/{assignment}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'destroyAssignment'])
+            ->name('admin.training.assignments.destroy');
+        Route::patch('/training/submissions/{submission}/review', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'reviewSubmission'])
+            ->name('admin.training.submissions.review');
+        Route::patch('/training/capstone/{capstoneReview}/review', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'reviewCapstone'])
+            ->name('admin.training.capstone.review');
         Route::post('/training/cohorts', [\App\Http\Controllers\Admin\TrainingController::class, 'storeCohort'])
             ->name('admin.training.cohorts.store');
         Route::get('/training/cohorts/{cohort}', [\App\Http\Controllers\Admin\TrainingController::class, 'showCohort'])
@@ -204,10 +289,52 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.training.enrollments.update');
         Route::post('/training/enrollments/{enrollment}/certificate', [\App\Http\Controllers\Admin\TrainingController::class, 'issueCertificate'])
             ->name('admin.training.enrollments.certificate');
+        Route::post('/training/coupons', [\App\Http\Controllers\Admin\TrainingController::class, 'storeCoupon'])
+            ->name('admin.training.coupons.store');
+        Route::patch('/training/coupons/{coupon}', [\App\Http\Controllers\Admin\TrainingController::class, 'updateCoupon'])
+            ->name('admin.training.coupons.update');
+        Route::post('/training/coupons/manual-assign', [\App\Http\Controllers\Admin\TrainingController::class, 'assignManualCoupon'])
+            ->name('admin.training.coupons.assign');
         Route::get('/training/certificates/{certification}', [\App\Http\Controllers\Admin\CertificateController::class, 'show'])
             ->name('admin.training.certificates.show');
         Route::get('/training/certificates/{certification}/download', [\App\Http\Controllers\Admin\CertificateController::class, 'download'])
             ->name('admin.training.certificates.download');
+
+        Route::get('/store/categories', [\App\Http\Controllers\Admin\StoreCategoryController::class, 'index'])
+            ->name('admin.store.categories.index');
+        Route::post('/store/categories', [\App\Http\Controllers\Admin\StoreCategoryController::class, 'store'])
+            ->name('admin.store.categories.store');
+        Route::patch('/store/categories/{category}', [\App\Http\Controllers\Admin\StoreCategoryController::class, 'update'])
+            ->name('admin.store.categories.update');
+
+        Route::get('/store/products', [\App\Http\Controllers\Admin\StoreProductController::class, 'index'])
+            ->name('admin.store.products.index');
+        Route::post('/store/products', [\App\Http\Controllers\Admin\StoreProductController::class, 'store'])
+            ->name('admin.store.products.store');
+        Route::patch('/store/products/{product}', [\App\Http\Controllers\Admin\StoreProductController::class, 'update'])
+            ->name('admin.store.products.update');
+        Route::get('/store/products/{product}/images', [\App\Http\Controllers\Admin\StoreProductController::class, 'images'])
+            ->name('admin.store.products.images');
+        Route::post('/store/products/{product}/images', [\App\Http\Controllers\Admin\StoreProductController::class, 'storeImage'])
+            ->name('admin.store.products.images.store');
+        Route::patch('/store/products/{product}/images/{image}/primary', [\App\Http\Controllers\Admin\StoreProductController::class, 'setPrimaryImage'])
+            ->name('admin.store.products.images.primary');
+        Route::delete('/store/products/{product}/images/{image}', [\App\Http\Controllers\Admin\StoreProductController::class, 'destroyImage'])
+            ->name('admin.store.products.images.destroy');
+
+        Route::get('/store/orders', [\App\Http\Controllers\Admin\StoreOrderController::class, 'index'])
+            ->name('admin.store.orders.index');
+        Route::get('/store/orders/{order}/invoice', [\App\Http\Controllers\Admin\StoreOrderController::class, 'invoice'])
+            ->name('admin.store.orders.invoice');
+        Route::patch('/store/orders/{order}/status', [\App\Http\Controllers\Admin\StoreOrderController::class, 'updateStatus'])
+            ->name('admin.store.orders.update-status');
+        Route::get('/store/inventory', [\App\Http\Controllers\Admin\StoreOrderController::class, 'inventory'])
+            ->name('admin.store.inventory.index');
+
+        Route::get('/store/bulk-orders', [\App\Http\Controllers\Admin\StoreBulkOrderController::class, 'index'])
+            ->name('admin.store.bulk-orders.index');
+        Route::patch('/store/bulk-orders/{bulkOrder}', [\App\Http\Controllers\Admin\StoreBulkOrderController::class, 'update'])
+            ->name('admin.store.bulk-orders.update');
 
         Route::get('/careers', [\App\Http\Controllers\Admin\CareerController::class, 'index'])
             ->name('admin.careers.index');
@@ -248,6 +375,11 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.reports.export.states');
         Route::get('/reports/export/all', [AdminReportsController::class, 'exportAll'])
             ->name('admin.reports.export.all');
+
+        Route::get('/lesson-plans', [\App\Http\Controllers\Admin\LessonPlanReviewController::class, 'index'])
+            ->name('admin.lesson-plans.index');
+        Route::patch('/lesson-plans/{lessonPlan}/review', [\App\Http\Controllers\Admin\LessonPlanReviewController::class, 'review'])
+            ->name('admin.lesson-plans.review');
 
         Route::get('/settings', [AdminSettingsController::class, 'index'])
             ->name('admin.settings.index');
@@ -387,9 +519,11 @@ Route::middleware(['auth', 'schooladmin'])->prefix('school')->name('school.')->g
         ->name('attendance.store');
 
     Route::get('/attendance/{class}', [AttendanceController::class, 'index'])
+        ->whereNumber('class')
         ->name('attendance.index');
 
     Route::get('/attendance/{class}/create', [AttendanceController::class, 'create'])
+        ->whereNumber('class')
         ->name('attendance.create');
 
     Route::get('/attendance/report', [\App\Http\Controllers\School\AttendanceReportController::class, 'index'])

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\TrainingReferralService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,9 +18,12 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'intent' => $request->query('intent'),
+            'referralCode' => $request->query('ref'),
+        ]);
     }
 
     /**
@@ -27,23 +31,34 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, TrainingReferralService $trainingReferralService): RedirectResponse
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'intent' => ['nullable', 'string', 'in:training'],
+            'referral_code' => ['nullable', 'string', 'max:64'],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => ($data['intent'] ?? null) === 'training' ? 'instructor' : 'school_admin',
         ]);
+
+        if (($data['intent'] ?? null) === 'training') {
+            $trainingReferralService->attachReferral($user, $data['referral_code'] ?? null);
+        }
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        if (($data['intent'] ?? null) === 'training') {
+            return redirect()->route('training.checkout');
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

@@ -22,6 +22,26 @@
     </div>
 </section>
 
+<section class="py-12 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl gc-heading mb-6">Classroom Image Placeholders</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-nursery.svg" alt="Nursery classroom placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Nursery 2 chess introduction</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-primary.svg" alt="Primary classroom placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Primary 1-6 structured lesson</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-jss.svg" alt="JSS classroom placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">JSS strategy and analysis session</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
 <section class="py-16 bg-slate-50">
     <div class="max-w-6xl mx-auto px-6 space-y-6">
         <h2 class="text-3xl gc-heading">Understanding the 9-3-4 Education Structure in Nigeria</h2>

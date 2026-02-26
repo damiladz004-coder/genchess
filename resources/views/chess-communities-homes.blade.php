@@ -4,7 +4,7 @@
 
 <!-- HERO SECTION -->
 <section class="bg-white">
-    <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h1 class="text-4xl font-bold text-gray-900 mb-4">
                 Chess in Communities & Homes
@@ -26,7 +26,7 @@
 
 <!-- WHY COMMUNITY & HOME CHESS -->
 <section class="bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <h2 class="text-3xl font-semibold text-center mb-10">
             Why Chess in Communities & Homes?
         </h2>
@@ -61,7 +61,7 @@
 
 <!-- COMMUNITY PROGRAM -->
 <section class="bg-white">
-    <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <img 
             src="{{ asset('images/programs/community-chess.jpg') }}"
             alt="Community chess program"
@@ -79,10 +79,10 @@
             </p>
 
             <ul class="mt-4 space-y-2 text-gray-700">
-                <li>♟️ Group chess classes</li>
-                <li>♟️ Weekend and holiday programs</li>
-                <li>♟️ Community tournaments</li>
-                <li>♟️ Talent discovery and mentorship</li>
+                <li>Group chess classes</li>
+                <li>Weekend and holiday programs</li>
+                <li>Community tournaments</li>
+                <li>Talent discovery and mentorship</li>
             </ul>
         </div>
     </div>
@@ -90,22 +90,22 @@
 
 <!-- HOME PROGRAM -->
 <section class="bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h2 class="text-3xl font-semibold mb-4">
                 Chess at Home
             </h2>
             <p class="text-gray-700 leading-relaxed">
                 Our home chess program offers personalized, one-on-one
-                or small-group lessons tailored to each child’s age,
+                or small-group lessons tailored to each child's age,
                 skill level, and learning pace.
             </p>
 
             <ul class="mt-4 space-y-2 text-gray-700">
-                <li>♟️ Personalized learning plans</li>
-                <li>♟️ Flexible scheduling</li>
-                <li>♟️ In-home or online sessions</li>
-                <li>♟️ Progress tracking and feedback</li>
+                <li>Personalized learning plans</li>
+                <li>Flexible scheduling</li>
+                <li>In-home or online sessions</li>
+                <li>Progress tracking and feedback</li>
             </ul>
         </div>
 
@@ -119,7 +119,7 @@
 
 <!-- WHO CAN REGISTER -->
 <section class="bg-white">
-    <div class="max-w-7xl mx-auto px-6 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <h2 class="text-3xl font-semibold text-center mb-10">
             Who Can Register?
         </h2>
@@ -135,7 +135,7 @@
 
 <!-- CALL TO ACTION -->
 <section class="bg-white">
-    <div class="max-w-5xl mx-auto px-6 py-16">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <h2 class="text-3xl font-semibold text-center mb-8">
             Book a Chess Program (Communities & Homes)
         </h2>
@@ -157,7 +157,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('school.enroll') }}" class="space-y-8 bg-gray-50 p-8 rounded-xl shadow">
+        <form method="POST" action="{{ route('school.enroll') }}" class="space-y-8 bg-gray-50 p-5 sm:p-8 rounded-xl shadow">
             @csrf
 
             <!-- Compatibility fields for existing enrollment endpoint -->
@@ -374,6 +374,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const programTypeHidden = document.getElementById('program_type_hidden');
     const addressLineHidden = document.getElementById('address_line_hidden');
     const studentCountHidden = document.getElementById('student_count_hidden');
+
+    if (!parentSection || !orgSection || !physicalLocationWrap || !consultationDetails || !schoolNameHidden || !programTypeHidden || !addressLineHidden || !studentCountHidden) {
+        return;
+    }
 
     function selectedValue(name) {
         const checked = document.querySelector('input[name="' + name + '"]:checked');

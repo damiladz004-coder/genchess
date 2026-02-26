@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Models\TrainingCourse;
 
 class PageController extends Controller
 {
@@ -18,7 +20,15 @@ class PageController extends Controller
 
     public function contact()
     {
-        return view('contact');
+        $settings = Setting::whereIn('key', ['organization_name', 'support_email', 'support_phone'])
+            ->get()
+            ->keyBy('key');
+
+        return view('contact', [
+            'organizationName' => $settings['organization_name']->value ?? 'Genchess Academy',
+            'supportEmail' => $settings['support_email']->value ?? 'info@genchessacademy.com',
+            'supportPhone' => $settings['support_phone']->value ?? '+234 XXX XXX XXXX',
+        ]);
     }
 
     public function chessInSchools()
@@ -43,7 +53,12 @@ class PageController extends Controller
 
     public function instructorTraining()
     {
-        return view('instructor-training');
+        $course = TrainingCourse::where('active', true)->orderBy('id')->first();
+
+        return view('instructor-training', [
+            'curriculum' => config('training_curriculum'),
+            'course' => $course,
+        ]);
     }
 
     public function careers()
@@ -53,22 +68,22 @@ class PageController extends Controller
 
     public function products()
     {
-        return view('products');
+        return redirect()->route('store.index');
     }
 
     public function productsBoards()
     {
-        return view('products-boards');
+        return redirect()->route('store.category', ['category' => 'chessboards']);
     }
 
     public function productsClocks()
     {
-        return view('products-clocks');
+        return redirect()->route('store.category', ['category' => 'chess-clocks']);
     }
 
     public function productsBooks()
     {
-        return view('products-books');
+        return redirect()->route('store.category', ['category' => 'chess-books']);
     }
 
     public function tournaments()

@@ -21,12 +21,18 @@
     <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-white border rounded p-4">
             <h3 class="font-semibold mb-3">Add Question (MCQ)</h3>
-            <form method="POST" action="{{ route('admin.exams.templates.questions.store', $template) }}" class="space-y-3">
+            <form method="POST" action="{{ route('admin.exams.templates.questions.store', $template) }}" enctype="multipart/form-data" class="space-y-3">
                 @csrf
 
                 <div>
                     <label class="block text-sm font-medium mb-1">Question</label>
                     <textarea name="question_text" rows="3" class="w-full border rounded px-3 py-2" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Question Image (optional)</label>
+                    <input type="file" name="question_image" accept=".jpg,.jpeg,.png,.webp" class="w-full border rounded px-3 py-2">
+                    <p class="text-xs text-gray-500 mt-1">Use this for chess board diagrams and puzzle images.</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -107,6 +113,11 @@
                     @foreach($template->questions as $q)
                         <li>
                             <div class="font-medium">{{ $q->question_text }}</div>
+                            @if($q->question_image_path)
+                                <div class="mt-2">
+                                    <img src="{{ $q->question_image_path }}" alt="Question diagram" class="max-h-56 rounded border">
+                                </div>
+                            @endif
                             <div class="text-sm text-gray-600">
                                 @foreach($q->options as $opt)
                                     <div>

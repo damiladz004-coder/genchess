@@ -33,6 +33,11 @@
                         {{ $loop->iteration }}. {{ $q->question_text }}
                         <span class="text-xs text-gray-500">({{ $q->marks }} marks)</span>
                     </div>
+                    @if($q->question_image_path)
+                        <div class="mb-3">
+                            <img src="{{ $q->question_image_path }}" alt="Question diagram" class="max-h-72 rounded border">
+                        </div>
+                    @endif
                     <div class="space-y-2">
                         @foreach($q->options as $opt)
                             <label class="flex items-center gap-2">

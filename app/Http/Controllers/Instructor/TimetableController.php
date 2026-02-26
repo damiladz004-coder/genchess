@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Instructor;
 use App\Http\Controllers\Controller;
 use App\Models\InstructorTimetable;
 use App\Models\Classroom;
+use App\Models\SchoolTimetable;
 use Illuminate\Http\Request;
 
 class TimetableController extends Controller
@@ -37,11 +38,22 @@ class TimetableController extends Controller
             $schedule[$entry->class_id][$entry->day_of_week][] = trim(($entry->start_time ?? '') . '-' . ($entry->end_time ?? ''));
         }
 
+        $schoolTimetables = SchoolTimetable::whereHas('classroom.instructors', function ($q) {
+            $q->where('users.id', auth()->id());
+        })
+            ->with(['classroom', 'school', 'instructorReviewer'])
+            ->whereIn('status', ['submitted', 'approved'])
+            ->orderByDesc('submitted_at')
+            ->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->get();
+
         return view('instructor.timetable.index', [
             'timetable' => $timetable,
             'days' => $this->days,
             'classes' => $classes,
             'schedule' => $schedule,
+            'schoolTimetables' => $schoolTimetables,
         ]);
     }
 
@@ -143,5 +155,39 @@ class TimetableController extends Controller
 
         return redirect()->route('instructor.timetable.index')
             ->with('success', 'Timetable entry removed.');
+    }
+
+    public function respondToSchoolTimetable(Request $request, SchoolTimetable $timetable)
+    {
+        $isAssigned = $timetable->classroom
+            && $timetable->classroom->instructors()->where('users.id', auth()->id())->exists();
+
+        if (!$isAssigned) {
+            abort(403);
+        }
+
+        $data = $request->validate([
+            'instructor_review_status' => 'required|in:accepted,changes_requested',
+            'instructor_review_comment' => 'nullable|string|max:1000',
+        ]);
+
+        if ($data['instructor_review_status'] === 'changes_requested' && blank($data['instructor_review_comment'] ?? null)) {
+            return back()->withErrors([
+                'instructor_review_comment' => 'Please provide the reason for requested changes.',
+            ]);
+        }
+
+        if (!in_array($timetable->status, ['submitted', 'approved'], true)) {
+            return back()->with('error', 'This timetable is not ready for instructor review.');
+        }
+
+        $timetable->update([
+            'instructor_review_status' => $data['instructor_review_status'],
+            'instructor_review_comment' => $data['instructor_review_comment'] ?? null,
+            'instructor_reviewed_at' => now(),
+            'instructor_reviewed_by' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Timetable review response saved.');
     }
 }

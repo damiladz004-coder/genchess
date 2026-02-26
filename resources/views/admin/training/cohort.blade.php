@@ -45,7 +45,7 @@
                     <li>Status: {{ ucfirst($cohort->status) }}</li>
                     <li>Start: {{ $cohort->start_date?->format('Y-m-d') ?? '-' }}</li>
                     <li>End: {{ $cohort->end_date?->format('Y-m-d') ?? '-' }}</li>
-                    <li>Duration: {{ $cohort->course->duration_weeks ?? '-' }} weeks</li>
+                    <li>Duration: {{ $cohort->course?->duration_label ?? 'N/A' }}</li>
                 </ul>
             </div>
         </div>
@@ -99,13 +99,15 @@
                                             </button>
                                         </form>
 
-                                        @if($enrollment->status === 'completed' && !$enrollment->certification)
+                                        @if($enrollment->isEligibleForCertification() && !$enrollment->certification)
                                             <form method="POST" action="{{ route('admin.training.enrollments.certificate', $enrollment) }}" class="inline">
                                                 @csrf
                                                 <button type="submit" class="ml-2 bg-green-700 text-white px-3 py-1 rounded">
                                                     Issue Certificate
                                                 </button>
                                             </form>
+                                        @elseif(!$enrollment->certification)
+                                            <span class="ml-2 text-xs text-slate-500">Awaiting full completion requirements</span>
                                         @endif
                                     </td>
                                 </tr>

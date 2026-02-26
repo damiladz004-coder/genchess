@@ -117,6 +117,10 @@ class TimetableController extends Controller
             'status' => 'draft',
             'review_comment' => null,
             'reviewed_at' => null,
+            'instructor_review_status' => 'pending',
+            'instructor_review_comment' => null,
+            'instructor_reviewed_at' => null,
+            'instructor_reviewed_by' => null,
         ]);
 
         return redirect()->route('school.timetables.index')->with('success', 'Timetable entry updated.');
@@ -136,6 +140,10 @@ class TimetableController extends Controller
         $timetable->update([
             'status' => 'submitted',
             'submitted_at' => now(),
+            'instructor_review_status' => 'pending',
+            'instructor_review_comment' => null,
+            'instructor_reviewed_at' => null,
+            'instructor_reviewed_by' => null,
         ]);
 
         $superAdmins = User::where('role', 'super_admin')->pluck('email')->filter()->all();

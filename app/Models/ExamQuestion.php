@@ -9,6 +9,7 @@ class ExamQuestion extends Model
     protected $fillable = [
         'exam_template_id',
         'question_text',
+        'question_image_path',
         'marks',
         'position',
     ];

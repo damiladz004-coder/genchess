@@ -5,6 +5,10 @@
 @tailwind utilities;
 
 @layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
     :root {
         --gc-bg: #f3f6fc;
         --gc-surface: #ffffff;
@@ -23,6 +27,7 @@
             radial-gradient(1200px 600px at 0% -10%, #dce9ff 0%, transparent 70%),
             radial-gradient(900px 450px at 100% 0%, #fff4d3 0%, transparent 65%),
             var(--gc-bg);
+        overflow-x: hidden;
     }
 
     input,
@@ -36,19 +41,6 @@
     textarea:focus {
         --tw-ring-color: rgba(47, 95, 181, 0.25);
         border-color: #2f5fb5;
-    }
-
-    table {
-        @apply w-full text-sm;
-    }
-
-    thead th {
-        @apply text-left px-4 py-3 text-xs uppercase tracking-wide font-semibold text-slate-500;
-        background: #f4f7ff;
-    }
-
-    tbody td {
-        @apply px-4 py-3 border-t border-slate-200;
     }
 
     .container {
@@ -111,10 +103,7 @@
     }
 
     .public-content img[src*='/images/'] {
-        width: 100%;
-        max-height: 420px;
-        object-fit: cover;
-        border-radius: 0.9rem;
+        display: block;
     }
 
     .public-content img[src*='/icons/'] {
@@ -130,15 +119,11 @@
     }
 
     @media (max-width: 900px) {
-        table {
+        .gc-table,
+        .table-responsive table {
             display: block;
             overflow-x: auto;
             white-space: nowrap;
-        }
-
-        .container > .flex.items-center.justify-between {
-            flex-wrap: wrap;
-            gap: 0.75rem;
         }
 
         .overflow-x-auto {

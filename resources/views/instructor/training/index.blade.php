@@ -18,7 +18,9 @@
                         <th>Cohort</th>
                         <th>Dates</th>
                         <th>Status</th>
+                        <th>Progress</th>
                         <th>Certificate</th>
+                        <th>Payment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,12 +35,24 @@
                             </td>
                             <td>{{ ucfirst($enrollment->status) }}</td>
                             <td>
+                                @if($enrollment->isPaid())
+                                    <a href="{{ route('instructor.training.show', $enrollment) }}" class="text-brand-700 font-semibold underline">Open Workspace</a>
+                                @else
+                                    <a href="{{ route('training.checkout') }}" class="text-amber-700 font-semibold underline">Complete Payment</a>
+                                @endif
+                            </td>
+                            <td>
                                 @if($enrollment->certification)
                                     <span class="text-emerald-700">Issued</span><br>
                                     <span class="text-xs text-slate-500">{{ $enrollment->certification->certificate_code }}</span>
                                 @else
                                     <span class="text-slate-500">Not issued</span>
                                 @endif
+                            </td>
+                            <td>
+                                <span class="text-sm {{ $enrollment->payment_status === 'paid' ? 'text-emerald-700' : 'text-amber-700' }}">
+                                    {{ ucfirst($enrollment->payment_status ?? 'pending') }}
+                                </span>
                             </td>
                         </tr>
                     @endforeach

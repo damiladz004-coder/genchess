@@ -1,6 +1,16 @@
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
+        @if(($intent ?? null) === 'training')
+            <input type="hidden" name="intent" value="training">
+            <input type="hidden" name="referral_code" value="{{ $referralCode }}">
+        @endif
+
+        @if(($intent ?? null) === 'training')
+            <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+                Registering for Genchess Instructor Training checkout.
+            </div>
+        @endif
 
         <!-- Name -->
         <div>

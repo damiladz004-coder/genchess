@@ -22,6 +22,21 @@
     </div>
 </section>
 
+<section class="py-10 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid gap-6 md:grid-cols-2">
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-primary.svg" alt="Primary classroom placeholder image" class="w-full h-56 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Primary school chess class in session</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-competition.svg" alt="Primary puzzle practice placeholder image" class="w-full h-56 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Pupils solving guided chess exercises</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
 <section class="py-16 bg-slate-50">
     <div class="max-w-6xl mx-auto px-6 space-y-6">
         <h2 class="text-3xl gc-heading">Primary Progression Pathway</h2>

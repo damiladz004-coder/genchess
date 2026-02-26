@@ -12,6 +12,8 @@
         .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 12px; }
         .question { margin-bottom: 12px; }
         .option { margin-left: 14px; }
+        .diagram { margin: 8px 0; }
+        .diagram img { max-height: 220px; border: 1px solid #ccc; border-radius: 4px; }
         .muted { color: #666; }
         .line { border-bottom: 1px solid #ccc; margin-top: 6px; height: 14px; }
         @media print { .no-print { display: none; } }
@@ -49,6 +51,11 @@
                     {{ $q->question_text }}
                     <span class="muted">({{ $q->marks }} marks)</span>
                 </div>
+                @if($q->question_image_path)
+                    <div class="diagram">
+                        <img src="{{ $q->question_image_path }}" alt="Question diagram">
+                    </div>
+                @endif
                 @foreach($q->options as $opt)
                     <div class="option">
                         {{ chr(64 + $opt->position) }}. {{ $opt->option_text }}

@@ -22,6 +22,21 @@
     </div>
 </section>
 
+<section class="py-10 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid gap-6 md:grid-cols-2">
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-placeholder.svg" alt="JSS classroom placeholder image" class="w-full h-56 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">JSS classroom strategy lesson</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="/images/placeholders/chess-in-school-placeholder.svg" alt="JSS tournament prep placeholder image" class="w-full h-56 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">JSS competitive preparation session</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
 <section class="py-16 bg-slate-50">
     <div class="max-w-6xl mx-auto px-6 space-y-6">
         <h2 class="text-3xl gc-heading">JSS Curriculum Focus</h2>

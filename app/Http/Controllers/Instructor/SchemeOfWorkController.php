@@ -9,7 +9,7 @@ class SchemeOfWorkController extends Controller
 {
     public function index()
     {
-        $classes = auth()->user()->teachingClasses()->pluck('id');
+        $classes = auth()->user()->teachingClasses()->pluck('classes.id');
 
         $query = SchemeOfWorkItem::whereIn('class_id', $classes)
             ->with('classroom')

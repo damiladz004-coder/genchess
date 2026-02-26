@@ -1,10 +1,14 @@
 <nav x-data="{ open: false, mobileServicesOpen: false }" class="sticky top-0 z-50 border-b border-purple-700/70 bg-purple-800 text-white">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="{{ route('home') }}" class="font-display text-2xl text-white">
-            Genchess Academy
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+        <a href="{{ route('home') }}" class="inline-flex items-center">
+            <img
+                src="{{ asset('images/logo/genchess-logo-brick.png') }}"
+                alt="Genchess logo"
+                class="h-10 sm:h-12 w-auto"
+            >
         </a>
 
-        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <div class="hidden lg:flex items-center gap-6 text-sm font-medium">
             <a href="{{ route('home') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="text-purple-100 transition-all duration-200 hover:text-white">About</a>
 
@@ -34,18 +38,18 @@
                 </div>
             </div>
 
-            <a href="{{ route('products') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Products</a>
+            <a href="{{ route('store.index') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Store</a>
             <a href="{{ route('contact') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Contact</a>
         </div>
 
-        <div class="flex items-center gap-2 text-sm">
+        <div class="flex items-center gap-2 text-sm shrink-0">
             @auth
-                <a href="/dashboard" class="inline-flex items-center justify-center rounded-lg px-4 py-2 font-semibold bg-white text-purple-800">Dashboard</a>
+                <a href="/dashboard" class="hidden sm:inline-flex items-center justify-center rounded-lg px-4 py-2 font-semibold bg-white text-purple-800">Dashboard</a>
             @else
-                <a href="/login" class="text-purple-100 font-medium transition-colors duration-200 hover:text-white">Login</a>
+                <a href="/login" class="hidden sm:inline-block text-purple-100 font-medium transition-colors duration-200 hover:text-white">Login</a>
             @endauth
 
-            <button @click="open = !open" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-purple-300 text-white" aria-label="Toggle menu">
+            <button @click="open = !open" class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-purple-300 text-white" aria-label="Toggle menu" :aria-expanded="open ? 'true' : 'false'">
                 <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -56,8 +60,13 @@
         </div>
     </div>
 
-    <div x-show="open" x-cloak class="md:hidden border-t border-purple-700/70 px-4 py-3">
+    <div x-show="open" x-cloak class="lg:hidden border-t border-purple-700/70 px-4 sm:px-6 py-3">
         <div class="flex flex-col gap-2 text-sm font-medium">
+            @auth
+                <a href="/dashboard" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Dashboard</a>
+            @else
+                <a href="/login" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Login</a>
+            @endauth
             <a href="{{ route('home') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">About</a>
 
@@ -73,7 +82,7 @@
                 <a href="{{ route('chess.communities.homes') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess in Communities &amp; Homes</a>
             </div>
 
-            <a href="{{ route('products') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Products</a>
+            <a href="{{ route('store.index') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Store</a>
             <a href="{{ route('contact') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Contact</a>
         </div>
     </div>

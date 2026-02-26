@@ -31,4 +31,5 @@ class TrainingCohort extends Model
     {
         return $this->hasMany(TrainingEnrollment::class, 'cohort_id');
     }
+
 }

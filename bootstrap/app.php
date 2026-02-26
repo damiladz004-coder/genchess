@@ -19,6 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'schooladmin' => \App\Http\Middleware\SchoolAdminMiddleware::class,
             'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'classteacher' => \App\Http\Middleware\ClassTeacherMiddleware::class,
+            'training.paid' => \App\Http\Middleware\EnsurePaidTrainingEnrollment::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'payments/paystack/webhook',
+            'payments/store/paystack/webhook',
         ]);
 
         $middleware->appendToGroup('web', \App\Http\Middleware\ForcePasswordChange::class);

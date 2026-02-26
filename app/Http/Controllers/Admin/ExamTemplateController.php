@@ -8,6 +8,7 @@ use App\Models\ExamQuestion;
 use App\Models\ExamQuestionOption;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ExamTemplateController extends Controller
 {
@@ -51,6 +52,7 @@ class ExamTemplateController extends Controller
     {
         $request->validate([
             'question_text' => 'required|string',
+            'question_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
             'marks' => 'required|integer|min:1|max:20',
             'option_a' => 'required|string',
             'option_b' => 'required|string',
@@ -62,9 +64,16 @@ class ExamTemplateController extends Controller
         $position = $template->questions()->max('position') ?? 0;
         $position++;
 
+        $imagePath = null;
+        if ($request->hasFile('question_image')) {
+            $storedPath = $request->file('question_image')->store('exams/questions', 'public');
+            $imagePath = Storage::disk('public')->url($storedPath);
+        }
+
         $question = ExamQuestion::create([
             'exam_template_id' => $template->id,
             'question_text' => $request->question_text,
+            'question_image_path' => $imagePath,
             'marks' => $request->marks,
             'position' => $position,
         ]);

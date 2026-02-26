@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6">
     <div class="flex items-center justify-between gap-3">
-        <h2 class="text-3xl gc-heading">Chess Instructors (View Only)</h2>
+        <h2 class="text-3xl gc-heading">Chess Instructors </h2>
         <a href="{{ route('school.dashboard') }}" class="gc-btn-secondary">Back</a>
     </div>
 

@@ -22,52 +22,23 @@
             @endisset
 
             <main class="pb-10">
-                @if(auth()->check() && auth()->user()->role === 'super_admin')
+                @php
+                    $sidebarView = match(auth()->user()?->role) {
+                        'super_admin' => 'layouts.admin-sidebar',
+                        'school_admin' => 'layouts.school-sidebar',
+                        'instructor' => 'layouts.instructor-sidebar',
+                        'class_teacher' => 'layouts.class-teacher-sidebar',
+                        default => null,
+                    };
+                @endphp
+
+                @if($sidebarView)
                     <div class="block lg:flex max-w-[1400px] mx-auto">
                         <div class="hidden lg:block">
-                            @include('layouts.admin-sidebar')
+                            @include($sidebarView)
                         </div>
                         <div class="flex-1 p-4 md:p-6 lg:p-7">
-                            @if (isset($slot) && trim($slot) !== '')
-                                {{ $slot }}
-                            @else
-                                @yield('content')
-                            @endif
-                        </div>
-                    </div>
-                @elseif(auth()->check() && auth()->user()->role === 'school_admin')
-                    <div class="block lg:flex max-w-[1400px] mx-auto">
-                        <div class="hidden lg:block">
-                            @include('layouts.school-sidebar')
-                        </div>
-                        <div class="flex-1 p-4 md:p-6 lg:p-7">
-                            @if (isset($slot) && trim($slot) !== '')
-                                {{ $slot }}
-                            @else
-                                @yield('content')
-                            @endif
-                        </div>
-                    </div>
-                @elseif(auth()->check() && auth()->user()->role === 'instructor')
-                    <div class="block lg:flex max-w-[1400px] mx-auto">
-                        <div class="hidden lg:block">
-                            @include('layouts.instructor-sidebar')
-                        </div>
-                        <div class="flex-1 p-4 md:p-6 lg:p-7">
-                            @if (isset($slot) && trim($slot) !== '')
-                                {{ $slot }}
-                            @else
-                                @yield('content')
-                            @endif
-                        </div>
-                    </div>
-                @elseif(auth()->check() && auth()->user()->role === 'class_teacher')
-                    <div class="block lg:flex max-w-[1400px] mx-auto">
-                        <div class="hidden lg:block">
-                            @include('layouts.class-teacher-sidebar')
-                        </div>
-                        <div class="flex-1 p-4 md:p-6 lg:p-7">
-                            @if (isset($slot) && trim($slot) !== '')
+                            @if (isset($slot) && trim((string) $slot) !== '')
                                 {{ $slot }}
                             @else
                                 @yield('content')
@@ -75,7 +46,7 @@
                         </div>
                     </div>
                 @else
-                    @if (isset($slot) && trim($slot) !== '')
+                    @if (isset($slot) && trim((string) $slot) !== '')
                         {{ $slot }}
                     @else
                         @yield('content')

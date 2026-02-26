@@ -3,7 +3,13 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="/dashboard" class="font-display text-xl text-brand-800">Genchess</a>
+                    <a href="/dashboard" class="inline-flex items-center">
+                        <img
+                            src="{{ asset('images/logo/genchess-logo-brick.png') }}"
+                            alt="Genchess logo"
+                            class="h-10 w-auto"
+                        >
+                    </a>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -74,6 +80,7 @@
                     <a href="{{ route('admin.schools.index') }}" class="gc-btn-secondary px-3 py-1.5">Schools</a>
                     <a href="{{ route('admin.classes.index') }}" class="gc-btn-secondary px-3 py-1.5">Classes</a>
                     <a href="{{ route('admin.students.index') }}" class="gc-btn-secondary px-3 py-1.5">Students</a>
+                    <a href="{{ route('admin.lesson-plans.index') }}" class="gc-btn-secondary px-3 py-1.5">Lesson Plans</a>
                     <a href="{{ route('admin.finance.index') }}" class="gc-btn-secondary px-3 py-1.5">Payments</a>
                 @elseif(auth()->user()->role === 'school_admin')
                     <a href="{{ route('school.dashboard') }}" class="gc-btn-secondary px-3 py-1.5">Dashboard</a>

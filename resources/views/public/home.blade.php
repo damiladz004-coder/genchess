@@ -49,7 +49,7 @@
                 <p class="text-slate-600 text-sm mb-4">
                     Boards, clocks, books, and materials for schools, clubs, and individual learners.
                 </p>
-                <a href="{{ route('products') }}" class="gc-btn-secondary">Shop Products</a>
+                <a href="{{ route('store.index') }}" class="gc-btn-secondary">Shop Products</a>
             </article>
         </div>
     </div>

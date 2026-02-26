@@ -18,11 +18,16 @@ class SchoolTimetable extends Model
         'submitted_at',
         'reviewed_at',
         'review_comment',
+        'instructor_review_status',
+        'instructor_review_comment',
+        'instructor_reviewed_at',
+        'instructor_reviewed_by',
     ];
 
     protected $casts = [
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
+        'instructor_reviewed_at' => 'datetime',
     ];
 
     public function school()
@@ -33,5 +38,10 @@ class SchoolTimetable extends Model
     public function classroom()
     {
         return $this->belongsTo(Classroom::class, 'class_id');
+    }
+
+    public function instructorReviewer()
+    {
+        return $this->belongsTo(User::class, 'instructor_reviewed_by');
     }
 }

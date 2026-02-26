@@ -31,6 +31,8 @@
                         <th>Location</th>
                         <th>Status</th>
                         <th>Review Comment</th>
+                        <th>Instructor Review</th>
+                        <th>Instructor Feedback</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -55,6 +57,19 @@
                                 </span>
                             </td>
                             <td>{{ $entry->review_comment ?? '-' }}</td>
+                            <td>
+                                @php
+                                    $instructorBadge = match($entry->instructor_review_status) {
+                                        'accepted' => 'bg-emerald-100 text-emerald-700',
+                                        'changes_requested' => 'bg-rose-100 text-rose-700',
+                                        default => 'bg-slate-100 text-slate-700',
+                                    };
+                                @endphp
+                                <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold {{ $instructorBadge }}">
+                                    {{ ucfirst(str_replace('_', ' ', $entry->instructor_review_status ?? 'pending')) }}
+                                </span>
+                            </td>
+                            <td>{{ $entry->instructor_review_comment ?? '-' }}</td>
                             <td>
                                 <div class="flex items-center gap-3">
                                     @if(in_array($entry->status, ['draft', 'changes_requested'], true))
