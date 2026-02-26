@@ -90,7 +90,11 @@
             </p>
             <h2 class="mt-8 text-xl font-semibold text-slate-900">Phone / WhatsApp</h2>
             <p class="mt-2 text-slate-600">Call or message us during office hours.</p>
-            <p class="mt-4 font-semibold text-slate-900">{{ $supportPhone }}</p>
+            <p class="mt-4">
+                <a class="inline-flex items-center gap-2 font-semibold text-brand-700 hover:text-brand-800" href="https://wa.me/2348078462223" target="_blank" rel="noopener">
+                    +2348078462223
+                </a>
+            </p>
             <h2 class="mt-8 text-xl font-semibold text-slate-900">Office</h2>
             <p class="mt-2 text-slate-600">Lagos, Nigeria</p>
             <p class="mt-4 text-sm text-slate-500">Mon - Fri: 9:00 AM - 5:00 PM</p>
