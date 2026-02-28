@@ -14,7 +14,7 @@
             We’re excited to inform you that your school,
             <strong>{{ $schoolRequest->school_name }}</strong>,
             has been successfully approved to join
-            <strong>Genchess Academy</strong>.
+            <strong>genchess.ng</strong>.
         </p>
 
         @if(!empty($tempPassword))
@@ -41,9 +41,10 @@
 
         <p style="margin-top:30px;">
             Warm regards,<br>
-            <strong>Genchess Academy</strong><br>
+            <strong>genchess.ng</strong><br>
             <em>Unlocking the Genius Within ♟️</em>
         </p>
     </div>
 </body>
 </html>
+

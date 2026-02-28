@@ -6,7 +6,7 @@
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-6 py-16 text-center">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">
-            Careers at Genchess Academy
+            Careers at genchess.ng
         </h1>
         <p class="text-lg text-gray-700 max-w-3xl mx-auto">
             Join a growing educational movement using chess to develop
@@ -136,3 +136,4 @@
 </section>
 
 @endsection
+

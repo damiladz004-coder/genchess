@@ -35,7 +35,7 @@
                         G
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold">Genchess Academy</h1>
+                        <h1 class="text-2xl font-bold">genchess.ng</h1>
                         <p class="text-sm text-gray-600">Instructor Certification</p>
                     </div>
                 </div>
@@ -86,3 +86,4 @@
     </div>
 </div>
 @endsection
+

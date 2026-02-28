@@ -11,4 +11,5 @@
     Our team will contact you with your interview date and full details.
 </p>
 
-<p>Regards,<br>Genchess Academy</p>
+<p>Regards,<br>genchess.ng</p>
+

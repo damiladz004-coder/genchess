@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h1 class="text-4xl md:text-5xl gc-heading leading-tight">
-                Genchess Educational Services
+                genchess.ng
             </h1>
             <p class="mt-5 text-lg text-slate-600">
                 We use chess to build critical thinking, discipline, confidence, and strategic decision-making in children across schools, homes, and communities.
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div>
-            <img src="{{ asset('images/hero/genchess-hero.jpg') }}" alt="Genchess educational services" class="w-full rounded-xl2 shadow-soft border border-slate-200">
+            <img src="{{ asset('images/hero/genchess-hero.jpg') }}" alt="genchess.ng" class="w-full rounded-xl2 shadow-soft border border-slate-200">
         </div>
     </div>
 </section>
@@ -72,3 +72,4 @@
     </div>
 </section>
 @endsection
+

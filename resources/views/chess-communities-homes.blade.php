@@ -10,7 +10,7 @@
                 Chess in Communities & Homes
             </h1>
             <p class="text-lg text-gray-700">
-                Genchess Academy brings structured chess education directly
+                genchess.ng brings structured chess education directly
                 to communities and homes, making learning accessible,
                 engaging, and impactful beyond the classroom.
             </p>
@@ -337,7 +337,7 @@
                 <h3 class="text-xl font-semibold mb-4">Section 8: Agreement</h3>
                 <label class="flex items-start gap-2">
                     <input type="checkbox" name="consent" value="1" required class="mt-1">
-                    <span>I agree to be contacted by Genchess Academy regarding this program.</span>
+                    <span>I agree to be contacted by genchess.ng regarding this program.</span>
                 </label>
             </div>
 
@@ -443,3 +443,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 @endsection
+

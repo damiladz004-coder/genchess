@@ -5,21 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Genchess Educational Services</title>
-        <meta name="description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
+        <title>genchess.ng</title>
+        <meta name="description" content="genchess.ng promotes structured chess education for schools, homes, and communities.">
         <meta name="keywords" content="chess, chess educational services, chess in homes, chess in communities, chess in schools, certified chess instructor program">
         <meta name="robots" content="index, follow">
         <link rel="canonical" href="https://genchess.ng">
 
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="Genchess Educational Services">
-        <meta property="og:title" content="Genchess Educational Services">
-        <meta property="og:description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
+        <meta property="og:site_name" content="genchess.ng">
+        <meta property="og:title" content="genchess.ng">
+        <meta property="og:description" content="genchess.ng promotes structured chess education for schools, homes, and communities.">
         <meta property="og:url" content="https://genchess.ng">
 
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="Genchess Educational Services">
-        <meta name="twitter:description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
+        <meta name="twitter:title" content="genchess.ng">
+        <meta name="twitter:description" content="genchess.ng promotes structured chess education for schools, homes, and communities.">
 
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -42,3 +42,4 @@
         </div>
     </body>
 </html>
+

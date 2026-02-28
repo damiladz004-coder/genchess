@@ -26,7 +26,7 @@
             <div class="brand">
                 <div class="logo">G</div>
                 <div>
-                    <div class="title">Genchess Academy</div>
+                    <div class="title">genchess.ng</div>
                     <div class="subtitle">Instructor Certification</div>
                 </div>
             </div>
@@ -59,3 +59,4 @@
     </div>
 </body>
 </html>
+
