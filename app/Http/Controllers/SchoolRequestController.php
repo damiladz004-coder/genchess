@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SchoolRequestReceived;
 use App\Models\SchoolRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class SchoolRequestController extends Controller
@@ -33,7 +36,7 @@ class SchoolRequestController extends Controller
             'parent_preferred_time' => 'nullable|date_format:H:i',
             'organization_name' => 'nullable|string|max:255',
             'participants_estimate' => 'nullable|in:5-10,10-20,20-50,50+',
-            'age_group' => 'nullable|in:nursery,primary,secondary,mixed',
+            'age_group' => 'nullable|in:children,teenagers,adults,mixed',
             'org_program_type' => 'nullable|in:weekly_classes,weekend_program,holiday_bootcamp,tournament_only,long_term_partnership',
             'consultation_needed' => 'nullable|in:yes,no',
             'meeting_type' => 'nullable|in:physical,virtual',
@@ -79,6 +82,22 @@ class SchoolRequestController extends Controller
 
         SchoolRequest::create($data);
 
-        return redirect()->back()->with('success', 'Your enrollment request has been submitted successfully!');
+        $warning = null;
+        try {
+            Mail::to($data['email'])->send(new SchoolRequestReceived($data));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send school request acknowledgement email.', [
+                'email' => $data['email'] ?? null,
+                'error' => $e->getMessage(),
+            ]);
+            $warning = 'Your request was saved, but confirmation email could not be sent right now.';
+        }
+
+        $redirect = redirect()->back()->with('success', 'Your enrollment request has been submitted successfully!');
+        if ($warning) {
+            $redirect->with('warning', $warning);
+        }
+
+        return $redirect;
     }
 }

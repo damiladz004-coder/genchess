@@ -10,9 +10,9 @@
             <span class="mx-2">/</span>
             <span class="text-slate-700">Chess in Schools</span>
         </nav>
-        <h1 class="text-4xl gc-heading">Chess in Schools - genchess.ng</h1>
+        <h1 class="text-4xl gc-heading">Chess in Schools - Genchess Educational Services</h1>
         <p class="text-slate-700 text-lg">
-            genchess.ng partners with nursery, primary, and secondary schools across Nigeria to deliver a structured,
+            Genchess Educational Services partners with nursery, primary, and secondary schools across Nigeria to deliver a structured,
             age-appropriate chess curriculum that enhances academic performance, character development, and critical thinking.
         </p>
         <p class="text-slate-700">
@@ -215,4 +215,5 @@
     </div>
 </section>
 @endsection
+
 

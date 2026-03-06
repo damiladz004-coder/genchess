@@ -3,13 +3,13 @@
 @section('content')
 <div class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold">Certificate</h2>
+        <h2 class="text-3xl gc-heading">Certificate</h2>
         <div class="flex items-center gap-3">
             <a href="{{ route('admin.training.certificates.download', $certification) }}"
-               class="bg-gray-800 text-white px-3 py-2 rounded">
+               class="gc-btn-primary">
                 Download PDF
             </a>
-            <a href="{{ route('admin.training.index') }}" class="text-blue-600 underline">Back to Training</a>
+            <a href="{{ route('admin.training.index') }}" class="gc-btn-secondary">Back to Training</a>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
                         G
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold">genchess.ng</h1>
+                        <h1 class="text-2xl font-bold">Genchess Educational Services</h1>
                         <p class="text-sm text-gray-600">Instructor Certification</p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     has successfully completed the training program:
                 </p>
                 <p class="text-2xl font-semibold mt-2">
-                    {{ $certification->enrollment->cohort->course->title ?? 'Course' }}
+                    Genchess Certified Chess Instructor Program (GCCIP)
                 </p>
                 <p class="text-sm text-gray-600 mt-2">
                     Cohort: {{ $certification->enrollment->cohort->name ?? '-' }}
@@ -86,4 +86,5 @@
     </div>
 </div>
 @endsection
+
 

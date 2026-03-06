@@ -26,7 +26,7 @@
                 <tbody>
                     @foreach($enrollments as $enrollment)
                         <tr>
-                            <td>{{ $enrollment->cohort->course->title ?? 'N/A' }}</td>
+                            <td>Genchess Certified Chess Instructor Program (GCCIP)</td>
                             <td>{{ $enrollment->cohort->name ?? 'N/A' }}</td>
                             <td>
                                 {{ $enrollment->cohort->start_date?->format('Y-m-d') ?? '-' }}

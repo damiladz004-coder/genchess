@@ -4,11 +4,7 @@
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="/dashboard" class="inline-flex items-center">
-                        <img
-                            src="{{ asset('images/logo/genchess-logo-brick.png') }}"
-                            alt="Genchess logo"
-                            class="h-10 w-auto"
-                        >
+                        <x-brand-logo class="h-10 w-auto" alt="Genchess logo" />
                     </a>
                 </div>
 
@@ -24,6 +20,50 @@
 
             @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <button type="button" data-theme-toggle class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold border border-slate-300 text-slate-600 bg-white hover:bg-slate-50 me-3">
+                    <span data-theme-toggle-label>Dark</span>
+                </button>
+                <x-dropdown align="right" width="80">
+                    <x-slot name="trigger">
+                        <button class="relative inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-600 hover:text-slate-900 me-3">
+                            <span class="text-sm">Notifications</span>
+                            @if(auth()->user()->unreadNotifications()->count() > 0)
+                                <span class="ml-2 inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-rose-600 text-white text-[10px]">
+                                    {{ auth()->user()->unreadNotifications()->count() }}
+                                </span>
+                            @endif
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="px-3 py-2 border-b text-xs font-semibold text-slate-600">Recent Notifications</div>
+                        @forelse(auth()->user()->notifications()->latest()->take(5)->get() as $notification)
+                            @php $data = $notification->data ?? []; @endphp
+                            <div class="px-3 py-2 text-xs border-b {{ $notification->read_at ? 'bg-white' : 'bg-blue-50' }}">
+                                <div class="font-semibold">{{ $data['title'] ?? 'Notification' }}</div>
+                                <div class="text-slate-600">{{ $data['message'] ?? '' }}</div>
+                                <div class="mt-1 text-[10px] text-slate-400">{{ $notification->created_at?->diffForHumans() }}</div>
+                                @if(!$notification->read_at)
+                                    <form method="POST" action="{{ route('notifications.read', $notification->id) }}" class="mt-1">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="text-[10px] text-brand-700 underline" type="submit">Mark read</button>
+                                    </form>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="px-3 py-2 text-xs text-slate-500">No notifications yet.</div>
+                        @endforelse
+                        <div class="px-3 py-2 flex justify-between gap-2">
+                            <form method="POST" action="{{ route('notifications.read-all') }}">
+                                @csrf
+                                @method('PATCH')
+                                <button class="text-xs text-brand-700 underline" type="submit">Mark all read</button>
+                            </form>
+                            <a href="{{ route('notifications.index') }}" class="text-xs text-brand-700 underline">View all</a>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border text-sm leading-4 font-medium rounded-lg text-slate-600 bg-white hover:text-slate-900 focus:outline-none transition ease-in-out duration-150 border-slate-200">
@@ -75,6 +115,9 @@
     @auth
         <div class="lg:hidden border-t border-slate-200 bg-white px-3 py-2">
             <div class="flex gap-2 overflow-x-auto whitespace-nowrap text-xs">
+                <button type="button" data-theme-toggle class="gc-btn-secondary px-3 py-1.5">
+                    Theme: <span data-theme-toggle-label>Dark</span>
+                </button>
                 @if(auth()->user()->role === 'super_admin')
                     <a href="{{ route('admin.dashboard') }}" class="gc-btn-secondary px-3 py-1.5">Dashboard</a>
                     <a href="{{ route('admin.schools.index') }}" class="gc-btn-secondary px-3 py-1.5">Schools</a>

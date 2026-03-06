@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Instructor;
 
 use App\Actions\RefreshTrainingEnrollmentStatus;
+use App\Actions\UpdateCourseScoreAction;
 use App\Http\Controllers\Controller;
+use App\Models\CourseDiscussion;
+use App\Models\CourseScore;
+use App\Models\LiveClass;
+use App\Models\TeachingPractice;
 use App\Models\TrainingAssignmentSubmission;
 use App\Models\TrainingCapstoneReview;
 use App\Models\TrainingEnrollment;
@@ -31,7 +36,40 @@ class TrainingProgressController extends Controller
         $submissionsByTopic = $enrollment->assignmentSubmissions
             ->groupBy('topic_id');
 
-        return view('instructor.training.enrollment', compact('enrollment', 'progressByTopic', 'submissionsByTopic'));
+        $courseId = (int) $enrollment->cohort->course_id;
+        $upcomingLiveClasses = LiveClass::where('course_id', $courseId)
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time')
+            ->take(10)
+            ->get();
+        $courseDiscussions = CourseDiscussion::with(['user', 'replies.user'])
+            ->where('course_id', $courseId)
+            ->whereNull('parent_id')
+            ->latest()
+            ->take(50)
+            ->get();
+        $teachingPractices = TeachingPractice::with('reviewer')
+            ->where('course_id', $courseId)
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+        $leaderboard = CourseScore::with('user')
+            ->where('course_id', $courseId)
+            ->orderByDesc('total_score')
+            ->take(10)
+            ->get();
+        $notifications = auth()->user()->notifications()->latest()->take(10)->get();
+
+        return view('instructor.training.enrollment', compact(
+            'enrollment',
+            'progressByTopic',
+            'submissionsByTopic',
+            'upcomingLiveClasses',
+            'courseDiscussions',
+            'teachingPractices',
+            'leaderboard',
+            'notifications'
+        ));
     }
 
     public function submitTopic(
@@ -105,7 +143,8 @@ class TrainingProgressController extends Controller
         Request $request,
         TrainingEnrollment $enrollment,
         TrainingTopic $topic,
-        RefreshTrainingEnrollmentStatus $refreshEnrollmentStatus
+        RefreshTrainingEnrollmentStatus $refreshEnrollmentStatus,
+        UpdateCourseScoreAction $updateCourseScoreAction
     ) {
         abort_unless($enrollment->user_id === auth()->id(), 403);
         abort_unless($enrollment->isPaid(), 403, 'Payment required.');
@@ -169,6 +208,7 @@ class TrainingProgressController extends Controller
         ]);
 
         $refreshEnrollmentStatus->execute($enrollment);
+        $updateCourseScoreAction->execute($enrollment);
 
         return redirect()
             ->route('instructor.training.topics.quiz.show', [$enrollment, $topic])
@@ -202,5 +242,67 @@ class TrainingProgressController extends Controller
         $refreshEnrollmentStatus->execute($enrollment);
 
         return back()->with('success', 'Capstone submitted for mentor review.');
+    }
+
+    public function postDiscussion(Request $request, TrainingEnrollment $enrollment)
+    {
+        abort_unless($enrollment->user_id === auth()->id(), 403);
+        abort_unless($enrollment->isPaid(), 403, 'Payment required.');
+
+        $data = $request->validate([
+            'message' => 'required|string|max:5000',
+            'parent_id' => 'nullable|exists:course_discussions,id',
+            'topic_id' => 'nullable|exists:training_topics,id',
+        ]);
+
+        $courseId = (int) $enrollment->cohort->course_id;
+        $parentId = $data['parent_id'] ?? null;
+        if ($parentId) {
+            $parent = CourseDiscussion::findOrFail($parentId);
+            abort_unless((int) $parent->course_id === $courseId, 422, 'Invalid discussion parent.');
+        }
+
+        $message = trim($data['message']);
+        if (!empty($data['topic_id'])) {
+            $topic = TrainingTopic::findOrFail($data['topic_id']);
+            abort_unless((int) $topic->module->course_id === $courseId, 422, 'Invalid topic for this course.');
+            $message = "[Lesson: {$topic->title}] {$message}";
+        }
+
+        CourseDiscussion::create([
+            'course_id' => $courseId,
+            'user_id' => auth()->id(),
+            'message' => $message,
+            'parent_id' => $parentId,
+        ]);
+
+        return back()->with('success', 'Discussion posted.');
+    }
+
+    public function submitTeachingPractice(
+        Request $request,
+        TrainingEnrollment $enrollment,
+        UpdateCourseScoreAction $updateCourseScoreAction
+    ) {
+        abort_unless($enrollment->user_id === auth()->id(), 403);
+        abort_unless($enrollment->isPaid(), 403, 'Payment required.');
+
+        $data = $request->validate([
+            'lesson_topic' => 'required|string|max:255',
+            'video_url' => 'required|url|max:2000',
+            'description' => 'nullable|string|max:5000',
+        ]);
+
+        TeachingPractice::create([
+            'user_id' => auth()->id(),
+            'course_id' => $enrollment->cohort->course_id,
+            'lesson_topic' => $data['lesson_topic'],
+            'video_url' => $data['video_url'],
+            'description' => $data['description'] ?? null,
+        ]);
+
+        $updateCourseScoreAction->execute($enrollment);
+
+        return back()->with('success', 'Teaching practice submitted for instructor review.');
     }
 }

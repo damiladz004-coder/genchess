@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class StoreOrderService
 {
+    public function __construct(
+        protected DeliveryFeeService $deliveryFeeService
+    ) {
+    }
+
     public function createOrderFromCart(array $checkoutData, array $cartSummary, string $paymentMethod): Order
     {
         return DB::transaction(function () use ($checkoutData, $cartSummary, $paymentMethod): Order {
@@ -31,8 +36,12 @@ class StoreOrderService
                 $subtotal += ((int) $product->price_kobo) * (int) $line['quantity'];
             }
 
-            $deliveryFee = 0;
-            $total = $subtotal + $deliveryFee;
+            $deliveryFee = isset($checkoutData['delivery_fee'])
+                ? (int) $checkoutData['delivery_fee']
+                : $this->deliveryFeeService->calculateDeliveryFee($checkoutData['state'] ?? '');
+            $deliveryFee = max(0, $deliveryFee);
+            $deliveryFeeKobo = $deliveryFee * 100;
+            $total = $subtotal + $deliveryFeeKobo;
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -47,7 +56,8 @@ class StoreOrderService
                 'payment_status' => 'pending',
                 'status' => 'pending',
                 'subtotal_kobo' => $subtotal,
-                'delivery_fee_kobo' => $deliveryFee,
+                'delivery_fee_kobo' => $deliveryFeeKobo,
+                'delivery_fee' => $deliveryFee,
                 'total_kobo' => $total,
                 'currency' => 'NGN',
                 'notes' => $checkoutData['notes'] ?? null,
@@ -140,4 +150,3 @@ class StoreOrderService
         return $number;
     }
 }
-

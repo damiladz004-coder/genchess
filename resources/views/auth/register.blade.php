@@ -4,11 +4,12 @@
         @if(($intent ?? null) === 'training')
             <input type="hidden" name="intent" value="training">
             <input type="hidden" name="referral_code" value="{{ $referralCode }}">
+            <input type="hidden" name="coupon_code" value="{{ $couponCode }}">
         @endif
 
         @if(($intent ?? null) === 'training')
             <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
-                Registering for Genchess Instructor Training checkout.
+                Registering for Genchess Certified Chess Instructor Program (GCCIP) checkout.
             </div>
         @endif
 

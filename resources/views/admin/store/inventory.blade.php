@@ -1,15 +1,23 @@
 <x-app-layout>
-    <div class="py-6 max-w-7xl mx-auto space-y-6">
-        <h1 class="text-2xl font-bold">Inventory Logs</h1>
+    <div class="space-y-6 max-w-7xl mx-auto">
+        <h1 class="text-3xl gc-heading">Inventory Logs</h1>
 
-        <div class="bg-white border rounded p-4 overflow-x-auto">
-            <table class="min-w-full text-sm">
+        <div class="gc-panel p-4 overflow-x-auto">
+            <table class="gc-table min-w-full">
                 <thead>
-                    <tr><th class="text-left">Date</th><th class="text-left">Product</th><th class="text-left">Action</th><th class="text-left">Qty</th><th class="text-left">Before</th><th class="text-left">After</th><th class="text-left">Order</th></tr>
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Action</th>
+                        <th>Qty</th>
+                        <th>Before</th>
+                        <th>After</th>
+                        <th>Order</th>
+                    </tr>
                 </thead>
                 <tbody>
                 @foreach($logs as $log)
-                    <tr class="border-t">
+                    <tr>
                         <td>{{ $log->created_at?->format('Y-m-d H:i') }}</td>
                         <td>{{ $log->product->name ?? 'N/A' }}</td>
                         <td>{{ $log->action }}</td>
@@ -25,4 +33,3 @@
         </div>
     </div>
 </x-app-layout>
-

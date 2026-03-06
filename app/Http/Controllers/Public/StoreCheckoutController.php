@@ -7,6 +7,7 @@ use App\Mail\StoreAdminAlertMail;
 use App\Mail\StoreOrderCustomerMail;
 use App\Models\Order;
 use App\Services\PaystackService;
+use App\Services\DeliveryFeeService;
 use App\Services\StoreCartService;
 use App\Services\StoreOrderService;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class StoreCheckoutController extends Controller
         Request $request,
         StoreCartService $cartService,
         StoreOrderService $orderService,
+        DeliveryFeeService $deliveryFeeService,
         PaystackService $paystackService
     ) {
         $cart = $cartService->summary();
@@ -47,6 +49,8 @@ class StoreCheckoutController extends Controller
             'payment_method' => 'required|in:paystack,bank_transfer',
             'notes' => 'nullable|string|max:2000',
         ]);
+        $data['state'] = trim($data['state']);
+        $data['delivery_fee'] = $deliveryFeeService->calculateDeliveryFee($data['state']);
 
         try {
             $order = $orderService->createOrderFromCart($data, $cart, $data['payment_method']);

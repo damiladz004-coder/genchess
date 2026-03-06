@@ -1,12 +1,8 @@
-<aside class="w-72 min-h-screen border-r border-slate-200/80 bg-white/80 backdrop-blur">
+<aside class="role-sidebar w-72 min-h-screen border-r border-slate-200/80 bg-white/80 backdrop-blur">
     <div class="p-5 border-b border-slate-200/80">
         <div class="text-xs uppercase tracking-wider text-slate-500">Super Admin</div>
         <div class="mt-2">
-            <img
-                src="{{ asset('images/logo/genchess-logo-brick.png') }}"
-                alt="Genchess logo"
-                class="h-10 w-auto"
-            >
+            <x-brand-logo class="h-10 w-auto" alt="Genchess logo" />
         </div>
     </div>
     <nav class="p-4 space-y-1.5 text-sm">
@@ -24,6 +20,8 @@
         <x-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">Settings</x-nav-link>
         <x-nav-link :href="route('admin.class-teacher-feedback.index')" :active="request()->routeIs('admin.class-teacher-feedback.*')">Feedback</x-nav-link>
         <x-nav-link :href="route('admin.exams.templates.index')" :active="request()->routeIs('admin.exams.*')">Exams</x-nav-link>
+        <x-nav-link :href="route('admin.exams.questions.index')" :active="request()->routeIs('admin.exams.questions.*')">Exam Questions</x-nav-link>
+        <x-nav-link :href="route('admin.grading.configuration.index')" :active="request()->routeIs('admin.grading.configuration.*')">Grading Config</x-nav-link>
         <x-nav-link :href="route('admin.scheme.index')" :active="request()->routeIs('admin.scheme.*')">Scheme of Work</x-nav-link>
         <x-nav-link :href="route('admin.training.index')" :active="request()->routeIs('admin.training.*')">Training</x-nav-link>
         <x-nav-link :href="route('admin.store.products.index')" :active="request()->routeIs('admin.store.products.*')">Store Products</x-nav-link>

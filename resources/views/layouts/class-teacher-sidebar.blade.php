@@ -1,12 +1,8 @@
-<aside class="w-72 min-h-screen border-r border-slate-200/80 bg-white/80 backdrop-blur">
+<aside class="role-sidebar w-72 min-h-screen border-r border-slate-200/80 bg-white/80 backdrop-blur">
     <div class="p-5 border-b border-slate-200/80">
         <div class="text-xs uppercase tracking-wider text-slate-500">Class Teacher</div>
         <div class="mt-2">
-            <img
-                src="{{ asset('images/logo/genchess-logo-brick.png') }}"
-                alt="Genchess logo"
-                class="h-10 w-auto"
-            >
+            <x-brand-logo class="h-10 w-auto" alt="Genchess logo" />
         </div>
     </div>
     <nav class="p-4 space-y-1.5 text-sm">

@@ -61,7 +61,8 @@
                         <th>Interview Mode</th>
                         <th>Score</th>
                         <th>Result</th>
-                        <th>Invitation Sent</th>
+                        <th>Invitation Status</th>
+                        <th>Invitation Sent At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -78,6 +79,15 @@
                             <td>
                                 @if($screening->passed)
                                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Passed</span>
+                                @else
+                                    <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Failed</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if(!$screening->passed)
+                                    <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">N/A</span>
+                                @elseif($screening->invitation_sent_at)
+                                    <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">Sent</span>
                                 @else
                                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Failed</span>
                                 @endif

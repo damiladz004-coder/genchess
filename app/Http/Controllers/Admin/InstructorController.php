@@ -7,6 +7,7 @@ use App\Mail\InstructorInvite;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
@@ -53,9 +54,38 @@ class InstructorController extends Controller
             'must_change_password' => true,
         ]);
 
-        Mail::to($instructor->email)->send(new InstructorInvite($instructor, $temporaryPassword));
+        $warningMessages = [];
 
-        return redirect()->back()->with('success', 'Instructor created.');
+        try {
+            Mail::to($instructor->email)->send(new InstructorInvite($instructor, $temporaryPassword));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send instructor invite email.', [
+                'user_id' => $instructor->id,
+                'email' => $instructor->email,
+                'error' => $e->getMessage(),
+            ]);
+            $warningMessages[] = 'Instructor created, but invite email could not be sent.';
+        }
+
+        if (!$instructor->hasVerifiedEmail()) {
+            try {
+                $instructor->sendEmailVerificationNotification();
+            } catch (\Throwable $e) {
+                Log::error('Failed to send instructor verification email.', [
+                    'user_id' => $instructor->id,
+                    'email' => $instructor->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $warningMessages[] = 'Instructor created, but verification email could not be sent.';
+            }
+        }
+
+        $redirect = redirect()->back()->with('success', 'Instructor created.');
+        if (!empty($warningMessages)) {
+            $redirect->with('warning', implode(' ', $warningMessages));
+        }
+
+        return $redirect;
     }
 
     public function updateStatus(Request $request, User $instructor)

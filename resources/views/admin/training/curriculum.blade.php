@@ -1,32 +1,83 @@
 <x-app-layout>
-    <div class="py-6 max-w-7xl mx-auto space-y-6">
-        <div class="flex items-center justify-between">
+    <div class="space-y-6 max-w-7xl mx-auto">
+        <div class="flex items-center justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-bold">{{ $course->title }} - Curriculum</h1>
-                <p class="text-sm text-gray-600">Manage modules, topics, quiz rules, and assignments.</p>
+                <h1 class="text-3xl gc-heading">Genchess Certified Chess Instructor Program (GCCIP) - Curriculum</h1>
+                <p class="text-sm text-slate-600">Manage modules, topics, quiz rules, and assignments.</p>
             </div>
-            <a href="{{ route('admin.training.index') }}" class="text-blue-600 underline">Back to Training</a>
+            <a href="{{ route('admin.training.index') }}" class="text-brand-700 underline">Back to Training</a>
         </div>
 
         @if(session('success'))
-            <div class="rounded border border-green-200 bg-green-50 px-4 py-2 text-green-700">{{ session('success') }}</div>
+            <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">{{ session('success') }}</div>
         @endif
 
-        <div class="bg-white border rounded p-4">
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="gc-panel p-4 space-y-3">
+                <h2 class="font-semibold">Schedule Live Class</h2>
+                <form method="POST" action="{{ route('admin.training.live-classes.store', $course) }}" class="space-y-2">
+                    @csrf
+                    <input class="border px-3 py-2 w-full" name="title" placeholder="Live class title" required>
+                    <textarea class="border px-3 py-2 w-full" name="description" rows="2" placeholder="Description"></textarea>
+                    <input class="border px-3 py-2 w-full" type="url" name="meeting_link" placeholder="Zoom/Meet link" required>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input class="border px-3 py-2" type="datetime-local" name="start_time" required>
+                        <input class="border px-3 py-2" type="datetime-local" name="end_time" required>
+                    </div>
+                    <button class="gc-btn-primary text-xs px-3 py-1.5" type="submit">Schedule</button>
+                </form>
+                <div class="space-y-2">
+                    @foreach(($liveClasses ?? collect()) as $liveClass)
+                        <div class="border rounded p-2 text-xs flex items-center justify-between gap-2">
+                            <div>
+                                <div class="font-semibold">{{ $liveClass->title }}</div>
+                                <div>{{ $liveClass->start_time?->format('Y-m-d g:i A') }}</div>
+                            </div>
+                            <form method="POST" action="{{ route('admin.training.live-classes.destroy', $liveClass) }}" onsubmit="return confirm('Delete live class?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-rose-600 underline" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="gc-panel p-4 space-y-3">
+                <h2 class="font-semibold">Teaching Practice Reviews</h2>
+                @forelse(($teachingPractices ?? collect()) as $practice)
+                    <div class="border rounded p-2 text-xs space-y-2">
+                        <div><strong>{{ $practice->user->name ?? 'Instructor' }}</strong> - {{ $practice->lesson_topic }}</div>
+                        <a class="text-brand-700 underline" target="_blank" href="{{ $practice->video_url }}">Open submitted video</a>
+                        <form method="POST" action="{{ route('admin.training.teaching-practice.review', $practice) }}" class="grid grid-cols-3 gap-2">
+                            @csrf
+                            @method('PATCH')
+                            <input class="border px-2 py-1" type="number" step="0.01" min="0" max="100" name="score" value="{{ $practice->score }}">
+                            <input class="border px-2 py-1 col-span-2" type="text" name="instructor_feedback" value="{{ $practice->instructor_feedback }}" placeholder="Feedback">
+                            <button class="gc-btn-secondary text-xs px-3 py-1.5 col-span-3" type="submit">Save Review</button>
+                        </form>
+                    </div>
+                @empty
+                    <p class="text-sm text-slate-600">No teaching practice submissions yet.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="gc-panel p-4">
             <h2 class="font-semibold mb-3">Add Module</h2>
             <form method="POST" action="{{ route('admin.training.modules.store', $course) }}" class="grid md:grid-cols-5 gap-3">
                 @csrf
                 <input class="border px-3 py-2" type="number" name="module_number" min="1" placeholder="Module #">
                 <input class="border px-3 py-2 md:col-span-2" type="text" name="title" placeholder="Module title">
                 <input class="border px-3 py-2" type="number" name="sort_order" min="0" placeholder="Sort">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Save Module</button>
+                <button class="gc-btn-primary" type="submit">Save Module</button>
                 <input class="border px-3 py-2 md:col-span-5" type="text" name="goal" placeholder="Goal (optional)">
             </form>
         </div>
 
         @foreach($course->modules as $module)
-            <div class="bg-white border rounded p-4 space-y-4">
-                <div class="flex items-center justify-between">
+            <div class="gc-panel p-4 space-y-4">
+                <div class="flex items-center justify-between gap-3">
                     <form method="POST" action="{{ route('admin.training.modules.update', $module) }}" class="grid md:grid-cols-6 gap-2 w-full">
                         @csrf
                         @method('PATCH')
@@ -34,13 +85,13 @@
                         <input class="border px-2 py-1 md:col-span-2" type="text" name="title" value="{{ $module->title }}">
                         <input class="border px-2 py-1" type="number" name="sort_order" value="{{ $module->sort_order }}" min="0">
                         <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="is_capstone" value="1" @checked($module->is_capstone)> Capstone</label>
-                        <button class="bg-gray-800 text-white px-3 py-1 rounded" type="submit">Update</button>
+                        <button class="gc-btn-secondary text-xs px-3 py-1.5" type="submit">Update</button>
                         <input class="border px-2 py-1 md:col-span-5" type="text" name="goal" value="{{ $module->goal }}" placeholder="Goal">
                     </form>
                     <form method="POST" action="{{ route('admin.training.modules.destroy', $module) }}" onsubmit="return confirm('Delete module and all its topics?')">
                         @csrf
                         @method('DELETE')
-                        <button class="text-red-600 text-sm underline ml-3" type="submit">Delete</button>
+                        <button class="text-rose-600 text-sm underline ml-3" type="submit">Delete</button>
                     </form>
                 </div>
 
@@ -55,13 +106,14 @@
                             <option value="beginner">Beginner</option>
                             <option value="advanced">Advanced</option>
                         </select>
-                        <button class="bg-green-700 text-white px-3 py-1 rounded" type="submit">Add Topic</button>
+                        <input class="border px-2 py-1 md:col-span-2" type="url" name="lesson_video_url" placeholder="Lesson video URL (YouTube/Vimeo)">
+                        <button class="gc-btn-primary text-xs px-3 py-1.5" type="submit">Add Topic</button>
                     </form>
                 </div>
 
                 @foreach($module->topics as $topic)
-                    <div class="border rounded p-3 bg-gray-50 space-y-3">
-                        <form method="POST" action="{{ route('admin.training.topics.update', $topic) }}" class="grid md:grid-cols-7 gap-2">
+                    <div class="gc-panel p-3 space-y-3">
+                        <form method="POST" action="{{ route('admin.training.topics.update', $topic) }}" class="grid md:grid-cols-8 gap-2">
                             @csrf
                             @method('PATCH')
                             <input class="border px-2 py-1" type="number" name="topic_number" value="{{ $topic->topic_number }}" min="1">
@@ -71,17 +123,18 @@
                                 <option value="beginner" @selected($topic->level === 'beginner')>Beginner</option>
                                 <option value="advanced" @selected($topic->level === 'advanced')>Advanced</option>
                             </select>
+                            <input class="border px-2 py-1 md:col-span-2" type="url" name="lesson_video_url" value="{{ $topic->lesson_video_url }}" placeholder="Lesson video URL (YouTube/Vimeo)">
                             <input class="border px-2 py-1" type="number" name="sort_order" value="{{ $topic->sort_order }}" min="0">
-                            <button class="bg-gray-800 text-white px-3 py-1 rounded" type="submit">Update Topic</button>
+                            <button class="gc-btn-secondary text-xs px-3 py-1.5" type="submit">Update Topic</button>
                         </form>
                         <form method="POST" action="{{ route('admin.training.topics.destroy', $topic) }}" onsubmit="return confirm('Delete topic?')">
                             @csrf
                             @method('DELETE')
-                            <button class="text-red-600 text-sm underline" type="submit">Delete Topic</button>
+                            <button class="text-rose-600 text-sm underline" type="submit">Delete Topic</button>
                         </form>
 
                         <div class="grid md:grid-cols-2 gap-3">
-                            <form method="POST" action="{{ route('admin.training.quizzes.upsert', $topic) }}" class="border rounded p-3 bg-white space-y-2">
+                            <form method="POST" action="{{ route('admin.training.quizzes.upsert', $topic) }}" class="gc-panel p-3 space-y-2">
                                 @csrf
                                 <h4 class="font-semibold text-sm">Quiz Settings</h4>
                                 <div class="grid grid-cols-4 gap-2">
@@ -90,16 +143,17 @@
                                     <input class="border px-2 py-1" type="number" name="scenario_count" min="1" max="1" value="{{ $topic->quiz->scenario_count ?? 1 }}">
                                     <input class="border px-2 py-1" type="number" step="0.01" name="pass_mark" min="1" max="100" value="{{ $topic->quiz->pass_mark ?? 70 }}">
                                 </div>
-                                <button class="bg-indigo-700 text-white px-3 py-1 rounded text-sm" type="submit">Save Quiz</button>
+                                <button class="gc-btn-primary text-xs px-3 py-1.5" type="submit">Save Quiz</button>
                             </form>
 
-                            <form method="POST" action="{{ route('admin.training.assignments.store', $topic) }}" class="border rounded p-3 bg-white space-y-2">
+                            <form method="POST" action="{{ route('admin.training.assignments.store', $topic) }}" class="gc-panel p-3 space-y-2">
                                 @csrf
                                 <h4 class="font-semibold text-sm">Add Assignment</h4>
                                 <input class="border px-2 py-1 w-full" type="text" name="title" placeholder="Assignment title">
                                 <input class="border px-2 py-1 w-full" type="text" name="type" placeholder="Type (e.g. puzzle_solving)">
+                                <input class="border px-2 py-1 w-full" type="datetime-local" name="due_at" placeholder="Due date/time">
                                 <input class="border px-2 py-1 w-full" type="text" name="instructions" placeholder="Instructions">
-                                <button class="bg-emerald-700 text-white px-3 py-1 rounded text-sm" type="submit">Add Assignment</button>
+                                <button class="gc-btn-primary text-xs px-3 py-1.5" type="submit">Add Assignment</button>
                             </form>
                         </div>
 
@@ -116,14 +170,14 @@
                                     <input class="border px-2 py-1 md:col-span-2" type="text" name="question" placeholder="Question" required>
                                     <input class="border px-2 py-1" type="text" name="correct_answer" placeholder="Correct answer" required>
                                     <input class="border px-2 py-1" type="number" name="sort_order" min="0" placeholder="Sort">
-                                    <button class="bg-indigo-700 text-white px-3 py-1 rounded text-sm" type="submit">Add Question</button>
+                                    <button class="gc-btn-primary text-xs px-3 py-1.5" type="submit">Add Question</button>
                                     <textarea class="border px-2 py-1 md:col-span-6" rows="2" name="options_text" placeholder="Options (one per line). Not needed for Scenario."></textarea>
                                     <input class="border px-2 py-1 md:col-span-6" type="text" name="explanation" placeholder="Explanation (optional)">
                                 </form>
 
                                 @forelse($topic->quiz->questions as $question)
                                     @php $optionsText = is_array($question->options) ? implode(PHP_EOL, $question->options) : ''; @endphp
-                                    <div class="border rounded p-2 bg-slate-50">
+                                    <div class="gc-panel p-2">
                                         <form method="POST" action="{{ route('admin.training.quiz-questions.update', $question) }}" class="grid md:grid-cols-6 gap-2">
                                             @csrf
                                             @method('PATCH')
@@ -135,14 +189,14 @@
                                             <input class="border px-2 py-1 md:col-span-2" type="text" name="question" value="{{ $question->question }}" required>
                                             <input class="border px-2 py-1" type="text" name="correct_answer" value="{{ $question->correct_answer }}" required>
                                             <input class="border px-2 py-1" type="number" name="sort_order" min="0" value="{{ $question->sort_order }}">
-                                            <button class="bg-gray-700 text-white px-3 py-1 rounded text-sm" type="submit">Update</button>
+                                            <button class="gc-btn-secondary text-xs px-3 py-1.5" type="submit">Update</button>
                                             <textarea class="border px-2 py-1 md:col-span-6" rows="2" name="options_text">{{ $optionsText }}</textarea>
                                             <input class="border px-2 py-1 md:col-span-6" type="text" name="explanation" value="{{ $question->explanation }}" placeholder="Explanation">
                                         </form>
                                         <form method="POST" action="{{ route('admin.training.quiz-questions.destroy', $question) }}" class="mt-1" onsubmit="return confirm('Delete question?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="text-red-600 text-xs underline" type="submit">Delete</button>
+                                            <button class="text-rose-600 text-xs underline" type="submit">Delete</button>
                                         </form>
                                     </div>
                                 @empty
@@ -154,19 +208,20 @@
                         @if($topic->assignments->isNotEmpty())
                             <div class="space-y-2">
                                 @foreach($topic->assignments as $assignment)
-                                    <div class="bg-white border rounded p-2">
+                                    <div class="gc-panel p-2">
                                         <form method="POST" action="{{ route('admin.training.assignments.update', $assignment) }}" class="grid md:grid-cols-6 gap-2">
                                             @csrf
                                             @method('PATCH')
                                             <input class="border px-2 py-1 md:col-span-2" type="text" name="title" value="{{ $assignment->title }}">
                                             <input class="border px-2 py-1" type="text" name="type" value="{{ $assignment->type }}">
+                                            <input class="border px-2 py-1" type="datetime-local" name="due_at" value="{{ $assignment->due_at?->format('Y-m-d\\TH:i') }}">
                                             <input class="border px-2 py-1 md:col-span-2" type="text" name="instructions" value="{{ $assignment->instructions }}">
-                                            <button class="bg-gray-700 text-white px-3 py-1 rounded text-sm" type="submit">Update</button>
+                                            <button class="gc-btn-secondary text-xs px-3 py-1.5" type="submit">Update</button>
                                         </form>
                                         <form method="POST" action="{{ route('admin.training.assignments.destroy', $assignment) }}" class="mt-1" onsubmit="return confirm('Delete assignment?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="text-red-600 text-xs underline" type="submit">Delete</button>
+                                            <button class="text-rose-600 text-xs underline" type="submit">Delete</button>
                                         </form>
                                     </div>
                                 @endforeach
@@ -177,7 +232,7 @@
             </div>
         @endforeach
 
-        <div class="bg-white border rounded p-4 space-y-3">
+        <div class="gc-panel p-4 space-y-3">
             <h2 class="font-semibold">Pending Assignment Reviews</h2>
             @forelse($pendingSubmissions as $submission)
                 <div class="border rounded p-3">
@@ -186,8 +241,8 @@
                         {{ $submission->topic->title }} -
                         {{ $submission->assignment->title }}
                     </div>
-                    <div class="text-xs text-gray-600 mb-2">
-                        {{ $submission->submission_text ?: '-' }} @if($submission->submission_url) | <a class="text-blue-600 underline" target="_blank" href="{{ $submission->submission_url }}">Open URL</a> @endif
+                    <div class="text-xs text-slate-600 mb-2">
+                        {{ $submission->submission_text ?: '-' }} @if($submission->submission_url) | <a class="text-brand-700 underline" target="_blank" href="{{ $submission->submission_url }}">Open URL</a> @endif
                     </div>
                     <form method="POST" action="{{ route('admin.training.submissions.review', $submission) }}" class="grid md:grid-cols-4 gap-2">
                         @csrf
@@ -202,11 +257,11 @@
                     </form>
                 </div>
             @empty
-                <p class="text-sm text-gray-600">No pending submissions.</p>
+                <p class="text-sm text-slate-600">No pending submissions.</p>
             @endforelse
         </div>
 
-        <div class="bg-white border rounded p-4 space-y-3">
+        <div class="gc-panel p-4 space-y-3">
             <h2 class="font-semibold">Capstone Reviews</h2>
             @forelse($pendingCapstone as $capstone)
                 <div class="border rounded p-3">
@@ -215,7 +270,7 @@
                         Status: {{ ucfirst(str_replace('_', ' ', $capstone->status)) }}
                     </div>
                     @if($capstone->video_url)
-                        <a class="text-blue-600 underline text-sm" target="_blank" href="{{ $capstone->video_url }}">Open video</a>
+                        <a class="text-brand-700 underline text-sm" target="_blank" href="{{ $capstone->video_url }}">Open video</a>
                     @endif
                     <form method="POST" action="{{ route('admin.training.capstone.review', $capstone) }}" class="grid md:grid-cols-4 gap-2 mt-2">
                         @csrf
@@ -230,8 +285,9 @@
                     </form>
                 </div>
             @empty
-                <p class="text-sm text-gray-600">No capstone reviews pending.</p>
+                <p class="text-sm text-slate-600">No capstone reviews pending.</p>
             @endforelse
         </div>
     </div>
 </x-app-layout>
+

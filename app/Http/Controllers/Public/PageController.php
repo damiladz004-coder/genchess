@@ -25,7 +25,7 @@ class PageController extends Controller
             ->keyBy('key');
 
         return view('contact', [
-            'organizationName' => $settings['organization_name']->value ?? 'genchess.ng',
+            'organizationName' => $settings['organization_name']->value ?? 'Genchess Educational Services',
             'supportEmail' => $settings['support_email']->value ?? 'info@genchess.ng',
             'supportPhone' => $settings['support_phone']->value ?? '+234 XXX XXX XXXX',
         ]);
@@ -111,4 +111,5 @@ class PageController extends Controller
         return view('schools.register');
     }
 }
+
 

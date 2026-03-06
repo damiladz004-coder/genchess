@@ -19,7 +19,7 @@
     @endif
 
     <div class="gc-panel p-6">
-        <h3 class="text-xl font-semibold text-slate-900">{{ $course->title }}</h3>
+        <h3 class="text-xl font-semibold text-slate-900">Genchess Certified Chess Instructor Program (GCCIP)</h3>
         <p class="text-slate-600 mt-1">Currency: NGN</p>
         <p class="mt-2 text-sm text-slate-600">Your referral code: <span class="font-semibold">{{ $myReferralCode }}</span></p>
 
@@ -29,7 +29,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700">Coupon Code</label>
-                <input type="text" name="coupon_code" id="coupon_code" value="{{ old('coupon_code') }}"
+                <input type="text" name="coupon_code" id="coupon_code" value="{{ old('coupon_code', $couponCode) }}"
                     placeholder="Enter early bird / referral coupon"
                     class="mt-1 w-full rounded border-slate-300">
             </div>

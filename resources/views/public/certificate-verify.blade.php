@@ -17,7 +17,7 @@
                 <p class="text-green-700 font-semibold">Certificate is valid.</p>
                 <div class="mt-3 text-sm text-gray-700">
                     <div><strong>Name:</strong> {{ $certification->enrollment->user->name ?? 'N/A' }}</div>
-                    <div><strong>Course:</strong> {{ $certification->enrollment->cohort->course->title ?? 'N/A' }}</div>
+                    <div><strong>Course:</strong> Genchess Certified Chess Instructor Program (GCCIP)</div>
                     <div><strong>Cohort:</strong> {{ $certification->enrollment->cohort->name ?? 'N/A' }}</div>
                     <div><strong>Issued:</strong> {{ $certification->issued_at?->format('Y-m-d') ?? '-' }}</div>
                     <div><strong>Code:</strong> {{ $certification->certificate_code }}</div>

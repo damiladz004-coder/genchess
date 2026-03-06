@@ -1,11 +1,7 @@
-<nav x-data="{ open: false, mobileServicesOpen: false }" class="sticky top-0 z-50 border-b border-purple-700/70 bg-purple-800 text-white">
+<nav x-data="{ open: false, mobileServicesOpen: false }" class="public-nav sticky top-0 z-50 border-b border-purple-700/70 bg-purple-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
         <a href="{{ route('home') }}" class="inline-flex items-center">
-            <img
-                src="{{ asset('images/logo/genchess-logo-brick.png') }}"
-                alt="Genchess logo"
-                class="h-10 sm:h-12 w-auto"
-            >
+            <x-brand-logo class="h-10 sm:h-12 w-auto" alt="Genchess logo" />
         </a>
 
         <div class="hidden lg:flex items-center gap-6 text-sm font-medium">
@@ -43,6 +39,9 @@
         </div>
 
         <div class="flex items-center gap-2 text-sm shrink-0">
+            <button type="button" data-theme-toggle class="hidden sm:inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold border border-purple-300 text-purple-100 hover:text-white hover:border-white/70 transition-colors duration-200">
+                <span data-theme-toggle-label>Dark</span>
+            </button>
             @auth
                 <a href="/dashboard" class="hidden sm:inline-flex items-center justify-center rounded-lg px-4 py-2 font-semibold bg-white text-purple-800">Dashboard</a>
             @else
@@ -69,6 +68,9 @@
             @endauth
             <a href="{{ route('home') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">About</a>
+            <button type="button" data-theme-toggle class="rounded-md px-2 py-1 text-purple-100 text-left transition-colors duration-200 hover:bg-purple-700 hover:text-white">
+                Theme: <span data-theme-toggle-label>Dark</span>
+            </button>
 
             <button @click="mobileServicesOpen = !mobileServicesOpen" type="button" class="inline-flex items-center justify-between rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">
                 <span>Services</span>

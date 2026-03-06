@@ -1,28 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Exam Attempts (Super Admin)</h2>
-        <a href="{{ route('admin.exams.templates.index') }}" class="text-gray-700 underline">Templates</a>
+<div class="space-y-6">
+    <div class="flex items-center justify-between gap-3">
+        <h2 class="text-3xl gc-heading">Exam Attempts</h2>
+        <a href="{{ route('admin.exams.templates.index') }}" class="gc-btn-secondary">Templates</a>
     </div>
 
     @if(session('success'))
-        <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
+        <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">
             {{ session('success') }}
         </div>
     @endif
 
-    <form method="GET" class="mb-4 bg-white border rounded p-4">
+    <form method="GET" class="gc-panel p-4">
         <div class="grid md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium mb-1">Search student</label>
-                <input type="text" name="q" value="{{ request('q') }}" class="w-full border rounded px-3 py-2"
-                    placeholder="Name or admission #">
+                <label class="block text-sm font-medium text-slate-600 mb-1">Search Student</label>
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Name or admission #">
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">School</label>
-                <select name="school_id" class="w-full border rounded px-3 py-2">
+                <label class="block text-sm font-medium text-slate-600 mb-1">School</label>
+                <select name="school_id">
                     <option value="">All schools</option>
                     @foreach($schools as $school)
                         <option value="{{ $school->id }}" @selected(request('school_id') == $school->id)>
@@ -32,8 +31,8 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">Class</label>
-                <select name="class_id" class="w-full border rounded px-3 py-2">
+                <label class="block text-sm font-medium text-slate-600 mb-1">Class</label>
+                <select name="class_id">
                     <option value="">All classes</option>
                     @foreach($classes as $class)
                         <option value="{{ $class->id }}" @selected(request('class_id') == $class->id)>
@@ -43,43 +42,47 @@
                 </select>
             </div>
         </div>
-
-        <div class="mt-4 flex items-center gap-3">
-            <button type="submit" class="bg-gray-900 text-white px-4 py-2 rounded">Filter</button>
-            <a href="{{ route('admin.exams.attempts.index') }}" class="text-gray-700 underline">Reset</a>
+        <div class="mt-4 flex items-center gap-2">
+            <button type="submit" class="gc-btn-primary">Filter</button>
+            <a href="{{ route('admin.exams.attempts.index') }}" class="gc-btn-secondary">Reset</a>
         </div>
     </form>
 
     @if($attempts->isEmpty())
-        <p>No attempts recorded.</p>
+        <div class="gc-panel p-6 text-slate-600">No attempts recorded.</div>
     @else
-        <div class="overflow-x-auto">
-            <table class="min-w-full border">
-                <thead class="bg-gray-50">
+        <div class="gc-panel overflow-x-auto">
+            <table class="gc-table min-w-full">
+                <thead>
                     <tr>
-                        <th class="text-left px-4 py-2 border-b">Student</th>
-                        <th class="text-left px-4 py-2 border-b">School</th>
-                        <th class="text-left px-4 py-2 border-b">Class</th>
-                        <th class="text-left px-4 py-2 border-b">Template</th>
-                        <th class="text-left px-4 py-2 border-b">Score</th>
-                        <th class="text-left px-4 py-2 border-b">Submitted</th>
-                        <th class="text-left px-4 py-2 border-b">Actions</th>
+                        <th>Student</th>
+                        <th>School</th>
+                        <th>Class</th>
+                        <th>Template</th>
+                        <th>Score</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($attempts as $attempt)
-                        <tr class="border-b">
-                            <td class="px-4 py-2">{{ $attempt->student->first_name ?? '' }} {{ $attempt->student->last_name ?? '' }}</td>
-                            <td class="px-4 py-2">{{ $attempt->assignment->school->school_name ?? 'N/A' }}</td>
-                            <td class="px-4 py-2">{{ $attempt->assignment->classroom->name ?? 'N/A' }}</td>
-                            <td class="px-4 py-2">{{ $attempt->assignment->template->title ?? 'N/A' }}</td>
-                            <td class="px-4 py-2">{{ $attempt->score }} / {{ $attempt->total_marks }}</td>
-                            <td class="px-4 py-2">{{ optional($attempt->submitted_at)->format('Y-m-d H:i') ?? '-' }}</td>
-                            <td class="px-4 py-2">
+                        <tr>
+                            <td>
+                                {{ $attempt->student->first_name ?? '' }} {{ $attempt->student->last_name ?? '' }}
+                                @if(!empty($attempt->student?->admission_number))
+                                    <div class="text-xs text-slate-500">{{ $attempt->student->admission_number }}</div>
+                                @endif
+                            </td>
+                            <td>{{ $attempt->assignment->school->school_name ?? 'N/A' }}</td>
+                            <td>{{ $attempt->assignment->classroom->name ?? 'N/A' }}</td>
+                            <td>{{ $attempt->assignment->template->title ?? 'N/A' }}</td>
+                            <td>{{ $attempt->score }} / {{ $attempt->total_marks }}</td>
+                            <td>{{ optional($attempt->submitted_at)->format('Y-m-d H:i') ?? '-' }}</td>
+                            <td>
                                 <form method="POST" action="{{ route('admin.exams.attempts.reset', $attempt) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 underline"
+                                    <button type="submit" class="text-rose-700 underline text-sm"
                                         onclick="return confirm('Reset this attempt? The student can retake.')">
                                         Reset
                                     </button>

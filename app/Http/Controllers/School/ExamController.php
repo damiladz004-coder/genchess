@@ -78,6 +78,17 @@ class ExamController extends Controller
         return view('school.exams.show', compact('exam', 'students', 'results'));
     }
 
+    public function destroy(Exam $exam)
+    {
+        $this->authorizeExam($exam);
+
+        $exam->delete();
+
+        return redirect()
+            ->route('school.exams.index')
+            ->with('success', 'Exam deleted successfully.');
+    }
+
     public function storeResults(Request $request, Exam $exam)
     {
         $this->authorizeExam($exam);

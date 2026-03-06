@@ -15,6 +15,8 @@ class ExamAssignment extends Model
         'mode',
         'exam_date',
         'status',
+        'exam_code',
+        'result_comment',
     ];
 
     public function template()

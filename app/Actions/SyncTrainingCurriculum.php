@@ -13,20 +13,41 @@ use Illuminate\Support\Facades\DB;
 
 class SyncTrainingCurriculum
 {
+    private const STANDARD_PROGRAM_TITLE = 'Genchess Certified Chess Instructor Program (GCCIP)';
+
     public function execute(?int $courseId = null): array
     {
         $curriculum = config('training_curriculum');
 
-        $course = $courseId
-            ? TrainingCourse::findOrFail($courseId)
-            : TrainingCourse::firstOrCreate(
-                ['title' => 'Certified Genchess Instructor - Level 2'],
-                [
+        if ($courseId) {
+            $course = TrainingCourse::findOrFail($courseId);
+        } else {
+            $course = TrainingCourse::query()
+                ->whereIn('title', [
+                    self::STANDARD_PROGRAM_TITLE,
+                    'Certified Genchess Instructor - Level 2',
+                    'Genchess Instructor Training Program',
+                    'Genchess Instructor Training Programme',
+                ])
+                ->orderBy('id')
+                ->first();
+
+            if ($course) {
+                $course->update([
+                    'title' => self::STANDARD_PROGRAM_TITLE,
                     'description' => 'Structured 8-module instructor training with capstone teaching practice.',
                     'duration_weeks' => 12,
                     'active' => true,
-                ]
-            );
+                ]);
+            } else {
+                $course = TrainingCourse::create([
+                    'title' => self::STANDARD_PROGRAM_TITLE,
+                    'description' => 'Structured 8-module instructor training with capstone teaching practice.',
+                    'duration_weeks' => 12,
+                    'active' => true,
+                ]);
+            }
+        }
 
         $createdModules = 0;
         $createdTopics = 0;

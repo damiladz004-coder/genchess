@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -23,6 +24,7 @@ class RegisteredUserController extends Controller
         return view('auth.register', [
             'intent' => $request->query('intent'),
             'referralCode' => $request->query('ref'),
+            'couponCode' => $request->query('coupon'),
         ]);
     }
 
@@ -33,12 +35,15 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request, TrainingReferralService $trainingReferralService): RedirectResponse
     {
+        $emailRule = app()->environment('testing') ? 'email:rfc' : 'email:rfc,dns';
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', $emailRule, 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'intent' => ['nullable', 'string', 'in:training'],
             'referral_code' => ['nullable', 'string', 'max:64'],
+            'coupon_code' => ['nullable', 'string', 'max:64'],
         ]);
 
         $user = User::create([
@@ -50,16 +55,27 @@ class RegisteredUserController extends Controller
 
         if (($data['intent'] ?? null) === 'training') {
             $trainingReferralService->attachReferral($user, $data['referral_code'] ?? null);
+            if (!empty($data['referral_code'])) {
+                $request->session()->put('training_referral_code', strtoupper(trim((string) $data['referral_code'])));
+            }
+            if (!empty($data['coupon_code'])) {
+                $request->session()->put('training_coupon_code', strtoupper(trim((string) $data['coupon_code'])));
+            }
         }
 
         event(new Registered($user));
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            Log::error('Failed to send verification email after registration.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         Auth::login($user);
 
-        if (($data['intent'] ?? null) === 'training') {
-            return redirect()->route('training.checkout');
-        }
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('dashboard');
     }
 }

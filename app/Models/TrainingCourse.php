@@ -77,4 +77,24 @@ class TrainingCourse extends Model
     {
         return $this->hasMany(TrainingPayment::class, 'course_id');
     }
+
+    public function liveClasses()
+    {
+        return $this->hasMany(LiveClass::class, 'course_id')->orderBy('start_time');
+    }
+
+    public function discussions()
+    {
+        return $this->hasMany(CourseDiscussion::class, 'course_id')->latest();
+    }
+
+    public function teachingPracticeSubmissions()
+    {
+        return $this->hasMany(TeachingPractice::class, 'course_id')->latest();
+    }
+
+    public function scores()
+    {
+        return $this->hasMany(CourseScore::class, 'course_id')->orderByDesc('total_score');
+    }
 }

@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
         ->name('training.checkout.apply-coupon');
     Route::post('/training/checkout/initialize', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'initialize'])
         ->name('training.checkout.initialize');
-});
+})->middleware('verified');
 Route::get('/training/checkout/callback', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'callback'])
     ->name('training.checkout.callback');
 Route::post('/payments/paystack/webhook', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'webhook'])
@@ -102,6 +102,22 @@ Route::get('/verify-certificate', [\App\Http\Controllers\Public\CertificateVerif
     ->name('certificate.verify');
 Route::post('/verify-certificate', [\App\Http\Controllers\Public\CertificateVerificationController::class, 'show'])
     ->name('certificate.verify.show');
+Route::get('/online-exam', [\App\Http\Controllers\Public\OnlineExamController::class, 'showCodeForm'])
+    ->name('public.exams.code');
+Route::post('/online-exam', [\App\Http\Controllers\Public\OnlineExamController::class, 'showByCode'])
+    ->name('public.exams.lookup');
+Route::get('/online-exam/{examCode}', [\App\Http\Controllers\Public\OnlineExamController::class, 'showExam'])
+    ->name('public.exams.take');
+Route::post('/online-exam/{examCode}/submit', [\App\Http\Controllers\Public\OnlineExamController::class, 'submit'])
+    ->name('public.exams.submit');
+Route::get('/online-exam/{examCode}/result/{attempt}', [\App\Http\Controllers\Public\OnlineExamController::class, 'result'])
+    ->name('public.exams.result');
+Route::get('/verify/{certificate_number}', [\App\Http\Controllers\CertificateController::class, 'verify'])
+    ->name('certificates.verify');
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    Route::post('/certificates/generate', [\App\Http\Controllers\CertificateController::class, 'generate'])
+        ->name('certificates.generate');
+});
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
@@ -123,18 +139,21 @@ Route::get('/dashboard', function () {
     }
 
     abort(403);
-})->middleware('auth');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::redirect('/schools/register', '/register-school')->name('schools.register.legacy');
 Route::post('/enroll', [SchoolRequestController::class, 'store'])->name('school.enroll');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{notificationId}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
-Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(function () {
+Route::middleware(['auth', 'verified', 'instructor'])->prefix('instructor')->name('instructor.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -170,6 +189,12 @@ Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(fu
     Route::post('/training/{enrollment}/capstone', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitCapstone'])
         ->middleware('training.paid')
         ->name('training.capstone.submit');
+    Route::post('/training/{enrollment}/discussions', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'postDiscussion'])
+        ->middleware('training.paid')
+        ->name('training.discussions.store');
+    Route::post('/training/{enrollment}/teaching-practice', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitTeachingPractice'])
+        ->middleware('training.paid')
+        ->name('training.teaching-practice.store');
 
     Route::get('/lesson-plans', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'index'])
         ->name('lesson-plans.index');
@@ -203,9 +228,26 @@ Route::middleware(['auth'])->prefix('instructor')->name('instructor.')->group(fu
 
     Route::get('/scheme-of-work', [\App\Http\Controllers\Instructor\SchemeOfWorkController::class, 'index'])
         ->name('scheme.index');
+
+    Route::get('/exam-assignments', [\App\Http\Controllers\Instructor\ExamAssignmentController::class, 'index'])
+        ->name('exams.assignments.index');
+    Route::get('/exam-assignments/{assignment}/grade', [\App\Http\Controllers\Instructor\ExamAssignmentController::class, 'grade'])
+        ->name('exams.assignments.grade');
+    Route::post('/exam-assignments/{assignment}/grade', [\App\Http\Controllers\Instructor\ExamAssignmentController::class, 'storeGrades'])
+        ->name('exams.assignments.grade.store');
+    Route::get('/results', [\App\Http\Controllers\Instructor\StudentResultController::class, 'index'])
+        ->name('results.index');
+    Route::get('/results/create', [\App\Http\Controllers\Instructor\StudentResultController::class, 'create'])
+        ->name('results.create');
+    Route::post('/results', [\App\Http\Controllers\Instructor\StudentResultController::class, 'store'])
+        ->name('results.store');
+    Route::get('/results/{result}/edit', [\App\Http\Controllers\Instructor\StudentResultController::class, 'edit'])
+        ->name('results.edit');
+    Route::patch('/results/{result}', [\App\Http\Controllers\Instructor\StudentResultController::class, 'update'])
+        ->name('results.update');
 });
 
-Route::middleware(['auth', 'classteacher'])->prefix('class-teacher')->name('class-teacher.')->group(function () {
+Route::middleware(['auth', 'verified', 'classteacher'])->prefix('class-teacher')->name('class-teacher.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\ClassTeacher\DashboardController::class, 'index'])
         ->name('dashboard');
     Route::get('/timetable', [\App\Http\Controllers\ClassTeacher\TimetableController::class, 'index'])
@@ -216,7 +258,7 @@ Route::middleware(['auth', 'classteacher'])->prefix('class-teacher')->name('clas
         ->name('feedback.store');
 });
 
-Route::middleware(['auth', 'superadmin'])
+Route::middleware(['auth', 'verified', 'superadmin'])
     ->prefix('admin')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -279,6 +321,12 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.training.submissions.review');
         Route::patch('/training/capstone/{capstoneReview}/review', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'reviewCapstone'])
             ->name('admin.training.capstone.review');
+        Route::post('/training/courses/{course}/live-classes', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'storeLiveClass'])
+            ->name('admin.training.live-classes.store');
+        Route::delete('/training/live-classes/{liveClass}', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'destroyLiveClass'])
+            ->name('admin.training.live-classes.destroy');
+        Route::patch('/training/teaching-practice/{practice}/review', [\App\Http\Controllers\Admin\TrainingCurriculumController::class, 'reviewTeachingPractice'])
+            ->name('admin.training.teaching-practice.review');
         Route::post('/training/cohorts', [\App\Http\Controllers\Admin\TrainingController::class, 'storeCohort'])
             ->name('admin.training.cohorts.store');
         Route::get('/training/cohorts/{cohort}', [\App\Http\Controllers\Admin\TrainingController::class, 'showCohort'])
@@ -313,6 +361,8 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.store.products.store');
         Route::patch('/store/products/{product}', [\App\Http\Controllers\Admin\StoreProductController::class, 'update'])
             ->name('admin.store.products.update');
+        Route::patch('/store/products/{product}/featured', [\App\Http\Controllers\Admin\StoreProductController::class, 'toggleFeatured'])
+            ->name('admin.store.products.featured');
         Route::get('/store/products/{product}/images', [\App\Http\Controllers\Admin\StoreProductController::class, 'images'])
             ->name('admin.store.products.images');
         Route::post('/store/products/{product}/images', [\App\Http\Controllers\Admin\StoreProductController::class, 'storeImage'])
@@ -426,6 +476,12 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.exams.templates.create');
         Route::post('/exam-templates', [ExamTemplateController::class, 'store'])
             ->name('admin.exams.templates.store');
+        Route::get('/exam-templates/{template}/edit', [ExamTemplateController::class, 'edit'])
+            ->name('admin.exams.templates.edit');
+        Route::patch('/exam-templates/{template}', [ExamTemplateController::class, 'update'])
+            ->name('admin.exams.templates.update');
+        Route::delete('/exam-templates/{template}', [ExamTemplateController::class, 'destroy'])
+            ->name('admin.exams.templates.destroy');
         Route::get('/exam-templates/{template}', [ExamTemplateController::class, 'show'])
             ->name('admin.exams.templates.show');
         Route::post('/exam-templates/{template}/questions', [ExamTemplateController::class, 'storeQuestion'])
@@ -436,6 +492,20 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.exams.templates.import');
         Route::get('/exam-templates-import-template', [ExamTemplateController::class, 'downloadImportTemplate'])
             ->name('admin.exams.templates.import.template');
+        Route::get('/exam-questions', [\App\Http\Controllers\Admin\ExamQuestionManagementController::class, 'index'])
+            ->name('admin.exams.questions.index');
+        Route::post('/exam-questions', [\App\Http\Controllers\Admin\ExamQuestionManagementController::class, 'store'])
+            ->name('admin.exams.questions.store');
+        Route::delete('/exam-questions/{question}', [\App\Http\Controllers\Admin\ExamQuestionManagementController::class, 'destroy'])
+            ->name('admin.exams.questions.destroy');
+        Route::get('/grading-configuration', [\App\Http\Controllers\Admin\GradingConfigurationController::class, 'index'])
+            ->name('admin.grading.configuration.index');
+        Route::patch('/grading-configuration/components', [\App\Http\Controllers\Admin\GradingConfigurationController::class, 'updateComponents'])
+            ->name('admin.grading.configuration.components.update');
+        Route::delete('/grading-configuration/components/reset-school', [\App\Http\Controllers\Admin\GradingConfigurationController::class, 'resetSchoolComponents'])
+            ->name('admin.grading.configuration.components.reset-school');
+        Route::patch('/grading-configuration/scales', [\App\Http\Controllers\Admin\GradingConfigurationController::class, 'updateScales'])
+            ->name('admin.grading.configuration.scales.update');
 
         Route::get('/exam-attempts', [ExamTemplateController::class, 'attemptsIndex'])
             ->name('admin.exams.attempts.index');
@@ -463,13 +533,13 @@ Route::middleware(['auth', 'superadmin'])
             ->name('admin.timetables.request-changes');
     });
 
-Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'superadmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/enrollments', [SchoolRequestAdminController::class, 'index'])->name('enrollments.index');
     Route::get('/enrollments/{schoolRequest}', [SchoolRequestAdminController::class, 'show'])->name('enrollments.show');
     Route::post('/enrollments/{schoolRequest}/approve', [SchoolRequestAdminController::class, 'approve'])->name('enrollments.approve');
 });
 
-Route::middleware(['auth', 'schooladmin'])->prefix('school')->name('school.')->group(function () {
+Route::middleware(['auth', 'verified', 'schooladmin'])->prefix('school')->name('school.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\School\DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -560,14 +630,10 @@ Route::middleware(['auth', 'schooladmin'])->prefix('school')->name('school.')->g
 
     Route::get('/exams', [\App\Http\Controllers\School\ExamController::class, 'index'])
         ->name('exams.index');
-    Route::get('/exams/create', [\App\Http\Controllers\School\ExamController::class, 'create'])
-        ->name('exams.create');
-    Route::post('/exams', [\App\Http\Controllers\School\ExamController::class, 'store'])
-        ->name('exams.store');
     Route::get('/exams/{exam}', [\App\Http\Controllers\School\ExamController::class, 'show'])
         ->name('exams.show');
-    Route::post('/exams/{exam}/results', [\App\Http\Controllers\School\ExamController::class, 'storeResults'])
-        ->name('exams.results.store');
+    Route::delete('/exams/{exam}', [\App\Http\Controllers\School\ExamController::class, 'destroy'])
+        ->name('exams.destroy');
 
     Route::get('/exam-assignments', [ExamAssignmentController::class, 'index'])
         ->name('exams.assignments.index');
@@ -575,14 +641,26 @@ Route::middleware(['auth', 'schooladmin'])->prefix('school')->name('school.')->g
         ->name('exams.assignments.create');
     Route::post('/exam-assignments', [ExamAssignmentController::class, 'store'])
         ->name('exams.assignments.store');
-    Route::get('/exam-assignments/{assignment}/take', [ExamAssignmentController::class, 'take'])
-        ->name('exams.assignments.take');
-    Route::get('/exam-assignments/{assignment}/results', [ExamAssignmentController::class, 'results'])
-        ->name('exams.assignments.results');
+    Route::delete('/exam-assignments/bulk-delete', [ExamAssignmentController::class, 'bulkDestroy'])
+        ->name('exams.assignments.bulk-destroy');
     Route::get('/exam-assignments/{assignment}/print', [ExamAssignmentController::class, 'print'])
         ->name('exams.assignments.print');
-    Route::post('/exam-assignments/{assignment}/submit', [ExamAssignmentController::class, 'submit'])
-        ->name('exams.assignments.submit');
+    Route::get('/exam-assignments/{assignment}/results', [ExamAssignmentController::class, 'results'])
+        ->name('exams.assignments.results');
+    Route::patch('/exam-assignments/{assignment}/status', [ExamAssignmentController::class, 'updateStatus'])
+        ->name('exams.assignments.status');
+    Route::delete('/exam-assignments/{assignment}', [ExamAssignmentController::class, 'destroy'])
+        ->name('exams.assignments.destroy');
+    Route::get('/results', [\App\Http\Controllers\School\StudentResultController::class, 'index'])
+        ->name('results.index');
+    Route::get('/results-export', [\App\Http\Controllers\School\StudentResultController::class, 'export'])
+        ->name('results.export');
+    Route::get('/results-summary-pdf', [\App\Http\Controllers\School\StudentResultController::class, 'summaryPdf'])
+        ->name('results.summary-pdf');
+    Route::get('/results/{result}', [\App\Http\Controllers\School\StudentResultController::class, 'show'])
+        ->name('results.show');
+    Route::get('/results/{result}/print', [\App\Http\Controllers\School\StudentResultController::class, 'print'])
+        ->name('results.print');
 });
 
 require __DIR__.'/auth.php';

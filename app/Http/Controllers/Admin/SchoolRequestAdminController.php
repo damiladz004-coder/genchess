@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CommunityHomeRequestApproved;
 use App\Mail\SchoolEnrollmentApproved;
 use App\Models\School;
 use App\Models\SchoolRequest;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Services\ClassGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -43,10 +45,40 @@ class SchoolRequestAdminController extends Controller
             return redirect()->back()->with('info', 'This enrollment request is already approved.');
         }
 
+        $programType = strtolower((string) $schoolRequest->program_type);
+        if (in_array($programType, ['community', 'home'], true)) {
+            $schoolRequest->update([
+                'status' => 'approved',
+                'school_id' => null,
+            ]);
+
+            $warning = null;
+            try {
+                Mail::to($schoolRequest->email)->send(new CommunityHomeRequestApproved($schoolRequest));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send community/home approval email.', [
+                    'school_request_id' => $schoolRequest->id,
+                    'email' => $schoolRequest->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $warning = 'Request approved, but follow-up email could not be sent.';
+            }
+
+            $redirect = redirect()->route('admin.enrollments.index')
+                ->with('success', 'Request approved. Management will contact applicant for appointment and onboarding.');
+
+            if ($warning) {
+                $redirect->with('warning', $warning);
+            }
+
+            return $redirect;
+        }
+
         $password = null;
+        $schoolAdminUser = null;
 
         try {
-            DB::transaction(function () use ($schoolRequest, &$password) {
+            DB::transaction(function () use ($schoolRequest, &$password, &$schoolAdminUser) {
                 $school = School::where('email', $schoolRequest->email)->first();
 
                 if (!$school) {
@@ -77,12 +109,15 @@ class SchoolRequestAdminController extends Controller
                         'password' => Hash::make($password),
                         'role' => 'school_admin',
                         'school_id' => $school->id,
+                        'must_change_password' => true,
                     ]);
                 } else {
                     $user->update([
                         'school_id' => $school->id,
                     ]);
                 }
+
+                $schoolAdminUser = $user;
 
                 ClassGenerator::generateForSchool($school);
 
@@ -95,10 +130,40 @@ class SchoolRequestAdminController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        Mail::to($schoolRequest->email)
-            ->send(new SchoolEnrollmentApproved($schoolRequest, $password));
+        $warningMessages = [];
+        try {
+            Mail::to($schoolRequest->email)
+                ->send(new SchoolEnrollmentApproved($schoolRequest, $password));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send school enrollment approval email.', [
+                'school_request_id' => $schoolRequest->id,
+                'email' => $schoolRequest->email,
+                'error' => $e->getMessage(),
+            ]);
+            $warningMessages[] = 'Enrollment was approved, but approval email could not be sent.';
+        }
 
-        return redirect()->route('admin.enrollments.index')
+        if ($schoolAdminUser && !$schoolAdminUser->hasVerifiedEmail()) {
+            try {
+                $schoolAdminUser->sendEmailVerificationNotification();
+            } catch (\Throwable $e) {
+                Log::error('Failed to send school admin verification email.', [
+                    'school_request_id' => $schoolRequest->id,
+                    'user_id' => $schoolAdminUser->id,
+                    'email' => $schoolAdminUser->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $warningMessages[] = 'Approval completed, but verification email could not be sent.';
+            }
+        }
+
+        $redirect = redirect()->route('admin.enrollments.index')
             ->with('success', 'Enrollment approved. School and School Admin created.');
+
+        if (!empty($warningMessages)) {
+            $redirect->with('warning', implode(' ', $warningMessages));
+        }
+
+        return $redirect;
     }
 }

@@ -7,10 +7,10 @@
     <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h1 class="text-4xl font-bold text-gray-900 mb-4">
-                About genchess.ng
+                About Genchess Educational Services
             </h1>
             <p class="text-lg text-gray-700">
-                At genchess.ng, we believe chess is more than a game.
+                At Genchess Educational Services, we believe chess is more than a game.
                 It is a powerful educational tool that unlocks critical thinking,
                 creativity, discipline, and confidence in young minds.
             </p>
@@ -19,7 +19,7 @@
         <!-- Image placeholder -->
         <img 
             src="{{ asset('images/hero/genchess-hero.jpg') }}" 
-            alt="genchess.ng chess training session"
+            alt="Genchess Educational Services chess training session"
             class="rounded-xl shadow-lg"
         >
     </div>
@@ -39,7 +39,7 @@
                 Who We Are
             </h2>
             <p class="text-gray-700 leading-relaxed">
-                genchess.ng is an educational chess organization focused on
+                Genchess Educational Services is an educational chess organization focused on
                 teaching chess in schools, homes, and communities.
                 We work closely with primary and secondary schools to integrate
                 chess as both a subject and a club activity.
@@ -134,7 +134,7 @@
         </h2>
         <p class="max-w-3xl mx-auto text-lg text-gray-300">
             Chess improves concentration, memory, logical reasoning, and emotional control.
-            At genchess.ng, we use chess to prepare children not just for competitions,
+            At Genchess Educational Services, we use chess to prepare children not just for competitions,
             but for real-life challenges.
         </p>
 
@@ -145,4 +145,5 @@
 </section>
 
 @endsection
+
 

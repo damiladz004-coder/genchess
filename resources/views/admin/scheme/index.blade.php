@@ -1,47 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Scheme of Work</h2>
-        <a href="{{ route('admin.scheme.create') }}" class="bg-emerald-700 text-white px-3 py-2 rounded">
-            New Item
-        </a>
+<div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    <div class="flex items-center justify-between gap-3">
+        <h2 class="text-3xl gc-heading">Scheme of Work</h2>
+        <a href="{{ route('admin.scheme.create') }}" class="gc-btn-primary">New Item</a>
     </div>
 
     @if(session('success'))
-        <div class="mb-4 text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded">
+        <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">
             {{ session('success') }}
         </div>
     @endif
 
     @if($items->isEmpty())
-        <p class="text-gray-600">No scheme items yet.</p>
+        <div class="gc-panel p-6 text-slate-600">No scheme items yet.</div>
     @else
-        <div class="overflow-x-auto bg-white border rounded">
-            <table class="min-w-full">
-                <thead class="bg-gray-50">
+        <div class="gc-panel overflow-x-auto">
+            <table class="gc-table min-w-full">
+                <thead>
                     <tr>
-                        <th class="text-left px-4 py-2 border-b">Class</th>
-                        <th class="text-left px-4 py-2 border-b">Term</th>
-                        <th class="text-left px-4 py-2 border-b">Week</th>
-                        <th class="text-left px-4 py-2 border-b">Topic</th>
-                        <th class="text-left px-4 py-2 border-b">Actions</th>
+                        <th>Class</th>
+                        <th>Term</th>
+                        <th>Week</th>
+                        <th>Topic</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($items as $item)
-                        <tr class="border-b">
-                            <td class="px-4 py-2">{{ $item->classroom->name ?? 'N/A' }}</td>
-                            <td class="px-4 py-2">{{ $item->term }}</td>
-                            <td class="px-4 py-2">{{ $item->week_number }}</td>
-                            <td class="px-4 py-2">{{ $item->topic }}</td>
-                            <td class="px-4 py-2">
-                                <a href="{{ route('admin.scheme.edit', $item) }}" class="text-blue-600 underline mr-3">Edit</a>
+                        <tr>
+                            <td>{{ $item->classroom->name ?? 'N/A' }}</td>
+                            <td>{{ $item->term }}</td>
+                            <td>{{ $item->week_number }}</td>
+                            <td>{{ $item->topic }}</td>
+                            <td>
+                                <a href="{{ route('admin.scheme.edit', $item) }}" class="text-brand-700 underline mr-3">Edit</a>
                                 <form method="POST" action="{{ route('admin.scheme.destroy', $item) }}" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 underline"
+                                    <button type="submit" class="text-rose-600 underline"
                                         onclick="return confirm('Delete this item?')">Delete</button>
                                 </form>
                             </td>

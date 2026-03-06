@@ -4,6 +4,22 @@
 <div class="container">
     <h2>Enrollment Details</h2>
 
+    @if(session('warning'))
+        <div class="bg-amber-100 text-amber-800 p-3 rounded mb-4">
+            {{ session('warning') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="bg-rose-100 text-rose-800 p-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if(session('info'))
+        <div class="bg-sky-100 text-sky-800 p-3 rounded mb-4">
+            {{ session('info') }}
+        </div>
+    @endif
+
     <p><strong>School Name:</strong> {{ $schoolRequest->school_name }}</p>
     <p><strong>Contact Person:</strong> {{ $schoolRequest->contact_person }}</p>
     <p><strong>Email:</strong> {{ $schoolRequest->email }}</p>
@@ -23,9 +39,13 @@
             @csrf
             <button type="submit">Approve Enrollment</button>
         </form>
+    @elseif($schoolRequest->status === 'approved' && $schoolRequest->school_id)
+        <a href="{{ route('admin.schools.index') }}" class="gc-btn-primary text-xs px-3 py-1.5">
+            Go to Schools
+        </a>
     @endif
 
     <br>
-    <a href="{{ route('admin.enrollments.index') }}">← Back</a>
+    <a href="{{ route('admin.enrollments.index') }}">&larr; Back</a>
 </div>
 @endsection

@@ -2,8 +2,10 @@
 
 namespace App\Actions;
 
+use App\Models\Certification;
 use App\Models\TrainingEnrollment;
 use App\Models\TrainingTopic;
+use Illuminate\Support\Str;
 
 class RefreshTrainingEnrollmentStatus
 {
@@ -42,5 +44,22 @@ class RefreshTrainingEnrollmentStatus
             'status' => $nextStatus,
             'completed_at' => $nextStatus === 'completed' ? now() : null,
         ])->save();
+
+        if ($enrollment->isEligibleForCertification() && !$enrollment->certification) {
+            Certification::create([
+                'enrollment_id' => $enrollment->id,
+                'certificate_code' => $this->generateUniqueCertificateCode(),
+                'issued_at' => now(),
+            ]);
+        }
+    }
+
+    protected function generateUniqueCertificateCode(): string
+    {
+        do {
+            $code = strtoupper(Str::random(10));
+        } while (Certification::where('certificate_code', $code)->exists());
+
+        return $code;
     }
 }

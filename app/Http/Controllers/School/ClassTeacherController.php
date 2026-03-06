@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
-use App\Models\ClassTeacher;
 use App\Mail\ClassTeacherInvite;
+use App\Models\ClassTeacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -48,44 +50,97 @@ class ClassTeacherController extends Controller
             return redirect()->back()->with('error', 'Selected class does not belong to your school.');
         }
 
-        $classTeacher = ClassTeacher::create([
-            'school_id' => $school->id,
-            'class_id' => $request->class_id,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'status' => $request->status,
-        ]);
+        $warningMessages = [];
+        $existingUser = null;
 
         if ($request->email) {
             $existingUser = User::where('email', $request->email)->first();
             if ($existingUser && $existingUser->role !== 'class_teacher') {
                 return redirect()->back()->with('error', 'A user with this email already exists with a different role.');
             }
+        }
 
-            $password = null;
-            $user = $existingUser;
-            if (!$user) {
-                $password = Str::random(10);
-                $user = User::create([
+        $classTeacher = null;
+        $user = null;
+        $password = null;
+
+        try {
+            DB::transaction(function () use ($request, $school, $existingUser, &$classTeacher, &$user, &$password): void {
+                $classTeacher = ClassTeacher::create([
+                    'school_id' => $school->id,
+                    'class_id' => $request->class_id,
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => Hash::make($password),
-                    'role' => 'class_teacher',
-                    'must_change_password' => true,
+                    'phone' => $request->phone,
+                    'status' => $request->status,
                 ]);
+
+                if (!$request->email) {
+                    return;
+                }
+
+                $user = $existingUser;
+                if (!$user) {
+                    $password = Str::random(10);
+                    $user = User::create([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($password),
+                        'role' => 'class_teacher',
+                        'must_change_password' => true,
+                    ]);
+                }
+
+                $classTeacher->update(['user_id' => $user->id]);
+            });
+        } catch (\Throwable $e) {
+            Log::error('Failed to create class teacher.', [
+                'school_id' => $school->id,
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->withInput()->with('error', 'Unable to create class teacher right now. Please try again.');
+        }
+
+        if ($request->email && $user) {
+            if ($password) {
+                try {
+                    Mail::to($request->email)->send(new ClassTeacherInvite($classTeacher, $password));
+                } catch (\Throwable $e) {
+                    Log::error('Failed to send class teacher invite email.', [
+                        'class_teacher_id' => $classTeacher->id,
+                        'user_id' => $user->id,
+                        'email' => $request->email,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $warningMessages[] = 'Class teacher created, but invite email could not be sent.';
+                }
             }
 
-        if ($classTeacher) {
-            $classTeacher->update(['user_id' => $user->id]);
-            if ($password) {
-                Mail::to($request->email)->send(new ClassTeacherInvite($classTeacher, $password));
+            if (!$user->hasVerifiedEmail()) {
+                try {
+                    $user->sendEmailVerificationNotification();
+                } catch (\Throwable $e) {
+                    Log::error('Failed to send class teacher verification email.', [
+                        'class_teacher_id' => $classTeacher->id,
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $warningMessages[] = 'Class teacher created, but verification email could not be sent.';
+                }
             }
         }
-    }
 
-        return redirect()->route('school.class-teachers.index')
+        $redirect = redirect()->route('school.class-teachers.index')
             ->with('success', 'Class teacher added successfully.');
+
+        if (!empty($warningMessages)) {
+            $redirect->with('warning', implode(' ', $warningMessages));
+        }
+
+        return $redirect;
     }
 
     public function edit(ClassTeacher $classTeacher)
@@ -167,3 +222,4 @@ class ClassTeacherController extends Controller
             ->with('success', 'Class teacher status updated.');
     }
 }
+

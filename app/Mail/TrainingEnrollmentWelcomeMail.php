@@ -21,8 +21,7 @@ class TrainingEnrollmentWelcomeMail extends Mailable
     public function build(): self
     {
         return $this
-            ->subject('Welcome to Genchess Instructor Training')
+            ->subject('Welcome to Genchess Certified Chess Instructor Program (GCCIP)')
             ->view('emails.training-enrollment-welcome');
     }
 }
-

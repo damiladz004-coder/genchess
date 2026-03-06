@@ -1,50 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Enrollment Approved</title>
-</head>
-<body style="font-family: Arial, sans-serif; background:#f9f9f9; padding:20px;">
-    <div style="background:#ffffff; padding:20px; max-width:600px; margin:auto; border-radius:6px;">
-        <h2>🎉 Enrollment Approved</h2>
+<h2>Genchess Enrollment Approved</h2>
 
-        <p>Dear {{ $schoolRequest->contact_person }},</p>
+<p>Hello {{ $schoolRequest->contact_person }},</p>
 
-        <p>
-            We’re excited to inform you that your school,
-            <strong>{{ $schoolRequest->school_name }}</strong>,
-            has been successfully approved to join
-            <strong>genchess.ng</strong>.
-        </p>
+<p>
+    Your enrollment request for <strong>{{ $schoolRequest->school_name }}</strong> has been approved.
+</p>
 
-        @if(!empty($tempPassword))
-            <p>
-                Your school admin account has been created. Use the credentials below to log in:
-            </p>
-            <p>
-                <strong>Email:</strong> {{ $schoolRequest->email }}<br>
-                <strong>Temporary Password:</strong> {{ $tempPassword }}
-            </p>
-            <p>
-                Please log in and change your password as soon as possible.
-            </p>
-        @else
-            <p>
-                Our team will contact you shortly with the next steps,
-                including onboarding, class setup, and instructor assignment.
-            </p>
-        @endif
+@if($tempPassword)
+    <p>
+        A school admin account has been created for you:
+    </p>
+    <ul>
+        <li>Email: {{ $schoolRequest->email }}</li>
+        <li>Temporary Password: {{ $tempPassword }}</li>
+    </ul>
+    <p>
+        Next steps:
+    </p>
+    <ol>
+        <li>Check your inbox for the email verification message from Genchess and verify your email address.</li>
+        <li>Login at <a href="{{ url('/login') }}">{{ url('/login') }}</a>.</li>
+        <li>You will be required to change this temporary password immediately.</li>
+    </ol>
+@else
+    <p>
+        Your existing school admin account has been linked to your school profile.
+    </p>
+    <p>
+        If your email is not yet verified, please use the verification email sent by Genchess before accessing your dashboard.
+    </p>
+@endif
 
-        <p>
-            If you have any questions, feel free to reply to this email.
-        </p>
-
-        <p style="margin-top:30px;">
-            Warm regards,<br>
-            <strong>genchess.ng</strong><br>
-            <em>Unlocking the Genius Within ♟️</em>
-        </p>
-    </div>
-</body>
-</html>
+<p>Regards,<br>Genchess Educational Services</p>
 

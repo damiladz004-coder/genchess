@@ -14,6 +14,7 @@ class TrainingTopic extends Model
         'level',
         'objectives',
         'video_structure',
+        'lesson_video_url',
         'lesson_notes',
         'quiz_focus',
         'assessment',

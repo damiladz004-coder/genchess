@@ -28,21 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        if ($user->role === 'super_admin') {
-            return redirect()->route('admin.dashboard');
-        }
-
-        if ($user->role === 'instructor') {
-            return redirect()->route('instructor.dashboard');
-        }
-
-        if ($user->role === 'school_admin') {
-            return redirect()->route('school.dashboard');
-        }
-
-        return redirect()->intended(route('admin.enrollments.index'));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
@@ -50,7 +36,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
 

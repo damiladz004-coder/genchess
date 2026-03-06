@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SchoolAdminInvite;
 use App\Models\School;
 use App\Models\User;
 use App\Services\ClassGenerator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -95,16 +98,48 @@ class SchoolApprovalController extends Controller
             'password'  => Hash::make($password),
             'role'      => 'school_admin',
             'school_id' => $school->id,
+            'must_change_password' => true,
         ]);
 
         // 3️⃣ Auto-generate classes
         ClassGenerator::generateForSchool($school);
 
-        // (Email sending comes later)
+        $warningMessages = [];
+        try {
+            Mail::to($user->email)->send(new SchoolAdminInvite($school, $password));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send school admin invite email.', [
+                'school_id' => $school->id,
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+            $warningMessages[] = 'School approved, but invite email could not be sent.';
+        }
 
-        return redirect()
+        if (!$user->hasVerifiedEmail()) {
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (\Throwable $e) {
+                Log::error('Failed to send school admin verification email.', [
+                    'school_id' => $school->id,
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $warningMessages[] = 'School approved, but verification email could not be sent.';
+            }
+        }
+
+        $redirect = redirect()
             ->back()
             ->with('success', 'School approved and School Admin created.');
+
+        if (!empty($warningMessages)) {
+            $redirect->with('warning', implode(' ', $warningMessages));
+        }
+
+        return $redirect;
     }
 
     public function updateStatus(Request $request, $id)

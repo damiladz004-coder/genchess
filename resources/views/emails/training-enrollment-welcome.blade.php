@@ -3,9 +3,9 @@
 @endphp
 <p>Hello {{ $payment->user->name }},</p>
 
-<p>Welcome to Genchess Instructor Training. Your payment has been confirmed.</p>
+<p>Welcome to the Genchess Certified Chess Instructor Program (GCCIP). Your payment has been confirmed.</p>
 
-<p><strong>Course:</strong> {{ $payment->course->title }}</p>
+<p><strong>Course:</strong> Genchess Certified Chess Instructor Program (GCCIP)</p>
 <p><strong>Invoice:</strong> {{ $invoice->invoice_number }}</p>
 <p><strong>Amount Paid:</strong> NGN {{ $amount }}</p>
 
@@ -16,4 +16,3 @@
 
 <p>Thank you,</p>
 <p>Genchess Team</p>
-

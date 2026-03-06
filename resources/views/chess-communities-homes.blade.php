@@ -10,7 +10,7 @@
                 Chess in Communities & Homes
             </h1>
             <p class="text-lg text-gray-700">
-                genchess.ng brings structured chess education directly
+                Genchess Educational Services brings structured chess education directly
                 to communities and homes, making learning accessible,
                 engaging, and impactful beyond the classroom.
             </p>
@@ -222,7 +222,7 @@
             </div>
 
             <div id="parent_section" class="border rounded-lg p-5 bg-white hidden">
-                <h3 class="text-xl font-semibold mb-4">Section 4: For Parents (Home Lessons Only)</h3>
+                <h3 class="text-xl font-semibold mb-4">Section 4: For Parents / Guardians (Home Lessons Only)</h3>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-medium mb-1">Number of Children</label>
@@ -263,7 +263,8 @@
             </div>
 
             <div id="org_section" class="border rounded-lg p-5 bg-white hidden">
-                <h3 class="text-xl font-semibold mb-4">Section 5: For Organizations / Communities</h3>
+                <h3 id="org_section_title" class="text-xl font-semibold mb-1">Section 5: For Organizations / Communities</h3>
+                <p id="org_section_description" class="text-sm text-gray-600 mb-4">Fill this section if you selected a non-parent applicant type.</p>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label class="block font-medium mb-1">Name of Organization / Estate / Church</label>
@@ -283,9 +284,9 @@
 
                 <p class="text-sm text-gray-600 mt-4 mb-3">Age Group:</p>
                 <div class="grid md:grid-cols-2 gap-3 mb-4">
-                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="nursery" @checked(old('age_group') === 'nursery')> Nursery</label>
-                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="primary" @checked(old('age_group') === 'primary')> Primary</label>
-                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="secondary" @checked(old('age_group') === 'secondary')> Secondary</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="children" @checked(old('age_group') === 'children')> Children</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="teenagers" @checked(old('age_group') === 'teenagers')> Teenagers</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="age_group" value="adults" @checked(old('age_group') === 'adults')> Adults</label>
                     <label class="flex items-center gap-2"><input type="radio" name="age_group" value="mixed" @checked(old('age_group') === 'mixed')> Mixed</label>
                 </div>
 
@@ -337,7 +338,7 @@
                 <h3 class="text-xl font-semibold mb-4">Section 8: Agreement</h3>
                 <label class="flex items-start gap-2">
                     <input type="checkbox" name="consent" value="1" required class="mt-1">
-                    <span>I agree to be contacted by genchess.ng regarding this program.</span>
+                    <span>I agree to be contacted by Genchess Educational Services regarding this program.</span>
                 </label>
             </div>
 
@@ -356,6 +357,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const parentSection = document.getElementById('parent_section');
     const orgSection = document.getElementById('org_section');
+    const orgSectionTitle = document.getElementById('org_section_title');
+    const orgSectionDescription = document.getElementById('org_section_description');
     const physicalLocationWrap = document.getElementById('physical_location_wrap');
     const consultationDetails = document.getElementById('consultation_details');
 
@@ -379,6 +382,20 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    const parentFields = Array.from(parentSection.querySelectorAll('input, select, textarea'));
+    const orgFields = Array.from(orgSection.querySelectorAll('input, select, textarea'));
+    const consultationFields = Array.from(consultationDetails.querySelectorAll('input, select, textarea'));
+    const physicalLocationFields = Array.from(physicalLocationWrap.querySelectorAll('input, select, textarea'));
+
+    function setFieldState(fields, enabled) {
+        fields.forEach((field) => {
+            field.disabled = !enabled;
+            if (!enabled) {
+                field.required = false;
+            }
+        });
+    }
+
     function selectedValue(name) {
         const checked = document.querySelector('input[name="' + name + '"]:checked');
         return checked ? checked.value : '';
@@ -387,19 +404,56 @@ document.addEventListener('DOMContentLoaded', function () {
     function toggleApplicantSections() {
         const applicantType = selectedValue('applicant_type');
         const isParent = applicantType === 'parent_home';
+
         parentSection.classList.toggle('hidden', !isParent);
         orgSection.classList.toggle('hidden', isParent);
+
+        setFieldState(parentFields, isParent);
+        setFieldState(orgFields, !isParent);
+
+        const childrenCountField = document.getElementById('children_count');
+        const organizationNameField = document.getElementById('organization_name');
+        const participantsEstimateField = document.getElementById('participants_estimate');
+
+        if (childrenCountField) {
+            childrenCountField.required = isParent;
+        }
+        if (organizationNameField) {
+            organizationNameField.required = !isParent;
+        }
+        if (participantsEstimateField) {
+            participantsEstimateField.required = !isParent;
+        }
+
+        const orgLabels = {
+            community_estate: ['Section 5: For Communities / Estates', 'Tell us about your estate or community setup.'],
+            church: ['Section 5: For Churches / Religious Organizations', 'Tell us about your church or faith-based learning plan.'],
+            ngo: ['Section 5: For NGOs', 'Tell us about your NGO program and the target participants.'],
+            youth_org: ['Section 5: For Youth Organizations', 'Tell us about your youth development program.'],
+            school_non_formal: ['Section 5: For Schools (Non-formal Program)', 'Tell us about the non-formal chess setup for your learners.'],
+        };
+
+        if (!isParent && orgSectionTitle && orgSectionDescription) {
+            const [title, description] = orgLabels[applicantType] || ['Section 5: For Organizations / Communities', 'Fill this section if you selected a non-parent applicant type.'];
+            orgSectionTitle.textContent = title;
+            orgSectionDescription.textContent = description;
+        }
     }
 
     function togglePhysicalLocation() {
         const sessionType = selectedValue('session_type');
         const show = sessionType === 'offline' || sessionType === 'hybrid';
         physicalLocationWrap.classList.toggle('hidden', !show);
+        setFieldState(physicalLocationFields, show);
+        physicalLocationFields.forEach((field) => field.required = show);
     }
 
     function toggleConsultationDetails() {
         const needed = selectedValue('consultation_needed');
-        consultationDetails.classList.toggle('hidden', needed !== 'yes');
+        const show = needed === 'yes';
+        consultationDetails.classList.toggle('hidden', !show);
+        setFieldState(consultationFields, show);
+        consultationFields.forEach((field) => field.required = show);
     }
 
     function syncCompatibilityFields() {
@@ -443,4 +497,5 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 @endsection
+
 

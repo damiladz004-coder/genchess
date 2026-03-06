@@ -1,17 +1,60 @@
 @extends('layouts.public')
 
 @section('content')
+@php
+    $defaultImage = $product->image_placeholder ?: '/images/products/placeholder-board.jpg';
+    $galleryImages = $product->images->pluck('image_path')->filter()->values();
+
+    if ($galleryImages->isEmpty()) {
+        $galleryImages = collect([$defaultImage]);
+    } elseif ($product->image_placeholder && !$galleryImages->contains($product->image_placeholder)) {
+        $galleryImages->prepend($product->image_placeholder);
+    }
+
+    $initialIndex = $galleryImages->search($product->image_placeholder ?: $defaultImage);
+    $initialIndex = $initialIndex === false ? 0 : $initialIndex;
+@endphp
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid gap-8 lg:grid-cols-2">
-        <div>
-            <img src="{{ $product->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $product->name }}" class="w-full h-96 object-cover rounded-xl border">
-            @if($product->images->isNotEmpty())
-                <div class="grid grid-cols-4 gap-2 mt-3">
-                    @foreach($product->images->take(4) as $image)
-                        <img src="{{ $image->image_path }}" alt="{{ $product->name }}" class="h-20 w-full object-cover rounded border">
-                    @endforeach
+        <div
+            x-data="{
+                images: @js($galleryImages->values()),
+                activeIndex: {{ $initialIndex }},
+                prev() {
+                    this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length;
+                },
+                next() {
+                    this.activeIndex = (this.activeIndex + 1) % this.images.length;
+                },
+                go(index) {
+                    this.activeIndex = index;
+                }
+            }"
+            x-on:keydown.left.prevent="prev()"
+            x-on:keydown.right.prevent="next()"
+            tabindex="0"
+            class="outline-none"
+        >
+            <img :src="images[activeIndex]" alt="{{ $product->name }}" class="w-full h-96 object-cover rounded-xl border">
+
+            <div class="flex items-center gap-2 mt-3">
+                <button type="button" class="gc-btn-secondary text-xs px-3 py-1.5" x-on:click="prev()" x-bind:disabled="images.length < 2">Prev</button>
+                <div class="flex-1 overflow-x-auto">
+                    <div class="flex gap-2 pb-1 min-w-max">
+                        <template x-for="(image, index) in images" :key="`${image}-${index}`">
+                            <button
+                                type="button"
+                                class="h-20 w-20 rounded border overflow-hidden shrink-0"
+                                x-bind:class="activeIndex === index ? 'ring-2 ring-slate-700 border-slate-700' : 'border-slate-200'"
+                                x-on:click="go(index)"
+                            >
+                                <img :src="image" alt="{{ $product->name }}" class="h-full w-full object-cover">
+                            </button>
+                        </template>
+                    </div>
                 </div>
-            @endif
+                <button type="button" class="gc-btn-secondary text-xs px-3 py-1.5" x-on:click="next()" x-bind:disabled="images.length < 2">Next</button>
+            </div>
         </div>
         <div>
             <h1 class="text-3xl gc-heading">{{ $product->name }}</h1>
@@ -81,4 +124,3 @@
     </div>
 </section>
 @endsection
-

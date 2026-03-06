@@ -7,6 +7,7 @@ use App\Mail\InstructorScreeningInvitation;
 use App\Models\InstructorScreening;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class InstructorScreeningController extends Controller
@@ -119,20 +120,35 @@ class InstructorScreeningController extends Controller
             'invitation_sent_at' => null,
         ]);
 
+        $mailWarning = null;
         if ($passed) {
-            Mail::to($screening->email)->send(new InstructorScreeningInvitation(
-                $screening->name,
-                $screening->interview_mode
-            ));
+            try {
+                Mail::to($screening->email)->send(new InstructorScreeningInvitation(
+                    $screening->name,
+                    $screening->interview_mode
+                ));
 
-            $screening->update(['invitation_sent_at' => now()]);
+                $screening->update(['invitation_sent_at' => now()]);
+            } catch (\Throwable $e) {
+                Log::error('Failed to send instructor screening invitation email.', [
+                    'screening_id' => $screening->id,
+                    'email' => $screening->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $mailWarning = 'You passed, but we could not send your invitation email right now.';
+            }
         }
 
         $request->session()->forget('instructor_screening');
 
         $request->session()->put('instructor_screening.result_id', $screening->id);
 
-        return redirect()->route('instructor.screening.result');
+        $redirect = redirect()->route('instructor.screening.result');
+        if ($mailWarning) {
+            $redirect->with('warning', $mailWarning);
+        }
+
+        return $redirect;
     }
 
     public function result(Request $request)

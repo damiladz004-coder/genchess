@@ -33,6 +33,8 @@ class StoreProductController extends Controller
             $slug = $base . '-' . $n++;
         }
 
+        $sku = $this->generateUniqueSku($data['name']);
+
         Product::create([
             'category_id' => $data['category_id'],
             'name' => $data['name'],
@@ -40,7 +42,7 @@ class StoreProductController extends Controller
             'description' => $data['description'] ?? null,
             'price_kobo' => (int) round(((float) $data['price']) * 100),
             'bulk_price_kobo' => isset($data['bulk_price']) ? (int) round(((float) $data['bulk_price']) * 100) : null,
-            'sku' => strtoupper(trim($data['sku'])),
+            'sku' => $sku,
             'stock_quantity' => (int) $data['stock_quantity'],
             'image_placeholder' => null,
             'product_type' => $data['product_type'],
@@ -51,7 +53,7 @@ class StoreProductController extends Controller
             'status' => $data['status'],
         ]);
 
-        return back()->with('success', 'Product created.');
+        return back()->with('success', "Product created. SKU: {$sku}");
     }
 
     public function update(Request $request, Product $product)
@@ -70,10 +72,10 @@ class StoreProductController extends Controller
             'stock_quantity' => (int) $data['stock_quantity'],
             'image_placeholder' => $product->image_placeholder,
             'product_type' => $data['product_type'],
-            'featured' => $request->boolean('featured'),
-            'allow_quote' => $request->boolean('allow_quote'),
-            'has_size_options' => $request->boolean('has_size_options'),
-            'has_color_options' => $request->boolean('has_color_options'),
+            'featured' => $request->has('featured') ? $request->boolean('featured') : $product->featured,
+            'allow_quote' => $request->has('allow_quote') ? $request->boolean('allow_quote') : $product->allow_quote,
+            'has_size_options' => $request->has('has_size_options') ? $request->boolean('has_size_options') : $product->has_size_options,
+            'has_color_options' => $request->has('has_color_options') ? $request->boolean('has_color_options') : $product->has_color_options,
             'status' => $data['status'],
         ]);
 
@@ -91,6 +93,15 @@ class StoreProductController extends Controller
         }
 
         return back()->with('success', 'Product updated.');
+    }
+
+    public function toggleFeatured(Product $product)
+    {
+        $product->update([
+            'featured' => !$product->featured,
+        ]);
+
+        return back()->with('success', $product->featured ? 'Product featured.' : 'Product unfeatured.');
     }
 
     public function images(Product $product)
@@ -178,10 +189,22 @@ class StoreProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'bulk_price' => 'nullable|numeric|min:0',
-            'sku' => ['required', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($productId)],
+            'sku' => [Rule::requiredIf($productId !== null), 'nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($productId)],
             'stock_quantity' => 'required|integer|min:0',
             'product_type' => 'required|in:standard,school_package',
             'status' => 'required|in:active,inactive',
         ]);
+    }
+
+    protected function generateUniqueSku(string $name): string
+    {
+        $prefix = strtoupper(Str::substr(preg_replace('/[^A-Za-z0-9]/', '', $name), 0, 3));
+        $prefix = str_pad($prefix ?: 'PRD', 3, 'X');
+
+        do {
+            $sku = sprintf('%s-%s', $prefix, strtoupper(Str::random(6)));
+        } while (Product::where('sku', $sku)->exists());
+
+        return $sku;
     }
 }

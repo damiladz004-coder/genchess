@@ -26,7 +26,7 @@
             <div class="brand">
                 <div class="logo">G</div>
                 <div>
-                    <div class="title">genchess.ng</div>
+                    <div class="title">Genchess Educational Services</div>
                     <div class="subtitle">Instructor Certification</div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <div>This certifies that</div>
             <div class="name">{{ $certification->enrollment->user->name ?? 'Instructor' }}</div>
             <div style="margin-top:12px;">has successfully completed the training program:</div>
-            <div class="course">{{ $certification->enrollment->cohort->course->title ?? 'Course' }}</div>
+            <div class="course">Genchess Certified Chess Instructor Program (GCCIP)</div>
             <div class="muted">Cohort: {{ $certification->enrollment->cohort->name ?? '-' }}</div>
         </div>
 
@@ -59,4 +59,5 @@
     </div>
 </body>
 </html>
+
 

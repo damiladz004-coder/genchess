@@ -15,6 +15,7 @@ class ExamTemplateController extends Controller
     public function index()
     {
         $templates = ExamTemplate::query()
+            ->with('classroom.school')
             ->withCount('questions')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -24,26 +25,68 @@ class ExamTemplateController extends Controller
 
     public function create()
     {
-        return view('admin.exams.templates.create');
+        $classes = $this->templateClasses();
+
+        return view('admin.exams.templates.create', compact('classes'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'class_id' => 'required|exists:classes,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'duration_minutes' => 'nullable|integer|min:5|max:240',
+            'result_comment' => 'nullable|string|max:255',
         ]);
 
-        ExamTemplate::create($request->only(['title', 'description', 'duration_minutes']));
+        ExamTemplate::create($request->only(['class_id', 'title', 'description', 'duration_minutes', 'result_comment']));
 
         return redirect()->route('admin.exams.templates.index')
             ->with('success', 'Exam template created.');
     }
 
+    public function edit(ExamTemplate $template)
+    {
+        $classes = $this->templateClasses();
+
+        return view('admin.exams.templates.edit', compact('template', 'classes'));
+    }
+
+    public function update(Request $request, ExamTemplate $template)
+    {
+        $request->validate([
+            'class_id' => 'required|exists:classes,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'duration_minutes' => 'nullable|integer|min:5|max:240',
+            'result_comment' => 'nullable|string|max:255',
+        ]);
+
+        $template->update($request->only(['class_id', 'title', 'description', 'duration_minutes', 'result_comment']));
+
+        return redirect()->route('admin.exams.templates.show', $template)
+            ->with('success', 'Exam template updated.');
+    }
+
+    public function destroy(ExamTemplate $template)
+    {
+        $assignmentCount = \App\Models\ExamAssignment::where('exam_template_id', $template->id)->count();
+
+        $template->delete();
+
+        $message = 'Exam template deleted.';
+        if ($assignmentCount > 0) {
+            $message .= " {$assignmentCount} linked assignment(s) were removed automatically.";
+        }
+
+        return redirect()->route('admin.exams.templates.index')
+            ->with('success', $message);
+    }
+
     public function show(ExamTemplate $template)
     {
-        $template->load(['questions.options']);
+        $template->load(['classroom.school', 'questions.options']);
 
         return view('admin.exams.templates.show', compact('template'));
     }
@@ -73,6 +116,8 @@ class ExamTemplateController extends Controller
         $question = ExamQuestion::create([
             'exam_template_id' => $template->id,
             'question_text' => $request->question_text,
+            'type' => 'multiple_choice',
+            'created_by' => auth()->id(),
             'question_image_path' => $imagePath,
             'marks' => $request->marks,
             'position' => $position,
@@ -235,6 +280,8 @@ class ExamTemplateController extends Controller
             $question = ExamQuestion::create([
                 'exam_template_id' => $template->id,
                 'question_text' => $questionText,
+                'type' => 'multiple_choice',
+                'created_by' => auth()->id(),
                 'marks' => $marks,
                 'position' => $position,
             ]);
@@ -309,5 +356,12 @@ class ExamTemplateController extends Controller
         $classes = \App\Models\Classroom::orderBy('name')->get(['id', 'name']);
 
         return view('admin.exams.attempts.index', compact('attempts', 'schools', 'classes'));
+    }
+
+    private function templateClasses()
+    {
+        return \App\Models\Classroom::with('school')
+            ->orderBy('name')
+            ->get(['id', 'name', 'school_id']);
     }
 }

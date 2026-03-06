@@ -1,46 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6 max-w-3xl">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Settings</h2>
-        <a href="{{ route('admin.dashboard') }}" class="text-blue-600 underline">Back to Dashboard</a>
+<div class="max-w-3xl space-y-6">
+    <div class="flex items-center justify-between gap-3">
+        <h2 class="text-3xl gc-heading">Settings</h2>
+        <a href="{{ route('admin.dashboard') }}" class="gc-btn-secondary">Back to Dashboard</a>
     </div>
 
     @if(session('success'))
-        <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
+        <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">
             {{ session('success') }}
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.settings.update') }}" class="bg-white border rounded p-4 space-y-4">
+    <form method="POST" action="{{ route('admin.settings.update') }}" class="gc-panel p-4 space-y-4">
         @csrf
         <div>
-            <label class="block text-sm font-medium mb-1">Organization Name</label>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Organization Name</label>
             <input type="text" name="organization_name"
                    value="{{ $settings['organization_name']->value ?? '' }}"
-                   class="w-full border rounded px-3 py-2">
+                   class="w-full">
         </div>
         <div>
-            <label class="block text-sm font-medium mb-1">Support Email</label>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Support Email</label>
             <input type="email" name="support_email"
                    value="{{ $settings['support_email']->value ?? '' }}"
-                   class="w-full border rounded px-3 py-2">
+                   class="w-full">
         </div>
         <div>
-            <label class="block text-sm font-medium mb-1">Support Phone</label>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Support Phone</label>
             <input type="text" name="support_phone"
                    value="{{ $settings['support_phone']->value ?? '' }}"
-                   class="w-full border rounded px-3 py-2">
+                   class="w-full">
         </div>
         <div>
-            <label class="block text-sm font-medium mb-1">Default Currency</label>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Default Currency</label>
             <input type="text" name="default_currency"
                    value="{{ $settings['default_currency']->value ?? '' }}"
-                   class="w-full border rounded px-3 py-2">
+                   class="w-full">
         </div>
 
-        <button type="submit" class="bg-gray-900 text-white px-4 py-2 rounded">Save Settings</button>
+        <button type="submit" class="gc-btn-primary">Save Settings</button>
     </form>
 </div>
 @endsection

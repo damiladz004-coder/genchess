@@ -11,6 +11,7 @@ class TrainingTopicAssignment extends Model
         'type',
         'title',
         'instructions',
+        'due_at',
         'required',
         'sort_order',
     ];
@@ -19,6 +20,7 @@ class TrainingTopicAssignment extends Model
     {
         return [
             'required' => 'boolean',
+            'due_at' => 'datetime',
         ];
     }
 

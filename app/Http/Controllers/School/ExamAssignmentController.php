@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ExamAssignment;
 use App\Models\ExamTemplate;
 use App\Models\ExamAttempt;
-use App\Models\ExamAttemptAnswer;
-use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ExamAssignmentController extends Controller
 {
@@ -28,7 +27,11 @@ class ExamAssignmentController extends Controller
     {
         $school = auth()->user()->school;
         $classes = $school->classes()->orderBy('name')->get();
-        $templates = ExamTemplate::orderBy('title')->get();
+        $classIds = $classes->pluck('id');
+        $templates = ExamTemplate::whereIn('class_id', $classIds)
+            ->with('classroom')
+            ->orderBy('title')
+            ->get();
         $terms = $this->terms();
         $sessions = $this->sessions();
 
@@ -44,11 +47,16 @@ class ExamAssignmentController extends Controller
             'session' => 'required|in:' . implode(',', $this->sessions()),
             'mode' => 'required|in:online,offline,manual',
             'exam_date' => 'nullable|date',
+            'status' => 'required|in:draft,active,closed',
         ]);
 
         $school = auth()->user()->school;
         if (!$school->classes()->where('id', $request->class_id)->exists()) {
             return redirect()->back()->with('error', 'Selected class does not belong to your school.');
+        }
+        $template = ExamTemplate::findOrFail($request->exam_template_id);
+        if ((int) $template->class_id !== (int) $request->class_id) {
+            return redirect()->back()->withInput()->with('error', 'Selected template does not match the selected class.');
         }
 
         ExamAssignment::create([
@@ -59,28 +67,13 @@ class ExamAssignmentController extends Controller
             'session' => $request->session,
             'mode' => $request->mode,
             'exam_date' => $request->exam_date,
-            'status' => 'active',
+            'status' => $request->status,
+            'exam_code' => $request->mode === 'online' ? $this->generateExamCode() : null,
+            'result_comment' => $template->result_comment,
         ]);
 
         return redirect()->route('school.exams.assignments.index')
             ->with('success', 'Exam assigned to class.');
-    }
-
-    public function take(ExamAssignment $assignment)
-    {
-        $this->authorizeAssignment($assignment);
-
-        if ($assignment->mode !== 'online') {
-            return redirect()->back()->with('error', 'This assignment is not set to online mode.');
-        }
-
-        $students = Student::where('class_id', $assignment->class_id)
-            ->orderBy('first_name')
-            ->get();
-
-        $assignment->load(['template.questions.options']);
-
-        return view('school.exams.assignments.take', compact('assignment', 'students'));
     }
 
     public function results(ExamAssignment $assignment)
@@ -121,75 +114,83 @@ class ExamAssignmentController extends Controller
         return view('school.exams.assignments.print', compact('assignment'));
     }
 
-    public function submit(Request $request, ExamAssignment $assignment)
+    public function updateStatus(Request $request, ExamAssignment $assignment)
     {
         $this->authorizeAssignment($assignment);
 
-        if ($assignment->mode !== 'online') {
-            return redirect()->back()->with('error', 'This assignment is not set to online mode.');
-        }
-
         $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'answers' => 'required|array',
+            'status' => 'required|in:draft,active,closed',
         ]);
 
-        $student = Student::where('id', $request->student_id)
-            ->where('school_id', auth()->user()->school_id)
-            ->where('class_id', $assignment->class_id)
-            ->first();
-
-        if (!$student) {
-            return redirect()->back()->with('error', 'Selected student is not in this class.');
-        }
-
-        $existingAttempt = ExamAttempt::where('exam_assignment_id', $assignment->id)
-            ->where('student_id', $student->id)
-            ->whereNotNull('submitted_at')
-            ->first();
-
-        if ($existingAttempt) {
-            return redirect()->back()->with('error', 'This student has already submitted this exam.');
-        }
-
-        $assignment->load(['template.questions.options']);
-
-        $totalMarks = 0;
-        $score = 0;
-
-        $attempt = ExamAttempt::create([
-            'exam_assignment_id' => $assignment->id,
-            'student_id' => $student->id,
-            'score' => 0,
-            'total_marks' => 0,
-            'submitted_at' => now(),
+        $assignment->update([
+            'status' => $request->status,
+            'exam_code' => $assignment->mode === 'online'
+                ? ($assignment->exam_code ?: $this->generateExamCode())
+                : null,
         ]);
 
-        foreach ($assignment->template->questions as $question) {
-            $totalMarks += $question->marks;
-            $selectedOptionId = $request->answers[$question->id] ?? null;
-            $selectedOption = $question->options->firstWhere('id', $selectedOptionId);
+        return redirect()->back()->with('success', 'Assignment status updated.');
+    }
 
-            $isCorrect = $selectedOption ? (bool) $selectedOption->is_correct : false;
-            $marksAwarded = $isCorrect ? $question->marks : 0;
-            $score += $marksAwarded;
+    public function destroy(ExamAssignment $assignment)
+    {
+        $this->authorizeAssignment($assignment);
 
-            ExamAttemptAnswer::create([
-                'exam_attempt_id' => $attempt->id,
-                'exam_question_id' => $question->id,
-                'exam_question_option_id' => $selectedOption?->id,
-                'is_correct' => $isCorrect,
-                'marks_awarded' => $marksAwarded,
-            ]);
+        $hasAttempts = ExamAttempt::where('exam_assignment_id', $assignment->id)->exists();
+        if ($hasAttempts) {
+            return redirect()->back()->with('error', 'Cannot delete assignment because students have submitted attempts.');
         }
 
-        $attempt->update([
-            'score' => $score,
-            'total_marks' => $totalMarks,
-        ]);
+        $assignment->delete();
 
         return redirect()->route('school.exams.assignments.index')
-            ->with('success', 'Exam submitted successfully.');
+            ->with('success', 'Exam assignment deleted.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'assignment_ids' => 'required|array|min:1',
+            'assignment_ids.*' => 'integer',
+        ]);
+
+        $schoolId = auth()->user()->school_id;
+        $assignmentIds = array_values(array_unique($request->assignment_ids));
+
+        $assignments = ExamAssignment::where('school_id', $schoolId)
+            ->whereIn('id', $assignmentIds)
+            ->get();
+
+        if ($assignments->isEmpty()) {
+            return redirect()->back()->with('error', 'No valid exam assignments selected.');
+        }
+
+        $blockedIds = ExamAttempt::whereIn('exam_assignment_id', $assignments->pluck('id'))
+            ->distinct()
+            ->pluck('exam_assignment_id')
+            ->all();
+
+        $deletable = $assignments->reject(function (ExamAssignment $assignment) use ($blockedIds) {
+            return in_array($assignment->id, $blockedIds, true);
+        });
+
+        $deletedCount = 0;
+        if ($deletable->isNotEmpty()) {
+            $deletedCount = ExamAssignment::where('school_id', $schoolId)
+                ->whereIn('id', $deletable->pluck('id'))
+                ->delete();
+        }
+
+        $blockedCount = count($blockedIds);
+        if ($deletedCount > 0 && $blockedCount > 0) {
+            return redirect()->back()->with('success', "Deleted {$deletedCount} assignments. Skipped {$blockedCount} with submitted attempts.");
+        }
+
+        if ($deletedCount > 0) {
+            return redirect()->back()->with('success', "Deleted {$deletedCount} assignments.");
+        }
+
+        return redirect()->back()->with('error', 'Selected assignments have submitted attempts and cannot be deleted.');
     }
 
     private function authorizeAssignment(ExamAssignment $assignment): void
@@ -215,5 +216,14 @@ class ExamAssignmentController extends Controller
         }
 
         return $sessions;
+    }
+
+    private function generateExamCode(): string
+    {
+        do {
+            $code = strtoupper(Str::random(8));
+        } while (ExamAssignment::where('exam_code', $code)->exists());
+
+        return $code;
     }
 }

@@ -48,7 +48,8 @@ class TrainingCheckoutController extends Controller
 
         return view('training.checkout', [
             'course' => $course,
-            'referralCode' => request('ref'),
+            'referralCode' => request('ref', session('training_referral_code')),
+            'couponCode' => request('coupon', session('training_coupon_code')),
             'myReferralCode' => $user->referral_code,
         ]);
     }

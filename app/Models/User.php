@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmailNotification;
 use App\Models\School;
 use App\Models\TrainingEnrollment;
 use App\Models\Cart;
@@ -15,7 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -94,6 +95,21 @@ class User extends Authenticatable
         return $this->hasMany(TrainingEnrollment::class, 'user_id');
     }
 
+    public function courseDiscussions()
+    {
+        return $this->hasMany(CourseDiscussion::class, 'user_id');
+    }
+
+    public function liveClassesCreated()
+    {
+        return $this->hasMany(LiveClass::class, 'created_by');
+    }
+
+    public function teachingPracticeSubmissions()
+    {
+        return $this->hasMany(TeachingPractice::class, 'user_id');
+    }
+
     public function trainingPayments()
     {
         return $this->hasMany(TrainingPayment::class, 'user_id');
@@ -170,6 +186,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification());
     }
 
     protected static function booted(): void

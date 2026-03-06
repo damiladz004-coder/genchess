@@ -55,31 +55,46 @@
                 $sections = ['A' => 'Chess Knowledge', 'B' => 'Lesson Planning', 'C' => 'Classroom Management', 'D' => 'Teaching Methods', 'E' => 'Instructional Materials'];
             @endphp
 
-            @foreach($sections as $sectionCode => $sectionTitle)
-                @php
-                    $sectionQuestions = collect($quiz)->where('section', $sectionCode)->values();
-                @endphp
-                @if($sectionQuestions->isNotEmpty())
-                    <div class="gc-panel p-4">
-                        <h2 class="text-xl font-semibold mb-3">{{ $sectionCode }}. {{ $sectionTitle }}</h2>
-                        <div class="space-y-4">
-                            @foreach($sectionQuestions as $question)
-                                <div>
-                                    <p class="font-medium mb-2">{{ $question['id'] }}. {{ $question['prompt'] }}</p>
-                                    <div class="space-y-2">
-                                        @foreach($question['options'] as $label => $text)
-                                            <label class="flex items-start gap-2">
-                                                <input type="radio" name="answers[{{ $question['id'] }}]" value="{{ $label }}" @checked(old('answers.' . $question['id']) === $label) required>
-                                                <span>{{ strtoupper($label) }}. {{ $text }}</span>
-                                            </label>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
+            @php
+                $flatQuestions = collect($quiz)->values();
+            @endphp
+            <div class="gc-panel p-4">
+                <div class="flex items-center justify-between gap-3 mb-4">
+                    <h2 class="text-xl font-semibold">Screening Questions</h2>
+                    <p class="text-sm text-slate-600">Question <span id="current-question-index">1</span> of {{ $flatQuestions->count() }}</p>
+                </div>
+
+                <div class="space-y-4">
+                    @foreach($flatQuestions as $index => $question)
+                        @php
+                            $sectionTitle = $sections[$question['section']] ?? 'General';
+                        @endphp
+                        <div
+                            class="question-card {{ $index === 0 ? '' : 'hidden' }}"
+                            data-question-card
+                            data-index="{{ $index }}"
+                        >
+                            <p class="text-xs font-semibold text-slate-500 mb-1">{{ $question['section'] }}. {{ $sectionTitle }}</p>
+                            <p class="font-medium mb-2">{{ $question['id'] }}. {{ $question['prompt'] }}</p>
+                            <div class="space-y-2">
+                                @foreach($question['options'] as $label => $text)
+                                    <label class="flex items-start gap-2">
+                                        <input
+                                            type="radio"
+                                            name="answers[{{ $question['id'] }}]"
+                                            value="{{ $label }}"
+                                            data-question-option="{{ $index }}"
+                                            @checked(old('answers.' . $question['id']) === $label)
+                                            required
+                                        >
+                                        <span>{{ strtoupper($label) }}. {{ $text }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                @endif
-            @endforeach
+                    @endforeach
+                </div>
+            </div>
 
             <button type="submit" class="gc-btn-primary">Submit Screening Test</button>
         </form>
@@ -91,12 +106,61 @@
         let remaining = {{ (int) $remainingSeconds }};
         const timeEl = document.getElementById('time-left');
         const form = document.getElementById('screening-form');
+        const questionCards = Array.from(document.querySelectorAll('[data-question-card]'));
+        const currentQuestionEl = document.getElementById('current-question-index');
 
         function format(seconds) {
             const m = String(Math.floor(seconds / 60)).padStart(2, '0');
             const s = String(seconds % 60).padStart(2, '0');
             return `${m}:${s}`;
         }
+
+        function findFirstUnansweredIndex() {
+            for (let i = 0; i < questionCards.length; i += 1) {
+                const radios = Array.from(questionCards[i].querySelectorAll('input[type="radio"]'));
+                const hasAnswer = radios.some((radio) => radio.checked);
+                if (!hasAnswer) {
+                    return i;
+                }
+            }
+
+            return Math.max(questionCards.length - 1, 0);
+        }
+
+        function setQuestionState(activeIndex) {
+            questionCards.forEach((card, idx) => {
+                const radios = Array.from(card.querySelectorAll('input[type="radio"]'));
+                const shouldShow = idx <= activeIndex;
+                const shouldEnable = idx <= activeIndex;
+
+                card.classList.toggle('hidden', !shouldShow);
+                radios.forEach((radio) => {
+                    radio.disabled = !shouldEnable;
+                });
+            });
+
+            if (currentQuestionEl) {
+                currentQuestionEl.textContent = String(Math.min(activeIndex + 1, questionCards.length));
+            }
+        }
+
+        let activeIndex = findFirstUnansweredIndex();
+        setQuestionState(activeIndex);
+
+        document.querySelectorAll('[data-question-option]').forEach((radio) => {
+            radio.addEventListener('change', function () {
+                const idx = Number(this.getAttribute('data-question-option'));
+                if (Number.isNaN(idx)) {
+                    return;
+                }
+
+                if (idx >= activeIndex) {
+                    activeIndex = Math.min(idx + 1, questionCards.length - 1);
+                }
+
+                setQuestionState(activeIndex);
+            });
+        });
 
         const timer = setInterval(() => {
             remaining -= 1;

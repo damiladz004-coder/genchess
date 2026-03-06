@@ -1,7 +1,7 @@
-<footer class="bg-purple-900 text-purple-100">
+<footer class="public-footer bg-purple-900 text-purple-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div>
-            <h3 class="text-2xl font-display mb-2 text-white">genchess.ng </h3>
+            <h3 class="text-2xl font-display mb-2 text-white">Genchess Educational Services </h3>
             <p class="text-sm text-purple-200">
                 Structured chess education for schools, homes, and communities.
             </p>
@@ -32,7 +32,6 @@
                 <li><a href="{{ route('instructor.training') }}" class="hover:text-white">Instructor Training</a></li>
                 <li><a href="{{ route('careers') }}" class="hover:text-white">Careers</a></li>
                 <li><a href="{{ route('register.school') }}" class="hover:text-white">Register Your School</a></li>
-                <li><a href="{{ route('training.preview') }}" class="hover:text-white">Instructor Training</a></li>
             </ul>
         </div>
 
@@ -47,7 +46,8 @@
         </div>
     </div>
     <div class="border-t border-purple-700 px-4 sm:px-6 py-4 text-center text-xs text-purple-300">
-        &copy; {{ date('Y') }} genchess.ng. All rights reserved.
+        &copy; {{ date('Y') }} Genchess Educational Services. All rights reserved.
     </div>
 </footer>
+
 
