@@ -48,7 +48,7 @@ Route::domain('training.genchess.ng')->group(function () {
     });
 });
 
-Route::domain('instructors.genchess.ng')->group(function () {
+Route::domain('instructor.genchess.ng')->group(function () {
     Route::get('/', function () {
         return "Instructor Dashboard";
     });
