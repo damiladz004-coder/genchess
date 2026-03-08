@@ -26,31 +26,31 @@ use Illuminate\Support\Facades\Auth;
 
 Route::domain('school.genchess.ng')->group(function () {
     Route::get('/', function () {
-        return "School Portal";
+        return view('school.dashboard');
     });
 });
 
 Route::domain('admin.genchess.ng')->group(function () {
     Route::get('/', function () {
-        return "Admin Portal";
+        return view('admin.dashboard');
     });
 });
 
 Route::domain('store.genchess.ng')->group(function () {
     Route::get('/', function () {
-        return "Chess Store";
+        return view('store.index');
     });
 });
 
 Route::domain('training.genchess.ng')->group(function () {
     Route::get('/', function () {
-        return "Instructor Training";
+        return view('training.index');
     });
 });
 
 Route::domain('instructor.genchess.ng')->group(function () {
     Route::get('/', function () {
-        return "Instructor Dashboard";
+        return view('instructor.dashboard');
     });
 });
 
