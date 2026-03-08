@@ -24,6 +24,36 @@ use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+Route::domain('school.genchess.ng')->group(function () {
+    Route::get('/', function () {
+        return view('school.dashboard');
+    });
+});
+
+Route::domain('admin.genchess.ng')->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    });
+});
+
+Route::domain('store.genchess.ng')->group(function () {
+    Route::get('/', function () {
+        return view('store.index');
+    });
+});
+
+Route::domain('training.genchess.ng')->group(function () {
+    Route::get('/', function () {
+        return view('training.index');
+    });
+});
+
+Route::domain('instructor.genchess.ng')->group(function () {
+    Route::get('/', function () {
+        return view('instructor.dashboard');
+    });
+});
+
 Route::get('/', [\App\Http\Controllers\Public\PageController::class, 'home'])->name('home');
 Route::get('/about', [\App\Http\Controllers\Public\PageController::class, 'about'])->name('about');
 Route::get('/contact', [\App\Http\Controllers\Public\PageController::class, 'contact'])->name('contact');
