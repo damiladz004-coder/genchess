@@ -9,6 +9,7 @@ require __DIR__.'/school.php';
 require __DIR__.'/instructor.php';
 require __DIR__.'/training.php';
 require __DIR__.'/store.php';
+require __DIR__.'/class-teacher.php';
 
 Route::get('/', [\App\Http\Controllers\Public\PageController::class, 'home'])->name('home');
 Route::get('/about', [\App\Http\Controllers\Public\PageController::class, 'about'])->name('about');
@@ -139,17 +140,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{notificationId}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
-});
-
-Route::middleware(['auth', 'verified', 'classteacher'])->prefix('class-teacher')->name('class-teacher.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\ClassTeacher\DashboardController::class, 'index'])
-        ->name('dashboard');
-    Route::get('/timetable', [\App\Http\Controllers\ClassTeacher\TimetableController::class, 'index'])
-        ->name('timetable.index');
-    Route::get('/feedback', [\App\Http\Controllers\ClassTeacher\FeedbackController::class, 'create'])
-        ->name('feedback.create');
-    Route::post('/feedback', [\App\Http\Controllers\ClassTeacher\FeedbackController::class, 'store'])
-        ->name('feedback.store');
 });
 
 require __DIR__.'/auth.php';
