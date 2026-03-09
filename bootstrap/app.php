@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'training.paid' => \App\Http\Middleware\EnsurePaidTrainingEnrollment::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn () => '/login');
+        $middleware->redirectGuestsTo(fn () => route('login'));
 
         $middleware->validateCsrfTokens(except: [
             'payments/paystack/webhook',
