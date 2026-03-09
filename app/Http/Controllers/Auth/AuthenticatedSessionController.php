@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended($this->defaultRedirectPath($request));
     }
 
     /**
@@ -43,5 +43,21 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    private function defaultRedirectPath(Request $request): string
+    {
+        $host = $request->getHost();
+
+        if (in_array($host, [
+            'admin.genchess.ng',
+            'school.genchess.ng',
+            'training.genchess.ng',
+            'instructor.genchess.ng',
+        ], true)) {
+            return '/dashboard';
+        }
+
+        return route('dashboard', absolute: false);
     }
 }

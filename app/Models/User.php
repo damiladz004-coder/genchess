@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
@@ -196,6 +197,17 @@ class User extends Authenticatable implements MustVerifyEmail
     protected static function booted(): void
     {
         static::creating(function (User $user): void {
+            if (!$user->username) {
+                $base = Str::of($user->email ?? $user->name ?? 'user')
+                    ->before('@')
+                    ->lower()
+                    ->replaceMatches('/[^a-z0-9_]/', '_')
+                    ->trim('_')
+                    ->value();
+
+                $user->username = static::generateUniqueUsername($base ?: 'user');
+            }
+
             if (!$user->referral_code) {
                 $user->referral_code = static::generateUniqueReferralCode();
             }
@@ -209,5 +221,18 @@ class User extends Authenticatable implements MustVerifyEmail
         } while (static::where('referral_code', $code)->exists());
 
         return $code;
+    }
+
+    public static function generateUniqueUsername(string $base): string
+    {
+        $candidate = $base;
+        $counter = 1;
+
+        while (static::where('username', $candidate)->exists()) {
+            $candidate = $base.$counter;
+            $counter++;
+        }
+
+        return $candidate;
     }
 }

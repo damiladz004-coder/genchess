@@ -7,6 +7,11 @@ use App\Models\Attendance;
 use App\Models\InstructorLessonPlan;
 class DashboardController extends Controller
 {
+    public function dashboard()
+    {
+        return $this->index();
+    }
+
     public function index()
     {
         $classes = auth()
