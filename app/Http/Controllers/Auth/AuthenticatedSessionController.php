@@ -28,7 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended($this->defaultRedirectPath($request));
+        $intended = $request->session()->pull('url.intended');
+        if (is_string($intended) && str_starts_with($intended, '/')) {
+            return redirect($intended);
+        }
+
+        return redirect($this->roleRedirectUrl($request));
     }
 
     /**
@@ -45,17 +50,30 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 
-    private function defaultRedirectPath(Request $request): string
+    private function roleRedirectUrl(Request $request): string
     {
-        $host = $request->getHost();
+        $user = $request->user();
+        $baseHost = parse_url(config('app.url'), PHP_URL_HOST) ?: 'genchess.ng';
+        $scheme = $request->getScheme();
 
-        if (in_array($host, [
-            'admin.genchess.ng',
-            'school.genchess.ng',
-            'training.genchess.ng',
-            'instructor.genchess.ng',
-        ], true)) {
-            return '/dashboard';
+        if (!$user) {
+            return route('dashboard', absolute: false);
+        }
+
+        if ($user->role === 'super_admin') {
+            return $scheme.'://admin.'.$baseHost.'/dashboard';
+        }
+
+        if ($user->role === 'school_admin') {
+            return $scheme.'://school.'.$baseHost.'/dashboard';
+        }
+
+        if ($user->role === 'instructor') {
+            return $scheme.'://instructor.'.$baseHost.'/dashboard';
+        }
+
+        if ($user->role === 'training_student') {
+            return $scheme.'://training.'.$baseHost.'/dashboard';
         }
 
         return route('dashboard', absolute: false);

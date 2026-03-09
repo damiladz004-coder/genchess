@@ -3,7 +3,7 @@
         <div>
             <h1 class="text-3xl gc-heading">Genchess Super Admin Dashboard</h1>
             <p class="mt-2 text-slate-600">
-            Welcome, {{ auth()->user()->name }}
+            Welcome, {{ auth()->user()->name ?? 'User' }}
             </p>
         </div>
 

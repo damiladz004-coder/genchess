@@ -24,36 +24,6 @@ use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::domain('{subdomain}.genchess.ng')->group(function () {
-
-    Route::get('/', function ($subdomain) {
-
-        if ($subdomain == 'admin') {
-            return view('admin.dashboard');
-        }
-
-        if ($subdomain == 'school') {
-            return view('school.dashboard');
-        }
-
-        if ($subdomain == 'training') {
-            return view('training.dashboard');
-        }
-
-        if ($subdomain == 'instructor') {
-            return view('instructor.dashboard');
-        }
-
-        if ($subdomain == 'store') {
-            return view('store.index');
-        }
-
-        abort(404);
-
-    });
-
-});
-
 Route::get('/', [\App\Http\Controllers\Public\PageController::class, 'home'])->name('home');
 Route::get('/about', [\App\Http\Controllers\Public\PageController::class, 'about'])->name('about');
 Route::get('/contact', [\App\Http\Controllers\Public\PageController::class, 'contact'])->name('contact');

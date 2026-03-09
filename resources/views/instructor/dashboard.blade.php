@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h2 class="text-3xl gc-heading">Instructor Dashboard</h2>
-            <p class="text-slate-600 text-sm">Welcome, {{ auth()->user()->name }}</p>
+            <p class="text-slate-600 text-sm">Welcome, {{ auth()->user()->name ?? 'User' }}</p>
         </div>
         <div class="gc-panel px-4 py-2 text-sm text-slate-600">
             Classes: {{ $classes->count() }}

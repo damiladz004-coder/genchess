@@ -10,7 +10,7 @@
 
             <a href="{{ route('chess.in.schools') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Programs</a>
             <a href="{{ route('instructor.training') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Instructor Training</a>
-            <a href="{{ route('portal.store.home') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Store</a>
+            <a href="{{ route('store.index') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Store</a>
             <a href="{{ route('contact') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Contact</a>
         </div>
 
@@ -42,7 +42,7 @@
             <a href="{{ route('about') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">About</a>
             <a href="{{ route('chess.in.schools') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Programs</a>
             <a href="{{ route('instructor.training') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Training</a>
-            <a href="{{ route('portal.store.home') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Store</a>
+            <a href="{{ route('store.index') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Store</a>
             <a href="{{ route('contact') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Contact</a>
             <button type="button" data-theme-toggle class="rounded-md px-2 py-1 text-purple-100 text-left transition-colors duration-200 hover:bg-purple-700 hover:text-white">
                 Theme: <span data-theme-toggle-label>Dark</span>
