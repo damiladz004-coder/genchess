@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\BulkOrder;
 use App\Models\InstructorLessonPlan;
+use App\Models\InstructorProfile;
 use App\Models\InstructorTimetable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -149,6 +150,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function timetables()
     {
         return $this->hasMany(InstructorTimetable::class, 'instructor_id');
+    }
+
+    public function instructorProfile()
+    {
+        return $this->hasOne(InstructorProfile::class);
     }
 
     public function reviewedTrainingSubmissions()

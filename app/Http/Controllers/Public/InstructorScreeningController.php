@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class InstructorScreeningController extends Controller
 {
@@ -114,6 +115,10 @@ class InstructorScreeningController extends Controller
             'total_questions' => $totalQuestions,
             'percentage' => $percentage,
             'passed' => $passed,
+            'stage_two_status' => 'pending',
+            'stage_three_status' => 'pending',
+            'final_status' => $passed ? 'pending' : 'recommended_training',
+            'training_recommended_at' => $passed ? null : now(),
             'answers_json' => $detailedAnswers,
             'started_at' => $startedAt,
             'submitted_at' => now(),
@@ -158,9 +163,14 @@ class InstructorScreeningController extends Controller
             abort(404);
         }
 
-        $screening = InstructorScreening::findOrFail($resultId);
+        $screening = InstructorScreening::with('instructorProfile')->findOrFail($resultId);
+        $onboardingUrl = null;
 
-        return view('public.instructor-screening-result', compact('screening'));
+        if ($screening->passed && $screening->final_status === 'approved' && !$screening->instructorProfile) {
+            $onboardingUrl = URL::signedRoute('instructor.screening.biodata.create', ['screening' => $screening->id]);
+        }
+
+        return view('public.instructor-screening-result', compact('screening', 'onboardingUrl'));
     }
 
     private function buildQuiz(): array

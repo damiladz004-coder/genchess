@@ -134,7 +134,7 @@
 </section>
 
 <!-- CALL TO ACTION -->
-<section class="bg-white">
+<section id="booking-form" class="bg-white">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <h2 class="text-3xl font-semibold text-center mb-8">
             Book a Chess Program (Communities & Homes)
@@ -497,5 +497,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 @endsection
-
-

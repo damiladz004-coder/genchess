@@ -5,7 +5,8 @@
     <div class="max-w-5xl mx-auto px-6 space-y-6">
         <div>
             <h1 class="text-3xl gc-heading">Genchess Instructor Screening Test (Level 1)</h1>
-            <p class="text-slate-600 mt-2">One trial only. Pass mark: 80%. Time limit: 15 minutes.</p>
+            <p class="text-slate-600 mt-2">For experienced candidates. One trial only. Pass mark: 80%. Time limit: 15 minutes.</p>
+            <p class="text-sm text-slate-600 mt-1">Next stages after passing: Stage 2 interview (chess knowledge) and Stage 3 interview (teaching/classroom management).</p>
             <p class="text-sm font-semibold mt-2">Time left: <span id="time-left">{{ gmdate('i:s', $remainingSeconds) }}</span></p>
         </div>
 

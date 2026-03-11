@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="public-nav sticky top-0 z-50 border-b border-purple-700/70 bg-purple-800 text-white">
+<nav x-data="{ open: false, mobileProgramsOpen: false, mobilePortalOpen: false }" class="public-nav sticky top-0 z-50 border-b border-purple-700/70 bg-purple-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
         <a href="{{ route('home') }}" class="inline-flex items-center">
             <x-brand-logo class="h-10 sm:h-12 w-auto" alt="Genchess logo" />
@@ -8,9 +8,56 @@
             <a href="{{ route('home') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="text-purple-100 transition-all duration-200 hover:text-white">About</a>
 
-            <a href="{{ route('chess.in.schools') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Programs</a>
+            <div class="relative" x-data="{ openPrograms: false }" @mouseleave="openPrograms = false">
+                <button
+                    type="button"
+                    class="inline-flex items-center gap-1 text-purple-100 transition-all duration-200 hover:text-white"
+                    @click="openPrograms = !openPrograms"
+                    :aria-expanded="openPrograms ? 'true' : 'false'"
+                >
+                    Chess Programs
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div
+                    x-show="openPrograms"
+                    x-cloak
+                    @click.outside="openPrograms = false"
+                    class="absolute left-0 mt-2 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
+                >
+                    <a href="{{ route('chess.in.schools') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Schools</a>
+                    <a href="{{ route('chess.communities.homes') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Communities & Homes</a>
+                </div>
+            </div>
             <a href="{{ route('instructor.training') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Instructor Training</a>
             <a href="{{ route('store.index') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Store</a>
+
+            <div class="relative" x-data="{ openPortal: false }" @mouseleave="openPortal = false">
+                <button
+                    type="button"
+                    class="inline-flex items-center gap-1 text-purple-100 transition-all duration-200 hover:text-white"
+                    @click="openPortal = !openPortal"
+                    :aria-expanded="openPortal ? 'true' : 'false'"
+                >
+                    Portal
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div
+                    x-show="openPortal"
+                    x-cloak
+                    @click.outside="openPortal = false"
+                    class="absolute left-0 mt-2 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
+                >
+                    <a href="https://admin.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Admin Portal</a>
+                    <a href="https://school.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">School Portal</a>
+                    <a href="https://instructor.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Instructor Dashboard</a>
+                    <a href="https://training.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Instructor Training</a>
+                    <a href="https://store.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess Store</a>
+                </div>
+            </div>
             <a href="{{ route('contact') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Contact</a>
         </div>
 
@@ -40,9 +87,49 @@
             @endauth
             <a href="{{ route('home') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">About</a>
-            <a href="{{ route('chess.in.schools') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Programs</a>
+
+            <div class="rounded-md border border-purple-700/70">
+                <button
+                    type="button"
+                    class="flex w-full items-center justify-between px-2 py-2 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white"
+                    @click="mobileProgramsOpen = !mobileProgramsOpen"
+                    :aria-expanded="mobileProgramsOpen ? 'true' : 'false'"
+                >
+                    <span>Chess Programs</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="mobileProgramsOpen" x-cloak class="pb-2">
+                    <a href="{{ route('chess.in.schools') }}" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess in Schools</a>
+                    <a href="{{ route('chess.communities.homes') }}" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess in Communities & Homes</a>
+                </div>
+            </div>
+
             <a href="{{ route('instructor.training') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Training</a>
             <a href="{{ route('store.index') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Store</a>
+
+            <div class="rounded-md border border-purple-700/70">
+                <button
+                    type="button"
+                    class="flex w-full items-center justify-between px-2 py-2 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white"
+                    @click="mobilePortalOpen = !mobilePortalOpen"
+                    :aria-expanded="mobilePortalOpen ? 'true' : 'false'"
+                >
+                    <span>Portal</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="mobilePortalOpen" x-cloak class="pb-2">
+                    <a href="https://admin.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Admin Portal</a>
+                    <a href="https://school.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">School Portal</a>
+                    <a href="https://instructor.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Dashboard</a>
+                    <a href="https://training.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Training</a>
+                    <a href="https://store.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Store</a>
+                </div>
+            </div>
+
             <a href="{{ route('contact') }}" class="rounded-md px-2 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Contact</a>
             <button type="button" data-theme-toggle class="rounded-md px-2 py-1 text-purple-100 text-left transition-colors duration-200 hover:bg-purple-700 hover:text-white">
                 Theme: <span data-theme-toggle-label>Dark</span>

@@ -61,6 +61,7 @@
                         <th>Interview Mode</th>
                         <th>Score</th>
                         <th>Result</th>
+                        <th>Workflow</th>
                         <th>Invitation Status</th>
                         <th>Invitation Sent At</th>
                         <th>Actions</th>
@@ -82,6 +83,11 @@
                                 @else
                                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-700">Failed</span>
                                 @endif
+                            </td>
+                            <td>
+                                <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                                    {{ strtoupper(str_replace('_', ' ', $screening->final_status ?? 'pending')) }}
+                                </span>
                             </td>
                             <td>
                                 @if(!$screening->passed)

@@ -40,7 +40,7 @@
                 <p class="text-slate-600 text-sm mb-4">
                     Home tutorials available online or offline. Families submit location and preference, then a certified instructor is assigned within that area/community.
                 </p>
-                <a href="{{ route('contact') }}?service=home-tutorial" class="gc-btn-secondary">Book Appointment</a>
+                <a href="{{ route('chess.communities.homes') }}#booking-form" class="gc-btn-secondary">Book Appointment</a>
             </article>
 
             <article class="gc-panel p-5">
@@ -56,21 +56,36 @@
 </section>
 
 <section class="py-16 bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-        <div>
-            <h2 class="text-3xl md:text-4xl font-display mb-3">Genchess Certified Chess Instructor Program (GCCIP)</h2>
-            <p class="text-slate-300 mb-6">
-                Build practical teaching capacity, class management skills, and Genchess curriculum delivery standards.
-            </p>
-            <a href="{{ route('instructor.training') }}" class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold bg-white text-slate-900">
-                Register for Training
-            </a>
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-display mb-3">Instructor Pathways</h2>
+        <p class="text-slate-300 mb-8">
+            Choose the path that matches your experience level.
+        </p>
+        <div class="grid md:grid-cols-2 gap-6">
+            <article class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+                <h3 class="text-xl font-semibold mb-3">1. Apply to Become a Chess Instructor (Screening Route)</h3>
+                <p class="text-slate-300 text-sm mb-4">
+                    For experienced candidates. Stage 1 screening test, Stage 2 interview (chess knowledge), Stage 3 interview (classroom management/teaching).
+                </p>
+                <a href="{{ route('instructor.screening.create') }}" class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold bg-white text-slate-900">
+                    Start Screening Route
+                </a>
+            </article>
+
+            <article class="rounded-xl border border-slate-700 bg-slate-800 p-6">
+                <h3 class="text-xl font-semibold mb-3">2. Apply for Certified Chess Instructor Training Program</h3>
+                <p class="text-slate-300 text-sm mb-4">
+                    For candidates who need structured preparation. Successful completion leads to certification and Instructor Dashboard access.
+                </p>
+                <a href="{{ route('instructor.training') }}" class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold bg-white text-slate-900">
+                    Apply for Training
+                </a>
+            </article>
         </div>
-        <div>
+        <div class="mt-8">
             <img src="{{ asset('images/instructors/certified-coach.jpg') }}" alt="Chess instructor training" class="w-full rounded-xl2 border border-slate-700">
         </div>
     </div>
 </section>
 @endsection
-
 
