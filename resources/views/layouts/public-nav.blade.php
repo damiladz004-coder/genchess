@@ -8,11 +8,12 @@
             <a href="{{ route('home') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Home</a>
             <a href="{{ route('about') }}" class="text-purple-100 transition-all duration-200 hover:text-white">About</a>
 
-            <div class="relative" x-data="{ openPrograms: false }" @mouseleave="openPrograms = false">
+            <div class="relative" x-data="{ openPrograms: false }">
                 <button
                     type="button"
                     class="inline-flex items-center gap-1 text-purple-100 transition-all duration-200 hover:text-white"
                     @click="openPrograms = !openPrograms"
+                    @keydown.escape.window="openPrograms = false"
                     :aria-expanded="openPrograms ? 'true' : 'false'"
                 >
                     Chess Programs
@@ -24,7 +25,7 @@
                     x-show="openPrograms"
                     x-cloak
                     @click.outside="openPrograms = false"
-                    class="absolute left-0 mt-2 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
+                    class="absolute left-0 top-full z-50 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
                 >
                     <a href="{{ route('chess.in.schools') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Schools</a>
                     <a href="{{ route('chess.communities.homes') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Communities & Homes</a>
@@ -33,11 +34,12 @@
             <a href="{{ route('instructor.training') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Instructor Training</a>
             <a href="{{ route('store.index') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Chess Store</a>
 
-            <div class="relative" x-data="{ openPortal: false }" @mouseleave="openPortal = false">
+            <div class="relative" x-data="{ openPortal: false }">
                 <button
                     type="button"
                     class="inline-flex items-center gap-1 text-purple-100 transition-all duration-200 hover:text-white"
                     @click="openPortal = !openPortal"
+                    @keydown.escape.window="openPortal = false"
                     :aria-expanded="openPortal ? 'true' : 'false'"
                 >
                     Portal
@@ -49,7 +51,7 @@
                     x-show="openPortal"
                     x-cloak
                     @click.outside="openPortal = false"
-                    class="absolute left-0 mt-2 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
+                    class="absolute left-0 top-full z-50 w-64 rounded-lg border border-purple-700 bg-purple-900 py-2 shadow-lg"
                 >
                     <a href="https://admin.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Admin Portal</a>
                     <a href="https://school.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">School Portal</a>
