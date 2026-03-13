@@ -57,6 +57,10 @@ Route::middleware('signed')->group(function () {
         ->name('instructor.screening.biodata.create');
     Route::post('/become-an-instructor/{screening}/biodata', [\App\Http\Controllers\Instructor\InstructorOnboardingController::class, 'store'])
         ->name('instructor.screening.biodata.store');
+    Route::get('/school/register/{schoolRequest}', [\App\Http\Controllers\School\PortalOnboardingController::class, 'create'])
+        ->name('school.portal.onboarding.create');
+    Route::post('/school/register/{schoolRequest}', [\App\Http\Controllers\School\PortalOnboardingController::class, 'store'])
+        ->name('school.portal.onboarding.store');
 });
 Route::get('/careers/{job:slug}', [\App\Http\Controllers\Public\CareerController::class, 'show'])
     ->name('careers.show');

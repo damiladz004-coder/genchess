@@ -50,6 +50,18 @@
                         <option value="physical" @selected(old('interview_mode') === 'physical')>Physical</option>
                     </select>
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Preferred Interview Day</label>
+                    <input type="date" name="preferred_interview_date" value="{{ old('preferred_interview_date') }}">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Preferred Interview Time</label>
+                    <input type="time" name="preferred_interview_time" value="{{ old('preferred_interview_time') }}">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Preferred Time Notes</label>
+                    <textarea name="preferred_interview_notes" rows="2" placeholder="Share suitable days, time windows, or timezone details">{{ old('preferred_interview_notes') }}</textarea>
+                </div>
             </div>
 
             @php

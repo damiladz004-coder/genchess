@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\InstructorInvite;
+use App\Models\InstructorProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,17 +18,38 @@ class InstructorController extends Controller
     {
         $query = User::query()
             ->where('role', 'instructor')
-            ->with(['teachingClasses.school'])
+            ->with(['teachingClasses.school', 'instructorProfile.screening'])
             ->orderBy('name');
 
         if (request('status') && request('status') !== 'all') {
             $query->where('status', request('status'));
         }
 
-        $instructors = $query->get();
-        $statusOptions = ['active', 'suspended'];
+        if ($search = trim((string) request('q'))) {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhereHas('instructorProfile', function ($profileQuery) use ($search) {
+                        $profileQuery->where('full_name', 'like', "%{$search}%")
+                            ->orWhere('genchess_instructor_id', 'like', "%{$search}%")
+                            ->orWhere('city', 'like', "%{$search}%")
+                            ->orWhere('state', 'like', "%{$search}%")
+                            ->orWhere('location', 'like', "%{$search}%");
+                    });
+            });
+        }
 
-        return view('admin.instructors.index', compact('instructors', 'statusOptions'));
+        $instructors = $query->paginate(20)->withQueryString();
+        $statusOptions = ['active', 'suspended', 'inactive'];
+        $totals = [
+            'active' => User::where('role', 'instructor')->where('status', 'active')->count(),
+            'suspended' => User::where('role', 'instructor')->where('status', 'suspended')->count(),
+            'inactive' => User::where('role', 'instructor')->where('status', 'inactive')->count(),
+            'profiled' => InstructorProfile::count(),
+        ];
+
+        return view('admin.instructors.index', compact('instructors', 'statusOptions', 'totals'));
     }
 
     public function store(Request $request)
@@ -37,7 +59,7 @@ class InstructorController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
             'certification_level' => 'nullable|string|max:100',
-            'status' => 'required|in:active,suspended',
+            'status' => 'required|in:active,suspended,inactive',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -95,7 +117,7 @@ class InstructorController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:active,suspended',
+            'status' => 'required|in:active,suspended,inactive',
         ]);
 
         $instructor->update(['status' => $request->status]);
@@ -109,7 +131,7 @@ class InstructorController extends Controller
             abort(404);
         }
 
-        $instructor->load(['teachingClasses.school']);
+        $instructor->load(['teachingClasses.school', 'instructorProfile.screening']);
 
         return view('admin.instructors.show', compact('instructor'));
     }

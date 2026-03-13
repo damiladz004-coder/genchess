@@ -35,8 +35,31 @@ class SchoolRequest extends Model
         'meeting_type',
         'meeting_date',
         'meeting_time',
+        'consultation_link',
+        'consultation_meeting_id',
+        'consultation_passcode',
+        'consultation_invitation_sent_at',
+        'consultation_whatsapp_sent_at',
         'consent',
         'status',
         'school_id',
+        'portal_link_sent_at',
+        'portal_whatsapp_sent_at',
+        'portal_onboarded_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'meeting_date' => 'date',
+            'meeting_time' => 'datetime:H:i',
+            'consultation_needed' => 'boolean',
+            'consent' => 'boolean',
+            'consultation_invitation_sent_at' => 'datetime',
+            'consultation_whatsapp_sent_at' => 'datetime',
+            'portal_link_sent_at' => 'datetime',
+            'portal_whatsapp_sent_at' => 'datetime',
+            'portal_onboarded_at' => 'datetime',
+        ];
+    }
 }

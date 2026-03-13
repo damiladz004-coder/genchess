@@ -35,11 +35,15 @@ class InstructorOnboardingController extends Controller
             'passport_photo' => 'required|image|max:4096',
             'full_name' => 'required|string|max:255',
             'address' => 'required|string|max:2000',
+            'location' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:30',
+            'whatsapp_phone' => 'required|string|max:30',
+            'short_biography' => 'required|string|max:2000',
+            'areas_of_specialization' => 'required|string|max:1000',
         ]);
 
         $passportPath = $request->file('passport_photo')->store('instructor-passports', 'public');
@@ -98,11 +102,15 @@ class InstructorOnboardingController extends Controller
                 'passport_photo_path' => $passportPath,
                 'full_name' => $data['full_name'],
                 'address' => $data['address'],
+                'location' => $data['location'],
                 'city' => $data['city'],
                 'state' => $data['state'],
                 'country' => $data['country'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
+                'whatsapp_phone' => $data['whatsapp_phone'],
+                'short_biography' => $data['short_biography'],
+                'areas_of_specialization' => $data['areas_of_specialization'],
             ];
 
             if ($existingProfile) {

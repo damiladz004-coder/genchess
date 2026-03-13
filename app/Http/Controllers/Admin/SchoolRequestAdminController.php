@@ -3,23 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CommunityConsultationScheduledMail;
 use App\Mail\CommunityHomeRequestApproved;
-use App\Mail\SchoolEnrollmentApproved;
+use App\Mail\SchoolPortalAccessMail;
 use App\Models\School;
 use App\Models\SchoolRequest;
-use App\Models\User;
 use App\Services\ClassGenerator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Services\WhatsAppMessageService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
 class SchoolRequestAdminController extends Controller
 {
+    public function __construct(private readonly WhatsAppMessageService $whatsApp)
+    {
+    }
+
     public function index()
     {
-        $requests = SchoolRequest::latest()->get();
+        $requests = SchoolRequest::latest()->paginate(20);
+
         return view('admin.enrollments.index', compact('requests'));
     }
 
@@ -30,21 +35,6 @@ class SchoolRequestAdminController extends Controller
 
     public function approve(SchoolRequest $schoolRequest)
     {
-        $missing = [];
-        foreach (['school_type', 'class_system', 'city', 'state'] as $field) {
-            if (empty($schoolRequest->{$field})) {
-                $missing[] = $field;
-            }
-        }
-
-        if (!empty($missing)) {
-            return redirect()->back()->with('error', 'Missing required fields: ' . implode(', ', $missing));
-        }
-
-        if ($schoolRequest->status === 'approved' && $schoolRequest->school_id) {
-            return redirect()->back()->with('info', 'This enrollment request is already approved.');
-        }
-
         $programType = strtolower((string) $schoolRequest->program_type);
         if (in_array($programType, ['community', 'home'], true)) {
             $schoolRequest->update([
@@ -52,118 +42,110 @@ class SchoolRequestAdminController extends Controller
                 'school_id' => null,
             ]);
 
-            $warning = null;
             try {
                 Mail::to($schoolRequest->email)->send(new CommunityHomeRequestApproved($schoolRequest));
             } catch (\Throwable $e) {
                 Log::error('Failed to send community/home approval email.', [
                     'school_request_id' => $schoolRequest->id,
-                    'email' => $schoolRequest->email,
                     'error' => $e->getMessage(),
                 ]);
-                $warning = 'Request approved, but follow-up email could not be sent.';
             }
 
-            $redirect = redirect()->route('admin.enrollments.index')
-                ->with('success', 'Request approved. Management will contact applicant for appointment and onboarding.');
+            $this->whatsApp->send(
+                $schoolRequest->phone,
+                "Your Genchess {$programType} request has been approved. Our team will contact you with consultation details.",
+                ['school_request_id' => $schoolRequest->id, 'type' => 'community_approval']
+            );
 
-            if ($warning) {
-                $redirect->with('warning', $warning);
-            }
-
-            return $redirect;
+            return redirect()->route('admin.enrollments.index')
+                ->with('success', 'Request approved. Consultation can now be scheduled from the request details page.');
         }
 
-        $password = null;
-        $schoolAdminUser = null;
+        $school = School::firstOrCreate(
+            ['email' => $schoolRequest->email],
+            [
+                'school_name' => $schoolRequest->school_name,
+                'school_type' => $schoolRequest->school_type ?? 'private',
+                'class_system' => $schoolRequest->class_system ?? 'primary_jss_ss',
+                'address_line' => $schoolRequest->address_line,
+                'city' => $schoolRequest->city ?? 'Lagos',
+                'state' => $schoolRequest->state ?? 'Lagos',
+                'contact_person' => $schoolRequest->contact_person,
+                'phone' => $schoolRequest->phone,
+                'status' => 'active',
+            ]
+        );
+
+        ClassGenerator::generateForSchool($school);
+
+        $schoolRequest->update([
+            'status' => 'approved',
+            'school_id' => $school->id,
+        ]);
+
+        $onboardingUrl = URL::signedRoute('school.portal.onboarding.create', ['schoolRequest' => $schoolRequest->id]);
 
         try {
-            DB::transaction(function () use ($schoolRequest, &$password, &$schoolAdminUser) {
-                $school = School::where('email', $schoolRequest->email)->first();
-
-                if (!$school) {
-                    $school = School::create([
-                        'school_name' => $schoolRequest->school_name,
-                        'school_type' => $schoolRequest->school_type,
-                        'class_system' => $schoolRequest->class_system,
-                        'address_line' => $schoolRequest->address_line,
-                        'city' => $schoolRequest->city,
-                        'state' => $schoolRequest->state,
-                        'contact_person' => $schoolRequest->contact_person,
-                        'email' => $schoolRequest->email,
-                        'phone' => $schoolRequest->phone,
-                        'status' => 'active',
-                    ]);
-                }
-
-                $user = User::where('email', $schoolRequest->email)->first();
-                if ($user && $user->role !== 'school_admin') {
-                    throw new \RuntimeException('A user with this email already exists with a different role.');
-                }
-
-                if (!$user) {
-                    $password = Str::random(10);
-                    $user = User::create([
-                        'name' => $schoolRequest->contact_person,
-                        'email' => $schoolRequest->email,
-                        'password' => Hash::make($password),
-                        'role' => 'school_admin',
-                        'school_id' => $school->id,
-                        'must_change_password' => true,
-                    ]);
-                } else {
-                    $user->update([
-                        'school_id' => $school->id,
-                    ]);
-                }
-
-                $schoolAdminUser = $user;
-
-                ClassGenerator::generateForSchool($school);
-
-                $schoolRequest->update([
-                    'status' => 'approved',
-                    'school_id' => $school->id,
-                ]);
-            });
+            Mail::to($schoolRequest->email)->send(new SchoolPortalAccessMail($schoolRequest->fresh(), $onboardingUrl));
+            $schoolRequest->forceFill(['portal_link_sent_at' => now()])->saveQuietly();
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-
-        $warningMessages = [];
-        try {
-            Mail::to($schoolRequest->email)
-                ->send(new SchoolEnrollmentApproved($schoolRequest, $password));
-        } catch (\Throwable $e) {
-            Log::error('Failed to send school enrollment approval email.', [
+            Log::error('Failed to send school portal onboarding email.', [
                 'school_request_id' => $schoolRequest->id,
-                'email' => $schoolRequest->email,
                 'error' => $e->getMessage(),
             ]);
-            $warningMessages[] = 'Enrollment was approved, but approval email could not be sent.';
         }
 
-        if ($schoolAdminUser && !$schoolAdminUser->hasVerifiedEmail()) {
-            try {
-                $schoolAdminUser->sendEmailVerificationNotification();
-            } catch (\Throwable $e) {
-                Log::error('Failed to send school admin verification email.', [
-                    'school_request_id' => $schoolRequest->id,
-                    'user_id' => $schoolAdminUser->id,
-                    'email' => $schoolAdminUser->email,
-                    'error' => $e->getMessage(),
-                ]);
-                $warningMessages[] = 'Approval completed, but verification email could not be sent.';
-            }
+        if ($this->whatsApp->send(
+            $schoolRequest->phone,
+            "Your Genchess school portal access link is ready: {$onboardingUrl}",
+            ['school_request_id' => $schoolRequest->id, 'type' => 'school_portal']
+        )) {
+            $schoolRequest->forceFill(['portal_whatsapp_sent_at' => now()])->saveQuietly();
         }
 
-        $redirect = redirect()->route('admin.enrollments.index')
-            ->with('success', 'Enrollment approved. School and School Admin created.');
+        return redirect()->route('admin.enrollments.index')
+            ->with('success', 'School approved. Portal access link sent to email and WhatsApp.');
+    }
 
-        if (!empty($warningMessages)) {
-            $redirect->with('warning', implode(' ', $warningMessages));
+    public function scheduleConsultation(Request $request, SchoolRequest $schoolRequest)
+    {
+        $data = $request->validate([
+            'meeting_type' => ['required', 'string', 'max:50'],
+            'meeting_date' => ['required', 'date'],
+            'meeting_time' => ['required', 'date_format:H:i'],
+            'consultation_link' => ['nullable', 'url', 'max:1000'],
+            'consultation_meeting_id' => ['nullable', 'string', 'max:100'],
+            'consultation_passcode' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $schoolRequest->update($data);
+
+        try {
+            Mail::to($schoolRequest->email)->send(new CommunityConsultationScheduledMail($schoolRequest->fresh()));
+            $schoolRequest->forceFill(['consultation_invitation_sent_at' => now()])->saveQuietly();
+        } catch (\Throwable $e) {
+            Log::error('Failed to send consultation schedule email.', [
+                'school_request_id' => $schoolRequest->id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        return $redirect;
+        $message = sprintf(
+            'Genchess consultation scheduled for %s at %s. Link: %s. Meeting ID: %s. Passcode: %s',
+            $schoolRequest->meeting_date?->format('Y-m-d'),
+            $schoolRequest->meeting_time?->format('H:i'),
+            $schoolRequest->consultation_link ?: 'N/A',
+            $schoolRequest->consultation_meeting_id ?: 'N/A',
+            $schoolRequest->consultation_passcode ?: 'N/A'
+        );
+
+        if ($this->whatsApp->send($schoolRequest->phone, $message, [
+            'school_request_id' => $schoolRequest->id,
+            'type' => 'consultation_schedule',
+        ])) {
+            $schoolRequest->forceFill(['consultation_whatsapp_sent_at' => now()])->saveQuietly();
+        }
+
+        return redirect()->back()->with('success', 'Consultation scheduled and invitation sent.');
     }
 }

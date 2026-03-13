@@ -13,11 +13,15 @@ class InstructorProfile extends Model
         'passport_photo_path',
         'full_name',
         'address',
+        'location',
         'city',
         'state',
         'country',
         'email',
         'phone',
+        'whatsapp_phone',
+        'short_biography',
+        'areas_of_specialization',
     ];
 
     protected static function booted(): void

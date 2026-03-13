@@ -60,6 +60,9 @@ class InstructorScreeningController extends Controller
             'phone' => 'nullable|string|max:30',
             'location' => 'nullable|string|max:255',
             'interview_mode' => 'required|in:zoom,physical',
+            'preferred_interview_date' => 'nullable|date|after_or_equal:today',
+            'preferred_interview_time' => 'nullable|date_format:H:i',
+            'preferred_interview_notes' => 'nullable|string|max:1000',
         ];
 
         foreach ($quiz as $question) {
@@ -111,6 +114,9 @@ class InstructorScreeningController extends Controller
             'phone' => $request->phone,
             'location' => $request->location,
             'interview_mode' => $request->interview_mode,
+            'preferred_interview_date' => $request->preferred_interview_date,
+            'preferred_interview_time' => $request->preferred_interview_time,
+            'preferred_interview_notes' => $request->preferred_interview_notes,
             'score' => $score,
             'total_questions' => $totalQuestions,
             'percentage' => $percentage,

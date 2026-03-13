@@ -40,4 +40,9 @@ return [
         'secret_key' => env('PAYSTACK_SECRET_KEY'),
     ],
 
+    'whatsapp' => [
+        'webhook_url' => env('WHATSAPP_WEBHOOK_URL'),
+        'secret' => env('WHATSAPP_WEBHOOK_SECRET'),
+    ],
+
 ];

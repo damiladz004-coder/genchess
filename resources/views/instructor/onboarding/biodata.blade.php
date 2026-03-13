@@ -36,6 +36,11 @@
                     <textarea name="address" rows="3" required>{{ old('address') }}</textarea>
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Location</label>
+                    <input type="text" name="location" value="{{ old('location', $screening->location) }}" placeholder="Area / District" required>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">City</label>
@@ -61,6 +66,21 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
                         <input type="text" name="phone" value="{{ old('phone', $screening->phone) }}" required>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">WhatsApp Phone Number</label>
+                    <input type="text" name="whatsapp_phone" value="{{ old('whatsapp_phone', $screening->phone) }}" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Short Biography</label>
+                    <textarea name="short_biography" rows="4" required>{{ old('short_biography') }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Areas of Specialization</label>
+                    <textarea name="areas_of_specialization" rows="3" placeholder="Beginner coaching, school clubs, tournament prep..." required>{{ old('areas_of_specialization') }}</textarea>
                 </div>
 
                 <button type="submit" class="gc-btn-primary">Create Instructor Profile</button>

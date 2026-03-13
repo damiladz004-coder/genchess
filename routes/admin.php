@@ -161,6 +161,8 @@ Route::middleware(['auth', 'verified', 'superadmin'])
             ->name('admin.instructor-screenings.show');
         Route::patch('/instructor-screenings/{screening}/workflow', [\App\Http\Controllers\Admin\InstructorScreeningController::class, 'updateWorkflow'])
             ->name('admin.instructor-screenings.workflow.update');
+        Route::patch('/enrollments/{schoolRequest}/consultation', [SchoolRequestAdminController::class, 'scheduleConsultation'])
+            ->name('admin.enrollments.consultation');
         Route::post('/careers/jobs', [\App\Http\Controllers\Admin\CareerController::class, 'storeJob'])
             ->name('admin.careers.jobs.store');
         Route::patch('/careers/applications/{application}', [\App\Http\Controllers\Admin\CareerController::class, 'updateApplication'])

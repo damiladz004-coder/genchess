@@ -57,7 +57,6 @@
                     <a href="https://school.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">School Portal</a>
                     <a href="https://instructor.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Instructor Dashboard</a>
                     <a href="https://training.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Instructor Training</a>
-                    <a href="https://store.genchess.ng" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess Store</a>
                 </div>
             </div>
             <a href="{{ route('contact') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Contact</a>
@@ -128,7 +127,6 @@
                     <a href="https://school.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">School Portal</a>
                     <a href="https://instructor.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Dashboard</a>
                     <a href="https://training.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Instructor Training</a>
-                    <a href="https://store.genchess.ng" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess Store</a>
                 </div>
             </div>
 
