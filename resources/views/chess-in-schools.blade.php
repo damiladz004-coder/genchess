@@ -24,19 +24,30 @@
 
 <section class="py-12 bg-white">
     <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl gc-heading mb-6">Classroom Image Placeholders</h2>
-        <div class="grid gap-6 md:grid-cols-3">
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft mb-6">
+            <img
+                src="{{ $classroomImages['hero'] ?? asset('images/placeholders/chess-classroom-hero.svg') }}"
+                alt="Chess classroom hero placeholder with instructor and demonstration board"
+                class="w-full h-64 md:h-96 object-cover"
+            >
+        </div>
+        <h2 class="text-3xl gc-heading mb-6">Classroom Chess Activities</h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <figure class="gc-panel p-3">
-                <img src="/images/placeholders/chess-in-school-nursery.svg" alt="Nursery classroom placeholder" class="w-full h-48 object-cover rounded-lg">
-                <figcaption class="mt-2 text-sm text-slate-600">Nursery 2 chess introduction</figcaption>
+                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Instructor teaching classroom lesson placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Classroom Chess Lessons</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="/images/placeholders/chess-in-school-primary.svg" alt="Primary classroom placeholder" class="w-full h-48 object-cover rounded-lg">
-                <figcaption class="mt-2 text-sm text-slate-600">Primary 1-6 structured lesson</figcaption>
+                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Students Playing Chess in Class</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="/images/placeholders/chess-in-school-jss.svg" alt="JSS classroom placeholder" class="w-full h-48 object-cover rounded-lg">
-                <figcaption class="mt-2 text-sm text-slate-600">JSS strategy and analysis session</figcaption>
+                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving puzzle placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Students Solving Chess Puzzles</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-48 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">School Chess Competition</figcaption>
             </figure>
         </div>
     </div>
@@ -215,5 +226,3 @@
     </div>
 </section>
 @endsection
-
-

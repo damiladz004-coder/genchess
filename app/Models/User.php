@@ -8,6 +8,7 @@ use App\Models\School;
 use App\Models\TrainingEnrollment;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\BulkOrder;
 use App\Models\InstructorLessonPlan;
 use App\Models\InstructorProfile;
@@ -115,6 +116,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function trainingPayments()
     {
         return $this->hasMany(TrainingPayment::class, 'user_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'user_id');
     }
 
     public function referredUsers()

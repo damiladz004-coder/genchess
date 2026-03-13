@@ -10,7 +10,7 @@ class PaystackService
     {
         $response = Http::withToken($this->secretKey())
             ->acceptJson()
-            ->post('https://api.paystack.co/transaction/initialize', [
+            ->post($this->baseUrl() . '/transaction/initialize', [
                 'email' => $email,
                 'amount' => $amountKobo,
                 'reference' => $reference,
@@ -26,7 +26,7 @@ class PaystackService
     {
         $response = Http::withToken($this->secretKey())
             ->acceptJson()
-            ->get('https://api.paystack.co/transaction/verify/' . urlencode($reference));
+            ->get($this->baseUrl() . '/transaction/verify/' . urlencode($reference));
 
         return $response->json();
     }
@@ -44,7 +44,11 @@ class PaystackService
 
     protected function secretKey(): string
     {
-        return (string) config('services.paystack.secret_key');
+        return (string) config('paystack.secret_key', config('services.paystack.secret_key'));
+    }
+
+    protected function baseUrl(): string
+    {
+        return rtrim((string) config('paystack.payment_url', config('services.paystack.payment_url', 'https://api.paystack.co')), '/');
     }
 }
-

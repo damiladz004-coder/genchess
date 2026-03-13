@@ -21,11 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'classteacher' => \App\Http\Middleware\ClassTeacherMiddleware::class,
             'trainingportal' => \App\Http\Middleware\TrainingPortalMiddleware::class,
             'training.paid' => \App\Http\Middleware\EnsurePaidTrainingEnrollment::class,
+            'training.payment' => \App\Http\Middleware\EnsureTrainingPayment::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('login'));
 
         $middleware->validateCsrfTokens(except: [
+            'paystack/webhook',
             'payments/paystack/webhook',
             'payments/store/paystack/webhook',
         ]);

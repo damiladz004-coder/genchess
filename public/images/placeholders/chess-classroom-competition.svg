@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Competition placeholder</title>
+  <desc id="desc">Placeholder for school chess competition photo.</desc>
+  <rect width="1200" height="800" fill="#be123c"/>
+  <rect x="80" y="80" width="1040" height="640" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#fecdd3" stroke-opacity="0.5"/>
+  <text x="600" y="360" text-anchor="middle" fill="#fff1f2" font-family="Arial, sans-serif" font-size="46" font-weight="700">
+    School Chess Competition
+  </text>
+  <text x="600" y="420" text-anchor="middle" fill="#fecdd3" font-family="Arial, sans-serif" font-size="30">
+    Replace With Real Tournament Photo
+  </text>
+</svg>
+

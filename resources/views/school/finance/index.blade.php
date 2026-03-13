@@ -86,6 +86,7 @@
                                 <th>Paid</th>
                                 <th>Status</th>
                                 <th>Installments</th>
+                                <th>Action</th>
                                 <th>Invoice</th>
                             </tr>
                         </thead>
@@ -116,6 +117,21 @@
                                             2nd: {{ $payment->second_amount }} due {{ $payment->second_due_date->format('Y-m-d') }}
                                         @else
                                             -
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @php
+                                            $outstanding = max(0, $payment->total_due - $payment->amount_paid);
+                                        @endphp
+                                        @if($outstanding > 0)
+                                            <form method="POST" action="{{ route('school.finance.pay', $payment) }}">
+                                                @csrf
+                                                <button type="submit" class="gc-btn-primary px-3 py-1 text-xs">
+                                                    Pay NGN {{ number_format($outstanding, 2) }}
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-emerald-700 text-sm">Paid</span>
                                         @endif
                                     </td>
                                     <td>

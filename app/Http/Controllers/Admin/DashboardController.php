@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\School;
 use App\Models\SchoolRequest;
 use App\Models\Student;
@@ -37,6 +38,11 @@ class DashboardController extends Controller
         $totalStudents = Student::count();
         $totalInstructors = User::where('role', 'instructor')->count();
         $totalOutstanding = max(0, SchoolPayment::sum('total_due') - SchoolPayment::sum('amount_paid'));
+        $paidPayments = Payment::query()->where('status', 'paid');
+        $totalPaidPayments = (clone $paidPayments)->count();
+        $trainingPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_TRAINING)->count();
+        $storePayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_STORE)->count();
+        $schoolPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_SCHOOL)->count();
         $schoolsByState = School::query()
             ->select('state', DB::raw('COUNT(*) as total'))
             ->groupBy('state')
@@ -53,6 +59,10 @@ class DashboardController extends Controller
             'totalStudents' => $totalStudents,
             'totalInstructors' => $totalInstructors,
             'totalOutstanding' => $totalOutstanding,
+            'totalPaidPayments' => $totalPaidPayments,
+            'trainingPayments' => $trainingPayments,
+            'storePayments' => $storePayments,
+            'schoolPayments' => $schoolPayments,
             'schoolsByState' => $schoolsByState,
         ]);
     }

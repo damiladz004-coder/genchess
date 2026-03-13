@@ -85,6 +85,8 @@ Route::middleware(['auth', 'verified', 'schooladmin'])->prefix('school')->name('
 
     Route::get('/finance', [\App\Http\Controllers\School\FinanceController::class, 'index'])
         ->name('finance.index');
+    Route::post('/finance/{payment}/pay', [\App\Http\Controllers\School\FinanceController::class, 'pay'])
+        ->name('finance.pay');
     Route::get('/finance/{payment}/invoice', [\App\Http\Controllers\School\FinanceController::class, 'invoice'])
         ->name('finance.invoice');
 

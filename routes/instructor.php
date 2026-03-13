@@ -32,25 +32,25 @@ Route::middleware(['auth', 'verified', 'instructor'])->prefix('instructor')->nam
     Route::get('/training', [\App\Http\Controllers\Instructor\TrainingController::class, 'index'])
         ->name('training.index');
     Route::get('/training/{enrollment}', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'show'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.show');
     Route::get('/training/{enrollment}/topics/{topic}/quiz', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'showQuiz'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.topics.quiz.show');
     Route::post('/training/{enrollment}/topics/{topic}/quiz', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitQuiz'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.topics.quiz.submit');
     Route::post('/training/{enrollment}/topics/{topic}', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitTopic'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.topics.submit');
     Route::post('/training/{enrollment}/capstone', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitCapstone'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.capstone.submit');
     Route::post('/training/{enrollment}/discussions', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'postDiscussion'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.discussions.store');
     Route::post('/training/{enrollment}/teaching-practice', [\App\Http\Controllers\Instructor\TrainingProgressController::class, 'submitTeachingPractice'])
-        ->middleware('training.paid')
+        ->middleware('training.payment')
         ->name('training.teaching-practice.store');
 
     Route::get('/lesson-plans', [\App\Http\Controllers\Instructor\LessonPlanController::class, 'index'])

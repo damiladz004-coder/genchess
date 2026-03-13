@@ -7,7 +7,7 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-10 gap-4">
             <div class="gc-panel p-4">
                 <h3 class="text-sm text-slate-500">Total Schools</h3>
                 <p class="text-2xl font-bold text-brand-800">{{ $totalSchools }}</p>
@@ -36,6 +36,26 @@
             <div class="gc-panel p-4">
                 <h3 class="text-sm text-slate-500">Outstanding Payments</h3>
                 <p class="text-2xl font-bold text-rose-700">{{ $totalOutstanding }}</p>
+            </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">Total Paid Payments</h3>
+                <p class="text-2xl font-bold text-sky-700">{{ $totalPaidPayments }}</p>
+            </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">Training Payments</h3>
+                <p class="text-2xl font-bold text-brand-800">{{ $trainingPayments }}</p>
+            </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">Store Payments</h3>
+                <p class="text-2xl font-bold text-emerald-700">{{ $storePayments }}</p>
+            </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">School Payments</h3>
+                <p class="text-2xl font-bold text-indigo-700">{{ $schoolPayments }}</p>
             </div>
         </div>
 

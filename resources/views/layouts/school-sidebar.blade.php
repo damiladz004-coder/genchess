@@ -14,6 +14,7 @@
         <a href="{{ route('school.instructors.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('school.instructors.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Chess Instructor</a>
         <a href="{{ route('school.timetables.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('school.timetables.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Timetable</a>
         <a href="{{ route('school.finance.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('school.finance.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Payments</a>
+        <a href="{{ route('payments.history') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('payments.history') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Payment History</a>
         <a href="{{ route('school.results.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('school.results.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Results</a>
     </nav>
 </aside>

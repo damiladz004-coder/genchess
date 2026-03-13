@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Students playing placeholder</title>
+  <desc id="desc">Placeholder for students playing chess in class.</desc>
+  <rect width="1200" height="800" fill="#4338ca"/>
+  <rect x="80" y="80" width="1040" height="640" rx="16" fill="#ffffff" fill-opacity="0.12" stroke="#c7d2fe" stroke-opacity="0.5"/>
+  <text x="600" y="360" text-anchor="middle" fill="#eef2ff" font-family="Arial, sans-serif" font-size="46" font-weight="700">
+    Students Playing Chess
+  </text>
+  <text x="600" y="420" text-anchor="middle" fill="#c7d2fe" font-family="Arial, sans-serif" font-size="30">
+    Replace With Real Classroom Photo
+  </text>
+</svg>
+

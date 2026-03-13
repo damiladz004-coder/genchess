@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\StoreAdminAlertMail;
 use App\Mail\StoreOrderCustomerMail;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Services\PaymentService;
 use App\Services\PaystackService;
 use App\Services\DeliveryFeeService;
 use App\Services\StoreCartService;
@@ -32,7 +34,7 @@ class StoreCheckoutController extends Controller
         StoreCartService $cartService,
         StoreOrderService $orderService,
         DeliveryFeeService $deliveryFeeService,
-        PaystackService $paystackService
+        PaymentService $paymentService
     ) {
         $cart = $cartService->summary();
         if ($cart['count'] < 1) {
@@ -70,18 +72,25 @@ class StoreCheckoutController extends Controller
         $reference = 'GC-STORE-' . strtoupper(Str::random(12));
         $order->update(['reference' => $reference]);
 
-        $response = $paystackService->initialize(
+        $centralPayment = $paymentService->createPendingPayment(
+            $request->user(),
             $order->email,
             (int) $order->total_kobo,
-            $reference,
-            route('store.checkout.callback', ['reference' => $reference]),
+            Payment::PURPOSE_STORE,
             [
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
-            ]
+            ],
+            $reference
+        );
+
+        $response = $paymentService->initialize(
+            $centralPayment,
+            route('payments.callback', ['reference' => $reference])
         );
 
         if (!($response['status'] ?? false)) {
+            $paymentService->markFailed($centralPayment, $response);
             Log::warning('Store paystack initialize failed', ['order_id' => $order->id, 'response' => $response]);
             return redirect()->route('store.checkout')->withErrors(['payment' => 'Unable to initialize online payment.']);
         }

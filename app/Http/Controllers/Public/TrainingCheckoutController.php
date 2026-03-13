@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\TrainingCohort;
 use App\Models\TrainingCourse;
 use App\Models\TrainingEnrollment;
 use App\Models\TrainingPayment;
+use App\Services\PaymentService;
 use App\Services\PaystackService;
 use App\Services\TrainingCouponService;
 use App\Services\TrainingPaymentService;
@@ -77,7 +79,7 @@ class TrainingCheckoutController extends Controller
         Request $request,
         TrainingCouponService $couponService,
         TrainingReferralService $referralService,
-        PaystackService $paystackService
+        PaymentService $paymentService
     ) {
         $data = $request->validate([
             'course_id' => 'required|exists:training_courses,id',
@@ -129,21 +131,27 @@ class TrainingCheckoutController extends Controller
             'status' => 'pending',
         ]);
 
-        $callbackUrl = route('training.checkout.callback', ['reference' => $reference]);
-
-        $response = $paystackService->initialize(
+        $centralPayment = $paymentService->createPendingPayment(
+            $user,
             $user->email,
-            $payment->amount_kobo,
-            $reference,
-            $callbackUrl,
+            (int) $payment->amount_kobo,
+            Payment::PURPOSE_TRAINING,
             [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
-                'payment_id' => $payment->id,
-            ]
+                'training_payment_id' => $payment->id,
+                'enrollment_id' => $enrollment->id,
+            ],
+            $reference
+        );
+
+        $response = $paymentService->initialize(
+            $centralPayment,
+            route('payments.callback', ['reference' => $reference])
         );
 
         if (!($response['status'] ?? false)) {
+            $paymentService->markFailed($centralPayment, $response);
             Log::warning('Paystack initialize failed', ['response' => $response, 'payment_id' => $payment->id]);
             return back()->withErrors(['payment' => 'Unable to initialize payment. Please try again.']);
         }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\CommunityConsultationScheduledMail;
 use App\Mail\CommunityHomeRequestApproved;
 use App\Mail\SchoolPortalAccessMail;
+use App\Models\Payment;
 use App\Models\School;
 use App\Models\SchoolRequest;
 use App\Services\ClassGenerator;
@@ -35,6 +36,27 @@ class SchoolRequestAdminController extends Controller
 
     public function approve(SchoolRequest $schoolRequest)
     {
+        $paymentPurpose = $schoolRequest->program_type === 'school'
+            ? Payment::PURPOSE_SCHOOL
+            : null;
+
+        $requiredAmount = $paymentPurpose ? (int) config("paystack.fees.{$paymentPurpose}", 0) : 0;
+        if ($paymentPurpose && $requiredAmount > 0) {
+            $isPaid = Payment::query()
+                ->where('purpose', $paymentPurpose)
+                ->where('status', 'paid')
+                ->where('metadata->school_request_id', $schoolRequest->id)
+                ->exists();
+
+            if (!$isPaid) {
+                return redirect()
+                    ->back()
+                    ->withErrors([
+                        'payment' => 'This request requires payment confirmation before approval.',
+                    ]);
+            }
+        }
+
         $programType = strtolower((string) $schoolRequest->program_type);
         if (in_array($programType, ['community', 'home'], true)) {
             $schoolRequest->update([

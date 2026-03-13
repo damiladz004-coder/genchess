@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SchoolRequestReceived;
+use App\Models\Payment;
 use App\Models\SchoolRequest;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -11,7 +13,7 @@ use Illuminate\Validation\Rule;
 
 class SchoolRequestController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, PaymentService $paymentService)
     {
         $request->validate([
             'school_name' => 'required|string|max:255',
@@ -80,7 +82,7 @@ class SchoolRequestController extends Controller
             : $request->consultation_needed === 'yes';
         $data['consent'] = (bool) $request->boolean('consent');
 
-        SchoolRequest::create($data);
+        $schoolRequest = SchoolRequest::create($data);
 
         $warning = null;
         try {
@@ -91,6 +93,42 @@ class SchoolRequestController extends Controller
                 'error' => $e->getMessage(),
             ]);
             $warning = 'Your request was saved, but confirmation email could not be sent right now.';
+        }
+
+        $paymentPurpose = $schoolRequest->program_type === 'school'
+            ? Payment::PURPOSE_SCHOOL
+            : null;
+
+        $amount = $paymentPurpose ? (int) config("paystack.fees.{$paymentPurpose}", 0) : 0;
+
+        if ($paymentPurpose && $amount > 0) {
+            $payment = $paymentService->createPendingPayment(
+                $request->user(),
+                $schoolRequest->email,
+                $amount,
+                $paymentPurpose,
+                [
+                    'school_request_id' => $schoolRequest->id,
+                    'program_type' => $schoolRequest->program_type,
+                ]
+            );
+
+            $response = $paymentService->initialize(
+                $payment,
+                route('payments.callback', ['reference' => $payment->reference])
+            );
+
+            if (($response['status'] ?? false) && ($response['data']['authorization_url'] ?? null)) {
+                return redirect()->away($response['data']['authorization_url']);
+            }
+
+            $paymentService->markFailed($payment, $response);
+            Log::warning('School request payment initialization failed.', [
+                'school_request_id' => $schoolRequest->id,
+                'payment_id' => $payment->id,
+                'response' => $response,
+            ]);
+            $warning = 'Your request was saved, but payment could not be initialized right now.';
         }
 
         $redirect = redirect()->back()->with('success', 'Your enrollment request has been submitted successfully!');

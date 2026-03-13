@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PaymentHistoryController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SchoolRequestController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,8 +39,10 @@ Route::middleware('auth')->group(function () {
 })->middleware('verified');
 Route::get('/training/checkout/callback', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'callback'])
     ->name('training.checkout.callback');
-Route::post('/payments/paystack/webhook', [\App\Http\Controllers\Public\TrainingCheckoutController::class, 'webhook'])
-    ->name('payments.paystack.webhook');
+Route::post('/payments/initialize', [PaymentController::class, 'initialize'])->name('payments.initialize');
+Route::get('/payments/callback', [PaymentController::class, 'callback'])->name('payments.callback');
+Route::post('/paystack/webhook', [PaymentController::class, 'webhook'])->name('payments.webhook');
+Route::post('/payments/paystack/webhook', [PaymentController::class, 'webhook'])->name('payments.paystack.webhook');
 Route::get('/careers', [\App\Http\Controllers\Public\CareerController::class, 'index'])->name('careers');
 Route::get('/careers/chess-instructors', [\App\Http\Controllers\Public\PageController::class, 'careersInstructors'])
     ->name('careers.instructors');
@@ -86,7 +90,7 @@ Route::get('/checkout', [\App\Http\Controllers\Public\StoreCheckoutController::c
 Route::post('/checkout', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'placeOrder'])->name('store.checkout.place');
 Route::get('/checkout/callback', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'callback'])
     ->name('store.checkout.callback');
-Route::post('/payments/store/paystack/webhook', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'webhook'])
+Route::post('/payments/store/paystack/webhook', [PaymentController::class, 'webhook'])
     ->name('store.paystack.webhook');
 Route::get('/checkout/success/{order}', [\App\Http\Controllers\Public\StoreCheckoutController::class, 'success'])
     ->name('store.checkout.success');
@@ -144,6 +148,7 @@ Route::redirect('/schools/register', '/register-school')->name('schools.register
 Route::post('/enroll', [SchoolRequestController::class, 'store'])->name('school.enroll');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/payments/history', [PaymentHistoryController::class, 'index'])->name('payments.history');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

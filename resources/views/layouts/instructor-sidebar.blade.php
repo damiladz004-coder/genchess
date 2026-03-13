@@ -11,6 +11,7 @@
         <a href="{{ route('instructor.attendance.select') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('instructor.attendance.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Attendance</a>
         <a href="{{ route('instructor.lesson-plans.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('instructor.lesson-plans.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Lesson Plans</a>
         <a href="{{ route('instructor.timetable.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('instructor.timetable.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Timetable</a>
+        <a href="{{ route('payments.history') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('payments.history') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Payment History</a>
         <a href="{{ route('instructor.exams.assignments.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('instructor.exams.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Manual Exams</a>
         <a href="{{ route('instructor.results.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('instructor.results.*') ? 'bg-brand-700 text-white' : 'text-slate-700 hover:bg-slate-100' }}">Results</a>
     </nav>

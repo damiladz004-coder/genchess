@@ -10,7 +10,9 @@ class PageController extends Controller
 {
     public function home()
     {
-        return view('public.home');
+        return view('public.home', [
+            'classroomImages' => $this->classroomImages(),
+        ]);
     }
 
     public function about()
@@ -33,7 +35,9 @@ class PageController extends Controller
 
     public function chessInSchools()
     {
-        return view('chess-in-schools');
+        return view('chess-in-schools', [
+            'classroomImages' => $this->classroomImages(),
+        ]);
     }
 
     public function chessInSchoolsPrimary()
@@ -110,6 +114,26 @@ class PageController extends Controller
     {
         return view('schools.register');
     }
-}
 
+    private function classroomImages(): array
+    {
+        $keys = [
+            'chess_school_hero_image',
+            'chess_school_lesson_image',
+            'chess_school_play_image',
+            'chess_school_puzzle_image',
+            'chess_school_competition_image',
+        ];
+
+        $settings = Setting::whereIn('key', $keys)->get()->keyBy('key');
+
+        return [
+            'hero' => $settings['chess_school_hero_image']->value ?? asset('images/placeholders/chess-classroom-hero.svg'),
+            'lesson' => $settings['chess_school_lesson_image']->value ?? asset('images/placeholders/chess-classroom-lesson.svg'),
+            'play' => $settings['chess_school_play_image']->value ?? asset('images/placeholders/chess-classroom-play.svg'),
+            'puzzle' => $settings['chess_school_puzzle_image']->value ?? asset('images/placeholders/chess-classroom-puzzle.svg'),
+            'competition' => $settings['chess_school_competition_image']->value ?? asset('images/placeholders/chess-classroom-competition.svg'),
+        ];
+    }
+}
 
