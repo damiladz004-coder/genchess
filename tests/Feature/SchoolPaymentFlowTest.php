@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Mail\CommunityConsultationScheduledMail;
+use App\Models\CommunityConsultation;
 use App\Models\Payment;
 use App\Models\School;
 use App\Models\SchoolPayment;
@@ -115,7 +117,7 @@ class SchoolPaymentFlowTest extends TestCase
         $this->assertDatabaseHas('school_payments', [
             'id' => $schoolPayment->id,
             'amount_paid' => 2000,
-            'status' => 'pending',
+            'status' => 'partial',
         ]);
     }
 
@@ -164,39 +166,41 @@ class SchoolPaymentFlowTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $schoolRequest = SchoolRequest::create([
-            'school_name' => 'Community Chess Hub',
-            'contact_person' => 'Jane Doe',
+        $consultation = CommunityConsultation::create([
+            'name' => 'Jane Doe',
             'email' => 'community@example.com',
             'phone' => '08000000000',
-            'program_type' => 'community',
-            'school_type' => 'private',
-            'class_system' => 'primary_jss_ss',
-            'city' => 'Lagos',
-            'state' => 'Lagos',
-            'consultation_needed' => true,
+            'location' => 'Lagos',
+            'applicant_type' => 'community_estate_representative',
+            'purpose' => 'community_center',
+            'meeting_type' => 'google_meet',
+            'preferred_date' => now()->addDay()->toDateString(),
+            'preferred_time' => '09:00',
+            'status' => CommunityConsultation::STATUS_PENDING,
         ]);
 
         $response = $this
             ->actingAs($admin)
-            ->patch(route('admin.enrollments.consultation', $schoolRequest), [
-                'meeting_type' => 'virtual',
-                'meeting_date' => now()->addDays(2)->toDateString(),
-                'meeting_time' => '10:30',
-                'consultation_link' => 'https://meet.google.com/abc-defg-hij',
-                'consultation_meeting_id' => 'abc-defg-hij',
-                'consultation_passcode' => '123456',
+            ->patch(route('admin.community-consultations.schedule', $consultation), [
+                'meeting_type' => 'google_meet',
+                'scheduled_at' => now()->addDays(2)->format('Y-m-d H:i:s'),
+                'meeting_link' => 'https://meet.google.com/abc-defg-hij',
+                'meeting_id' => 'abc-defg-hij',
+                'meeting_passcode' => '123456',
             ]);
 
         $response
             ->assertRedirect()
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('school_requests', [
-            'id' => $schoolRequest->id,
-            'meeting_type' => 'virtual',
-            'consultation_meeting_id' => 'abc-defg-hij',
+        $this->assertDatabaseHas('community_consultations', [
+            'id' => $consultation->id,
+            'meeting_type' => 'google_meet',
+            'meeting_id' => 'abc-defg-hij',
+            'status' => 'scheduled',
         ]);
+
+        Mail::assertSent(CommunityConsultationScheduledMail::class);
     }
 
     protected function createSchool(): School

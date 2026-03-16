@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\TrainingEnrollment;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureTrainingPayment
@@ -23,11 +24,14 @@ class EnsureTrainingPayment
             abort(403);
         }
 
-        $hasPaidTrainingPayment = Payment::query()
-            ->where('user_id', $user->id)
-            ->where('purpose', Payment::PURPOSE_TRAINING)
-            ->where('status', 'paid')
-            ->exists();
+        $hasPaidTrainingPayment = false;
+        if (Schema::hasTable('payments')) {
+            $hasPaidTrainingPayment = Payment::query()
+                ->where('user_id', $user->id)
+                ->where('purpose', Payment::PURPOSE_TRAINING)
+                ->where('status', 'paid')
+                ->exists();
+        }
 
         if ($enrollment instanceof TrainingEnrollment && $enrollment->isPaid()) {
             return $next($request);
@@ -42,4 +46,3 @@ class EnsureTrainingPayment
         return $next($request);
     }
 }
-

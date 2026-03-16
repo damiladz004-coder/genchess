@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommunityConsultationController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SchoolRequestController;
@@ -146,6 +147,8 @@ Route::domain($mainDomain)->get('/dashboard', function () {
 
 Route::redirect('/schools/register', '/register-school')->name('schools.register.legacy');
 Route::post('/enroll', [SchoolRequestController::class, 'store'])->name('school.enroll');
+Route::post('/community-consultations', [CommunityConsultationController::class, 'store'])
+    ->name('community-consultations.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payments/history', [PaymentHistoryController::class, 'index'])->name('payments.history');

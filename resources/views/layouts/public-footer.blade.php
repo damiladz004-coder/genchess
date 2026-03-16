@@ -40,7 +40,7 @@
             <ul class="space-y-1 text-sm text-purple-200">
                 <li>Email: info@genchess.ng</li>
                 <li>Phone: <a href="https://wa.me/2348078462223" class="hover:text-white">+234-807-846-2223 (WhatsApp)</a></li>
-                <li>Address: Lagos, Nigeria</li>
+                <li>Address: 30, Bishop Oluwole Street, Victoria Island, Lagos</li>
                 <li><a href="{{ route('contact') }}" class="hover:text-white">Contact Us</a></li>
             </ul>
         </div>
@@ -49,5 +49,4 @@
         &copy; {{ date('Y') }} Genchess Educational Services. All rights reserved.
     </div>
 </footer>
-
 

@@ -32,5 +32,6 @@
         <x-nav-link :href="route('admin.careers.index')" :active="request()->routeIs('admin.careers.*')">Careers</x-nav-link>
         <x-nav-link :href="route('admin.instructor-screenings.index')" :active="request()->routeIs('admin.instructor-screenings.*')">Instructor Screening</x-nav-link>
         <x-nav-link :href="route('admin.enrollments.index')" :active="request()->routeIs('admin.enrollments.*')">Enrollments</x-nav-link>
+        <x-nav-link :href="route('admin.community-consultations.index')" :active="request()->routeIs('admin.community-consultations.*')">Community &amp; Home Consultation Requests</x-nav-link>
     </nav>
 </aside>

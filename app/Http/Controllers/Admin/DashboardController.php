@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CommunityConsultation;
 use App\Models\Payment;
 use App\Models\School;
 use App\Models\SchoolRequest;
@@ -10,6 +11,7 @@ use App\Models\Student;
 use App\Models\User;
 use App\Models\SchoolPayment;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -38,16 +40,34 @@ class DashboardController extends Controller
         $totalStudents = Student::count();
         $totalInstructors = User::where('role', 'instructor')->count();
         $totalOutstanding = max(0, SchoolPayment::sum('total_due') - SchoolPayment::sum('amount_paid'));
-        $paidPayments = Payment::query()->where('status', 'paid');
-        $totalPaidPayments = (clone $paidPayments)->count();
-        $trainingPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_TRAINING)->count();
-        $storePayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_STORE)->count();
-        $schoolPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_SCHOOL)->count();
+        $totalPaidPayments = 0;
+        $trainingPayments = 0;
+        $storePayments = 0;
+        $schoolPayments = 0;
+
+        if (Schema::hasTable('payments')) {
+            $paidPayments = Payment::query()->where('status', 'paid');
+            $totalPaidPayments = (clone $paidPayments)->count();
+            $trainingPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_TRAINING)->count();
+            $storePayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_STORE)->count();
+            $schoolPayments = (clone $paidPayments)->where('purpose', Payment::PURPOSE_SCHOOL)->count();
+        }
         $schoolsByState = School::query()
             ->select('state', DB::raw('COUNT(*) as total'))
             ->groupBy('state')
             ->orderBy('state')
             ->get();
+        $pendingCommunityConsultations = 0;
+        $scheduledCommunityConsultations = 0;
+
+        if (Schema::hasTable('community_consultations')) {
+            $pendingCommunityConsultations = CommunityConsultation::query()
+                ->where('status', CommunityConsultation::STATUS_PENDING)
+                ->count();
+            $scheduledCommunityConsultations = CommunityConsultation::query()
+                ->where('status', CommunityConsultation::STATUS_SCHEDULED)
+                ->count();
+        }
 
         return view('admin.dashboard', [
             'totalSchools'   => School::count(),
@@ -64,6 +84,8 @@ class DashboardController extends Controller
             'storePayments' => $storePayments,
             'schoolPayments' => $schoolPayments,
             'schoolsByState' => $schoolsByState,
+            'pendingCommunityConsultations' => $pendingCommunityConsultations,
+            'scheduledCommunityConsultations' => $scheduledCommunityConsultations,
         ]);
     }
 }

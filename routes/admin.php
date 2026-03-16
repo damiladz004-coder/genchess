@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CommunityConsultationAdminController;
 use App\Http\Controllers\Admin\SchoolApprovalController;
 use App\Http\Controllers\Admin\SchoolRequestAdminController;
 use App\Http\Controllers\Admin\ClassTeacherFeedbackController as AdminClassTeacherFeedbackController;
@@ -161,8 +162,14 @@ Route::middleware(['auth', 'verified', 'superadmin'])
             ->name('admin.instructor-screenings.show');
         Route::patch('/instructor-screenings/{screening}/workflow', [\App\Http\Controllers\Admin\InstructorScreeningController::class, 'updateWorkflow'])
             ->name('admin.instructor-screenings.workflow.update');
-        Route::patch('/enrollments/{schoolRequest}/consultation', [SchoolRequestAdminController::class, 'scheduleConsultation'])
-            ->name('admin.enrollments.consultation');
+        Route::get('/community-consultations', [CommunityConsultationAdminController::class, 'index'])
+            ->name('admin.community-consultations.index');
+        Route::get('/community-consultations/{communityConsultation}', [CommunityConsultationAdminController::class, 'show'])
+            ->name('admin.community-consultations.show');
+        Route::patch('/community-consultations/{communityConsultation}/schedule', [CommunityConsultationAdminController::class, 'schedule'])
+            ->name('admin.community-consultations.schedule');
+        Route::patch('/community-consultations/{communityConsultation}/status', [CommunityConsultationAdminController::class, 'updateStatus'])
+            ->name('admin.community-consultations.status');
         Route::post('/careers/jobs', [\App\Http\Controllers\Admin\CareerController::class, 'storeJob'])
             ->name('admin.careers.jobs.store');
         Route::patch('/careers/applications/{application}', [\App\Http\Controllers\Admin\CareerController::class, 'updateApplication'])

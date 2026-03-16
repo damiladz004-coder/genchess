@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\CommunityConsultationScheduledMail;
 use App\Mail\CommunityHomeRequestApproved;
 use App\Mail\SchoolPortalAccessMail;
 use App\Models\Payment;
@@ -14,6 +13,7 @@ use App\Services\WhatsAppMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 
 class SchoolRequestAdminController extends Controller
@@ -42,6 +42,14 @@ class SchoolRequestAdminController extends Controller
 
         $requiredAmount = $paymentPurpose ? (int) config("paystack.fees.{$paymentPurpose}", 0) : 0;
         if ($paymentPurpose && $requiredAmount > 0) {
+            if (!Schema::hasTable('payments')) {
+                return redirect()
+                    ->back()
+                    ->withErrors([
+                        'payment' => 'Payments setup is incomplete. Run migrations to create the payments table.',
+                    ]);
+            }
+
             $isPaid = Payment::query()
                 ->where('purpose', $paymentPurpose)
                 ->where('status', 'paid')
@@ -127,47 +135,5 @@ class SchoolRequestAdminController extends Controller
 
         return redirect()->route('admin.enrollments.index')
             ->with('success', 'School approved. Portal access link sent to email and WhatsApp.');
-    }
-
-    public function scheduleConsultation(Request $request, SchoolRequest $schoolRequest)
-    {
-        $data = $request->validate([
-            'meeting_type' => ['required', 'string', 'max:50'],
-            'meeting_date' => ['required', 'date'],
-            'meeting_time' => ['required', 'date_format:H:i'],
-            'consultation_link' => ['nullable', 'url', 'max:1000'],
-            'consultation_meeting_id' => ['nullable', 'string', 'max:100'],
-            'consultation_passcode' => ['nullable', 'string', 'max:100'],
-        ]);
-
-        $schoolRequest->update($data);
-
-        try {
-            Mail::to($schoolRequest->email)->send(new CommunityConsultationScheduledMail($schoolRequest->fresh()));
-            $schoolRequest->forceFill(['consultation_invitation_sent_at' => now()])->saveQuietly();
-        } catch (\Throwable $e) {
-            Log::error('Failed to send consultation schedule email.', [
-                'school_request_id' => $schoolRequest->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
-
-        $message = sprintf(
-            'Genchess consultation scheduled for %s at %s. Link: %s. Meeting ID: %s. Passcode: %s',
-            $schoolRequest->meeting_date?->format('Y-m-d'),
-            $schoolRequest->meeting_time?->format('H:i'),
-            $schoolRequest->consultation_link ?: 'N/A',
-            $schoolRequest->consultation_meeting_id ?: 'N/A',
-            $schoolRequest->consultation_passcode ?: 'N/A'
-        );
-
-        if ($this->whatsApp->send($schoolRequest->phone, $message, [
-            'school_request_id' => $schoolRequest->id,
-            'type' => 'consultation_schedule',
-        ])) {
-            $schoolRequest->forceFill(['consultation_whatsapp_sent_at' => now()])->saveQuietly();
-        }
-
-        return redirect()->back()->with('success', 'Consultation scheduled and invitation sent.');
     }
 }

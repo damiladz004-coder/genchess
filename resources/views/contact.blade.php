@@ -96,7 +96,7 @@
                 </a>
             </p>
             <h2 class="mt-8 text-xl font-semibold text-slate-900">Office</h2>
-            <p class="mt-2 text-slate-600">Lagos, Nigeria</p>
+            <p class="mt-2 text-slate-600">30, Bishop Oluwole Street, Victoria Island, Lagos</p>
             <p class="mt-4 text-sm text-slate-500">Mon - Fri: 9:00 AM - 5:00 PM</p>
         </article>
     </div>

@@ -57,6 +57,16 @@
                 <h3 class="text-sm text-slate-500">School Payments</h3>
                 <p class="text-2xl font-bold text-indigo-700">{{ $schoolPayments }}</p>
             </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">Pending Consultation Requests</h3>
+                <p class="text-2xl font-bold text-amber-700">{{ $pendingCommunityConsultations }}</p>
+            </div>
+
+            <div class="gc-panel p-4">
+                <h3 class="text-sm text-slate-500">Scheduled Consultation Requests</h3>
+                <p class="text-2xl font-bold text-emerald-700">{{ $scheduledCommunityConsultations }}</p>
+            </div>
         </div>
 
         <div class="gc-panel p-4 flex flex-wrap gap-2">
@@ -67,6 +77,10 @@
             <a href="{{ route('admin.enrollments.index') }}"
                class="gc-btn-secondary">
                 View Enrollment Requests
+            </a>
+            <a href="{{ route('admin.community-consultations.index') }}"
+               class="gc-btn-secondary">
+                Community &amp; Home Consultation Requests
             </a>
             <a href="{{ route('admin.finance.index') }}"
                class="gc-btn-secondary">

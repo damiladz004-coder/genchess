@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class CommunityConsultationScheduledMail extends Mailable
+class CommunityConsultationConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,7 +17,7 @@ class CommunityConsultationScheduledMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your Genchess Consultation Meeting Details')
-            ->view('emails.community-consultation-scheduled');
+        return $this->subject('Genchess Consultation Request Received')
+            ->view('emails.community-consultation-confirmation');
     }
 }
