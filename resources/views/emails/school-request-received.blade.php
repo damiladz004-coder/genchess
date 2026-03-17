@@ -1,15 +1,14 @@
-<h2>Request Received Successfully</h2>
+<h2>Genchess School Registration Received</h2>
 
 <p>Hello {{ $requestData['contact_person'] ?? 'there' }},</p>
 
 <p>
-    Thank you for booking a chess program with Genchess.
-    Your request has been received successfully.
+    Thank you for registering your school with Genchess.
 </p>
 
 <p>
-    Our team will review your details and contact you soon with the next steps.
+    Your request has been received and is currently under review by our team.
+    You will receive another email once your school registration has been approved.
 </p>
 
 <p>Regards,<br>Genchess Educational Services</p>
-

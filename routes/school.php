@@ -8,12 +8,22 @@ use App\Http\Controllers\School\ClassTeacherFeedbackController;
 use App\Http\Controllers\School\ExamAssignmentController;
 use Illuminate\Support\Facades\Route;
 
-Route::domain('school.genchess.ng')
+$baseHost = parse_url(config('app.url'), PHP_URL_HOST) ?: 'genchess.ng';
+$schoolDomain = str_starts_with($baseHost, 'school.') ? $baseHost : 'school.'.$baseHost;
+
+Route::domain($schoolDomain)
     ->middleware(['auth', 'verified', 'schooladmin'])
     ->group(function () {
         Route::redirect('/', '/dashboard');
         Route::get('/dashboard', [DashboardController::class, 'index']);
     });
+
+Route::domain($schoolDomain)->middleware('signed')->group(function () {
+    Route::get('/create-account/{schoolRequest}/{token}', [\App\Http\Controllers\School\PortalOnboardingController::class, 'create'])
+        ->name('school.portal.onboarding.create');
+    Route::post('/create-account/{schoolRequest}/{token}', [\App\Http\Controllers\School\PortalOnboardingController::class, 'store'])
+        ->name('school.portal.onboarding.store');
+});
 
 Route::middleware(['auth', 'verified', 'schooladmin'])->prefix('school')->name('school.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\School\DashboardController::class, 'index'])

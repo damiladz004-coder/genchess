@@ -17,8 +17,7 @@ class SchoolRequestReceived extends Mailable
 
     public function build()
     {
-        return $this->subject('We Received Your Genchess Program Request')
+        return $this->subject('Genchess School Registration Received')
             ->view('emails.school-request-received');
     }
 }
-

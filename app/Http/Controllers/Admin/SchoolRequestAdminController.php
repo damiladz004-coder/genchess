@@ -9,16 +9,19 @@ use App\Models\Payment;
 use App\Models\School;
 use App\Models\SchoolRequest;
 use App\Services\ClassGenerator;
+use App\Services\SchoolOnboardingLinkService;
 use App\Services\WhatsAppMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\URL;
 
 class SchoolRequestAdminController extends Controller
 {
-    public function __construct(private readonly WhatsAppMessageService $whatsApp)
+    public function __construct(
+        private readonly WhatsAppMessageService $whatsApp,
+        private readonly SchoolOnboardingLinkService $onboardingLinkService
+    )
     {
     }
 
@@ -113,7 +116,7 @@ class SchoolRequestAdminController extends Controller
             'school_id' => $school->id,
         ]);
 
-        $onboardingUrl = URL::signedRoute('school.portal.onboarding.create', ['schoolRequest' => $schoolRequest->id]);
+        $onboardingUrl = $this->onboardingLinkService->issue($schoolRequest->fresh());
 
         try {
             Mail::to($schoolRequest->email)->send(new SchoolPortalAccessMail($schoolRequest->fresh(), $onboardingUrl));

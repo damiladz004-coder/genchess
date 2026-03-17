@@ -13,7 +13,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class PaymentService
@@ -22,7 +21,8 @@ class PaymentService
         protected PaystackService $paystackService,
         protected TrainingPaymentService $trainingPaymentService,
         protected StoreOrderService $storeOrderService,
-        protected WhatsAppMessageService $whatsAppService
+        protected WhatsAppMessageService $whatsAppService,
+        protected SchoolOnboardingLinkService $schoolOnboardingLinkService
     ) {
     }
 
@@ -213,7 +213,7 @@ class PaymentService
         $schoolRequest = $schoolRequestId ? SchoolRequest::find($schoolRequestId) : null;
 
         if ($schoolRequest && $schoolRequest->status === 'approved') {
-            return URL::signedRoute('school.portal.onboarding.create', ['schoolRequest' => $schoolRequest->id]);
+            return $this->schoolOnboardingLinkService->issue($schoolRequest);
         }
 
         return route('register.school');
@@ -262,7 +262,7 @@ class PaymentService
 
             // If admin has already approved the request, payment should trigger portal access delivery.
             if ($schoolRequest && $schoolRequest->status === 'approved' && $schoolRequest->school_id) {
-                $onboardingUrl = URL::signedRoute('school.portal.onboarding.create', ['schoolRequest' => $schoolRequest->id]);
+                $onboardingUrl = $this->schoolOnboardingLinkService->issue($schoolRequest);
 
                 if (!$schoolRequest->portal_link_sent_at) {
                     Mail::to($schoolRequest->email)->queue(new SchoolPortalAccessMail($schoolRequest, $onboardingUrl));

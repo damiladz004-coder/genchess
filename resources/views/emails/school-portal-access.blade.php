@@ -1,9 +1,12 @@
-<h2>School Portal Access</h2>
+<h2>Your School Has Been Approved by Genchess</h2>
 <p>Hello {{ $schoolRequest->contact_person }},</p>
-<p>Your school request for <strong>{{ $schoolRequest->school_name }}</strong> has been approved.</p>
+<p>Congratulations! Your school registration for <strong>{{ $schoolRequest->school_name }}</strong> has been approved.</p>
 <p>
-    Complete your school portal onboarding here:
+    You can now create your login credentials and access the School Dashboard.
+</p>
+<p>
+    Create your account here:
     <a href="{{ $onboardingUrl }}">{{ $onboardingUrl }}</a>
 </p>
-<p>After registration you can sign in to the school dashboard.</p>
+<p>This onboarding link is secure and time-limited for your protection.</p>
 <p>Regards,<br>Genchess Educational Services</p>

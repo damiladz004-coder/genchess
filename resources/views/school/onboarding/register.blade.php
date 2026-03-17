@@ -28,14 +28,17 @@
                     <input type="text" name="name" value="{{ old('name', $schoolRequest->contact_person) }}" required>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-slate-700">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $schoolRequest->email) }}" required>
+                    <label class="mb-1 block text-sm font-medium text-slate-700">School Email</label>
+                    <input type="email" value="{{ $schoolRequest->email }}" disabled>
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-slate-700">Phone / WhatsApp</label>
-                    <input type="text" name="phone" value="{{ old('phone', $schoolRequest->phone) }}" required>
+                    <input type="text" value="{{ $schoolRequest->phone }}" disabled>
                 </div>
-                <div></div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-slate-700">Username</label>
+                    <input type="text" name="username" value="{{ old('username') }}" required>
+                </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
                     <input type="password" name="password" required>

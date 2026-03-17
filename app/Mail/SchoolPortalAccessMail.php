@@ -19,7 +19,7 @@ class SchoolPortalAccessMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Genchess School Portal Access Link')
+        return $this->subject('Your School Has Been Approved by Genchess')
             ->view('emails.school-portal-access');
     }
 }
