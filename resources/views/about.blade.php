@@ -18,9 +18,9 @@
 
         <!-- Image placeholder -->
         <img 
-            src="{{ asset('images/hero/genchess-hero.jpg') }}" 
+            src="{{ $aboutImages['hero'] }}" 
             alt="Genchess Educational Services chess training session"
-            class="rounded-xl shadow-lg"
+            class="w-full rounded-xl shadow-lg object-cover border border-slate-200"
         >
     </div>
 </section>
@@ -29,9 +29,9 @@
 <section class="bg-gray-50">
     <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <img 
-            src="{{ asset('images/programs/primary-chess.jpg') }}" 
+            src="{{ $aboutImages['who_we_are'] }}" 
             alt="Primary school chess training"
-            class="rounded-xl shadow-md"
+            class="w-full rounded-xl shadow-md object-cover border border-slate-200"
         >
 
         <div>
@@ -94,9 +94,9 @@
         </div>
 
         <img 
-            src="{{ asset('images/programs/secondary-chess.jpg') }}" 
+            src="{{ $aboutImages['philosophy'] }}" 
             alt="Secondary school chess students"
-            class="rounded-xl shadow-md"
+            class="w-full rounded-xl shadow-md object-cover border border-slate-200"
         >
     </div>
 </section>
@@ -105,9 +105,9 @@
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
         <img 
-            src="{{ asset('images/instructors/certified-coach.jpg') }}" 
+            src="{{ $aboutImages['instructors'] }}" 
             alt="Certified Genchess instructor"
-            class="rounded-xl shadow-md"
+            class="w-full rounded-xl shadow-md object-cover border border-slate-200"
         >
 
         <div>
@@ -145,5 +145,4 @@
 </section>
 
 @endsection
-
 

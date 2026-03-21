@@ -13,6 +13,16 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="gc-panel p-3 border-rose-200 bg-rose-50 text-rose-700">
+            <ul class="list-disc pl-5 space-y-1 text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="gc-panel p-4 space-y-6">
         @csrf
         <div>
@@ -41,51 +51,63 @@
         </div>
 
         <div class="pt-2 border-t border-slate-200">
+            <h3 class="text-lg font-semibold mb-3">Public Page Images</h3>
+            <p class="text-sm text-slate-600 mb-4">
+                These images show automatically on the public pages after you save.
+            </p>
+
+            <div class="space-y-6">
+                @foreach($pageImageSections as $sectionTitle => $fields)
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <h4 class="text-base font-semibold text-slate-900 mb-3">{{ $sectionTitle }}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach($fields as $field)
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-600 mb-1">{{ $field['label'] }}</label>
+                                    <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png,.webp" class="w-full">
+                                    @if(!empty($settings[$field['key']]->value))
+                                        <img
+                                            src="{{ $settings[$field['key']]->value }}"
+                                            alt="{{ $field['alt'] }}"
+                                            class="mt-2 h-28 w-full object-cover rounded border border-slate-200"
+                                        >
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-200">
             <h3 class="text-lg font-semibold mb-3">Chess in Schools Images</h3>
             <p class="text-sm text-slate-600 mb-4">
                 Upload real classroom photos to replace homepage and service page placeholders.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Hero Classroom Image</label>
-                    <input type="file" name="chess_school_hero_image" accept=".jpg,.jpeg,.png,.webp" class="w-full">
-                    @if(!empty($settings['chess_school_hero_image']->value))
-                        <img src="{{ $settings['chess_school_hero_image']->value }}" alt="Hero classroom image preview" class="mt-2 h-28 w-full object-cover rounded border border-slate-200">
-                    @endif
-                </div>
+                @foreach($schoolImageFields as $field)
+                    <div class="{{ $field['key'] === 'chess_school_competition_image' ? 'md:col-span-2' : '' }}">
+                        <label class="block text-sm font-medium text-slate-600 mb-1">{{ $field['label'] }}</label>
+                        <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png,.webp" class="w-full">
+                        @if(!empty($settings[$field['key']]->value))
+                            <img
+                                src="{{ $settings[$field['key']]->value }}"
+                                alt="{{ $field['alt'] }}"
+                                class="mt-2 h-28 w-full object-cover rounded border border-slate-200"
+                            >
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Lesson Image</label>
-                    <input type="file" name="chess_school_lesson_image" accept=".jpg,.jpeg,.png,.webp" class="w-full">
-                    @if(!empty($settings['chess_school_lesson_image']->value))
-                        <img src="{{ $settings['chess_school_lesson_image']->value }}" alt="Lesson image preview" class="mt-2 h-28 w-full object-cover rounded border border-slate-200">
-                    @endif
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Students Playing Image</label>
-                    <input type="file" name="chess_school_play_image" accept=".jpg,.jpeg,.png,.webp" class="w-full">
-                    @if(!empty($settings['chess_school_play_image']->value))
-                        <img src="{{ $settings['chess_school_play_image']->value }}" alt="Students playing image preview" class="mt-2 h-28 w-full object-cover rounded border border-slate-200">
-                    @endif
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Puzzle Session Image</label>
-                    <input type="file" name="chess_school_puzzle_image" accept=".jpg,.jpeg,.png,.webp" class="w-full">
-                    @if(!empty($settings['chess_school_puzzle_image']->value))
-                        <img src="{{ $settings['chess_school_puzzle_image']->value }}" alt="Puzzle image preview" class="mt-2 h-28 w-full object-cover rounded border border-slate-200">
-                    @endif
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Competition Image</label>
-                    <input type="file" name="chess_school_competition_image" accept=".jpg,.jpeg,.png,.webp" class="w-full">
-                    @if(!empty($settings['chess_school_competition_image']->value))
-                        <img src="{{ $settings['chess_school_competition_image']->value }}" alt="Competition image preview" class="mt-2 h-28 w-full object-cover rounded border border-slate-200">
-                    @endif
-                </div>
+        <div class="pt-2 border-t border-slate-200 text-sm text-slate-600 space-y-2">
+            <p>Store category and product images are managed from their own pages:</p>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('admin.store.categories.index') }}" class="gc-btn-secondary">Manage Store Categories</a>
+                <a href="{{ route('admin.store.products.index') }}" class="gc-btn-secondary">Manage Store Products</a>
             </div>
         </div>
 

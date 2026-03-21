@@ -2,6 +2,20 @@
     <div class="space-y-6 max-w-6xl mx-auto">
         <h1 class="text-3xl gc-heading">Store Categories</h1>
 
+        @if(session('success'))
+            <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="gc-panel p-3 border-rose-200 bg-rose-50 text-rose-700">
+                <ul class="list-disc pl-5 space-y-1 text-sm">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="gc-panel p-4">
             <h2 class="text-lg font-semibold mb-3">Create Category</h2>
             <form method="POST" action="{{ route('admin.store.categories.store') }}" enctype="multipart/form-data" class="grid md:grid-cols-2 gap-3">
@@ -30,7 +44,12 @@
                 <tbody>
                     @foreach($categories as $category)
                         <tr>
-                            <td>{{ $category->title }}</td>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ $category->image ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $category->title }}" class="h-12 w-12 rounded object-cover border border-slate-200">
+                                    <span>{{ $category->title }}</span>
+                                </div>
+                            </td>
                             <td>{{ $category->slug }}</td>
                             <td>{{ $category->status }}</td>
                             <td>

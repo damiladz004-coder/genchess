@@ -14,9 +14,9 @@
         </div>
 
         <img
-            src="{{ asset('images/hero/genchess-hero.jpg') }}"
+            src="{{ $communitiesHeroImage }}"
             alt="Community chess learning"
-            class="rounded-xl shadow-lg"
+            class="w-full rounded-xl shadow-lg object-cover border border-slate-200"
         >
     </div>
 </section>

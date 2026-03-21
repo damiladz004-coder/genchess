@@ -2,11 +2,20 @@
 
 @section('content')
 <section class="bg-slate-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 md:py-20">
-        <h1 class="text-4xl md:text-5xl gc-heading">Genchess Official Chess Supplies</h1>
-        <p class="mt-4 text-slate-300 max-w-2xl">
-            Chessboards, clocks, books, apparel, and school packages for schools, communities, organizations, and individual buyers.
-        </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 md:py-20 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center">
+        <div>
+            <h1 class="text-4xl md:text-5xl gc-heading">Genchess Official Chess Supplies</h1>
+            <p class="mt-4 text-slate-300 max-w-2xl">
+                Chessboards, clocks, books, apparel, and school packages for schools, communities, organizations, and individual buyers.
+            </p>
+        </div>
+        <div>
+            <img
+                src="{{ $storeHeroImage ?: asset('images/products/placeholder-board.jpg') }}"
+                alt="Genchess store hero"
+                class="w-full h-64 md:h-80 object-cover rounded-2xl border border-slate-700 shadow-soft"
+            >
+        </div>
     </div>
 </section>
 
@@ -50,8 +59,18 @@
 </section>
 
 <section class="bg-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <h2 class="text-2xl gc-heading mb-4">Request Bulk Order Quote</h2>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] items-start">
+        <div class="space-y-4">
+            <h2 class="text-2xl gc-heading">Request Bulk Order Quote</h2>
+            <p class="text-slate-600">
+                Upload your logo, list the materials you need, and we will prepare a bulk quote for your school, club, or organization.
+            </p>
+            <img
+                src="{{ $storeBulkOrderImage ?: asset('images/products/placeholder-board.jpg') }}"
+                alt="Bulk order request"
+                class="w-full h-72 rounded-2xl object-cover border border-slate-200 shadow-soft"
+            >
+        </div>
         <form method="POST" action="{{ route('store.bulk-order.store') }}" enctype="multipart/form-data" class="gc-panel p-5 space-y-4">
             @csrf
             <div class="grid gap-3 md:grid-cols-2">

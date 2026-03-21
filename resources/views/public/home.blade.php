@@ -16,7 +16,7 @@
             </div>
         </div>
         <div>
-            <img src="{{ asset('images/hero/genchess-hero.jpg') }}" alt="Genchess Educational Services" class="w-full rounded-xl2 shadow-soft border border-slate-200">
+            <img src="{{ $homepageHeroImage }}" alt="Genchess Educational Services" class="w-full rounded-xl2 shadow-soft border border-slate-200">
         </div>
     </div>
 </section>
@@ -26,7 +26,7 @@
         <h2 class="text-3xl gc-heading mb-8">What We Do</h2>
         <div class="grid md:grid-cols-3 gap-6">
             <article class="gc-panel p-5">
-                <img src="{{ asset('icons/school.svg') }}" alt="Chess in Schools icon" class="mb-3">
+                <img src="{{ $homepageServiceImages['schools'] }}" alt="Chess in Schools" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
                 <h3 class="text-xl font-semibold mb-2">Chess in Schools</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Structured programs for primary and secondary classes, delivered as subject or club.
@@ -35,7 +35,7 @@
             </article>
 
             <article class="gc-panel p-5">
-                <img src="{{ asset('icons/community.svg') }}" alt="Chess in Communities and Homes icon" class="mb-3">
+                <img src="{{ $homepageServiceImages['communities'] }}" alt="Chess in Communities and Homes" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
                 <h3 class="text-xl font-semibold mb-2">Chess in Communities & Homes</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Home tutorials available online or offline. Families submit location and preference, then a certified instructor is assigned within that area/community.
@@ -44,7 +44,7 @@
             </article>
 
             <article class="gc-panel p-5">
-                <img src="{{ asset('icons/chess-board.svg') }}" alt="Chess products icon" class="mb-3">
+                <img src="{{ $homepageServiceImages['store'] }}" alt="Chess products" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
                 <h3 class="text-xl font-semibold mb-2">Chess Products</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Boards, clocks, books, and materials for schools, clubs, and individual learners.
@@ -184,7 +184,7 @@
             </article>
         </div>
         <div class="mt-8">
-            <img src="{{ asset('images/instructors/certified-coach.jpg') }}" alt="Chess instructor training" class="w-full rounded-xl2 border border-slate-700">
+            <img src="{{ $homepageInstructorImage }}" alt="Chess instructor training" class="w-full rounded-xl2 border border-slate-700 object-cover">
         </div>
     </div>
 </section>

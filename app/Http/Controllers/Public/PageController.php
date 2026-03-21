@@ -11,13 +11,27 @@ class PageController extends Controller
     public function home()
     {
         return view('public.home', [
+            'homepageHeroImage' => $this->settingValue('homepage_hero_image', asset('images/hero/genchess-hero.jpg')),
+            'homepageServiceImages' => [
+                'schools' => $this->settingValue('homepage_schools_image', asset('images/placeholders/chess-classroom-lesson.svg')),
+                'communities' => $this->settingValue('homepage_communities_image', asset('images/placeholders/chess-classroom-play.svg')),
+                'store' => $this->settingValue('homepage_store_image', asset('images/products/placeholder-board.jpg')),
+            ],
+            'homepageInstructorImage' => $this->settingValue('homepage_instructor_image', asset('images/instructors/certified-coach.jpg')),
             'classroomImages' => $this->classroomImages(),
         ]);
     }
 
     public function about()
     {
-        return view('about');
+        return view('about', [
+            'aboutImages' => [
+                'hero' => $this->settingValue('about_hero_image', asset('images/hero/genchess-hero.jpg')),
+                'who_we_are' => $this->settingValue('about_who_we_are_image', asset('images/programs/primary-chess.jpg')),
+                'philosophy' => $this->settingValue('about_philosophy_image', asset('images/programs/secondary-chess.jpg')),
+                'instructors' => $this->settingValue('about_instructors_image', asset('images/instructors/certified-coach.jpg')),
+            ],
+        ]);
     }
 
     public function contact()
@@ -30,6 +44,7 @@ class PageController extends Controller
             'organizationName' => $settings['organization_name']->value ?? 'Genchess Educational Services',
             'supportEmail' => $settings['support_email']->value ?? 'info@genchess.ng',
             'supportPhone' => $settings['support_phone']->value ?? '+234 XXX XXX XXXX',
+            'contactHeroImage' => $this->settingValue('contact_hero_image', asset('images/hero/genchess-hero.jpg')),
         ]);
     }
 
@@ -52,7 +67,9 @@ class PageController extends Controller
 
     public function chessCommunitiesHomes()
     {
-        return view('chess-communities-homes');
+        return view('chess-communities-homes', [
+            'communitiesHeroImage' => $this->settingValue('communities_hero_image', asset('images/hero/genchess-hero.jpg')),
+        ]);
     }
 
     public function instructorTraining()
@@ -135,5 +152,9 @@ class PageController extends Controller
             'competition' => $settings['chess_school_competition_image']->value ?? asset('images/placeholders/chess-classroom-competition.svg'),
         ];
     }
-}
 
+    private function settingValue(string $key, string $fallback): string
+    {
+        return Setting::where('key', $key)->value('value') ?: $fallback;
+    }
+}

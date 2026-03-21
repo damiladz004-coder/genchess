@@ -8,6 +8,20 @@
             <a href="{{ route('admin.store.products.index') }}" class="gc-btn-secondary">Back to Products</a>
         </div>
 
+        @if(session('success'))
+            <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="gc-panel p-3 border-rose-200 bg-rose-50 text-rose-700">
+                <ul class="list-disc pl-5 space-y-1 text-sm">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="gc-panel p-4">
             <h2 class="text-lg font-semibold mb-3">Upload Image</h2>
             <p class="text-sm text-slate-600 mb-3">Mark one image as primary. Primary image is used on product cards and detail page.</p>

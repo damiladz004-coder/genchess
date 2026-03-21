@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Schema;
 
 class StoreController extends Controller
@@ -15,6 +16,8 @@ class StoreController extends Controller
             return view('store.index', [
                 'categories' => collect(),
                 'featuredProducts' => collect(),
+                'storeHeroImage' => null,
+                'storeBulkOrderImage' => null,
             ])->with('error', 'Store is being set up. Please run migrations and seeders.');
         }
 
@@ -26,7 +29,10 @@ class StoreController extends Controller
             ->take(12)
             ->get();
 
-        return view('store.index', compact('categories', 'featuredProducts'));
+        $storeHeroImage = Setting::where('key', 'store_hero_image')->value('value');
+        $storeBulkOrderImage = Setting::where('key', 'store_bulk_order_image')->value('value');
+
+        return view('store.index', compact('categories', 'featuredProducts', 'storeHeroImage', 'storeBulkOrderImage'));
     }
 
     public function category(Category $category)

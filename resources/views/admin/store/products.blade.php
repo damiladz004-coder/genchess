@@ -5,6 +5,20 @@
             <a href="{{ route('admin.dashboard') }}" class="gc-btn-secondary">Back to Dashboard</a>
         </div>
 
+        @if(session('success'))
+            <div class="gc-panel p-3 border-emerald-200 bg-emerald-50 text-emerald-700">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="gc-panel p-3 border-rose-200 bg-rose-50 text-rose-700">
+                <ul class="list-disc pl-5 space-y-1 text-sm">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="gc-panel p-4">
             <h2 class="text-lg font-semibold mb-3">Create Product</h2>
             <p class="text-sm text-slate-600 mb-3">After creating a product, use "Manage Images" to upload real photos and set a primary image.</p>
@@ -54,11 +68,16 @@
                 @foreach($products as $product)
                     <tr>
                         <td>
-                            {{ $product->name }}
-                            @if($product->featured)
-                                <span class="ml-1 inline-block text-[10px] uppercase tracking-wide bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">Featured</span>
-                            @endif
-                            <br><span class="text-xs text-slate-500">{{ $product->sku }}</span>
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $product->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $product->name }}" class="h-12 w-12 rounded object-cover border border-slate-200">
+                                <div>
+                                    {{ $product->name }}
+                                    @if($product->featured)
+                                        <span class="ml-1 inline-block text-[10px] uppercase tracking-wide bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">Featured</span>
+                                    @endif
+                                    <br><span class="text-xs text-slate-500">{{ $product->sku }}</span>
+                                </div>
+                            </div>
                         </td>
                         <td>{{ $product->category->title ?? '-' }}</td>
                         <td>NGN {{ number_format($product->price_kobo / 100, 2) }}</td>
@@ -99,5 +118,4 @@
         </div>
     </div>
 </x-app-layout>
-
 

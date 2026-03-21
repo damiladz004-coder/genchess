@@ -2,12 +2,19 @@
 
 @section('content')
 <section class="bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20 grid gap-8 lg:grid-cols-[1fr_0.9fr] items-center">
         <div class="max-w-3xl">
             <h1 class="text-4xl md:text-5xl gc-heading leading-tight">Contact {{ $organizationName }}</h1>
             <p class="mt-4 text-lg text-slate-600">
                 Reach us for school partnerships, community and home chess programs, instructor opportunities, and general inquiries.
             </p>
+        </div>
+        <div>
+            <img
+                src="{{ $contactHeroImage }}"
+                alt="Contact Genchess"
+                class="w-full h-72 md:h-80 rounded-2xl object-cover border border-slate-200 shadow-soft"
+            >
         </div>
     </div>
 </section>
