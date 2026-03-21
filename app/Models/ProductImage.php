@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MediaPath;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductImage extends Model
@@ -24,5 +25,9 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
-}
 
+    public function getImagePathAttribute(?string $value): ?string
+    {
+        return MediaPath::toUrl($value);
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MediaPath;
 use Illuminate\Database\Eloquent\Model;
 
 class ExamQuestion extends Model
@@ -24,5 +25,10 @@ class ExamQuestion extends Model
     public function options()
     {
         return $this->hasMany(ExamQuestionOption::class)->orderBy('position');
+    }
+
+    public function getQuestionImagePathAttribute(?string $value): ?string
+    {
+        return MediaPath::toUrl($value);
     }
 }

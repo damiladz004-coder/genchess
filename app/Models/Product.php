@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MediaPath;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -58,5 +59,9 @@ class Product extends Model
     {
         return $this->stock_quantity < 1 || $this->status !== 'active';
     }
-}
 
+    public function getImagePlaceholderAttribute(?string $value): ?string
+    {
+        return MediaPath::toUrl($value);
+    }
+}

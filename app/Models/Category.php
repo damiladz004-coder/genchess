@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\MediaPath;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
@@ -23,5 +24,9 @@ class Category extends Model
     {
         return 'slug';
     }
-}
 
+    public function getImageAttribute(?string $value): ?string
+    {
+        return MediaPath::toUrl($value);
+    }
+}
