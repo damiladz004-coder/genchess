@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Mail\InstructorInvite;
 use App\Models\InstructorProfile;
 use App\Models\InstructorScreening;
+use App\Support\PublicImage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -32,7 +32,7 @@ class InstructorOnboardingController extends Controller
         $this->ensureScreeningCanOnboard($screening);
 
         $data = $request->validate([
-            'passport_photo' => 'required|image|max:4096',
+            'passport_photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
             'full_name' => 'required|string|max:255',
             'address' => 'required|string|max:2000',
             'location' => 'required|string|max:255',
@@ -46,7 +46,7 @@ class InstructorOnboardingController extends Controller
             'areas_of_specialization' => 'required|string|max:1000',
         ]);
 
-        $passportPath = $request->file('passport_photo')->store('instructor-passports', 'public');
+        $passportPath = PublicImage::store($request->file('passport_photo'), 'instructors/passports');
         $temporaryPassword = null;
         $createdNewUser = false;
         $warning = null;
@@ -93,7 +93,7 @@ class InstructorOnboardingController extends Controller
                 ->first();
 
             if ($existingProfile && $existingProfile->passport_photo_path !== $passportPath) {
-                Storage::disk('public')->delete($existingProfile->passport_photo_path);
+                PublicImage::delete($existingProfile->getRawOriginal('passport_photo_path'));
             }
 
             $profilePayload = [

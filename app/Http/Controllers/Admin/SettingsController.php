@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\PublicImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
-    private const IMAGE_RULE = 'nullable|image|mimes:jpg,jpeg,png,webp|max:6144';
+    private const IMAGE_RULE = 'nullable|image|mimes:jpg,jpeg,png|max:6144';
 
     private array $pageImageSections = [
         'Homepage' => [
@@ -86,19 +86,13 @@ class SettingsController extends Controller
             }
 
             $existing = Setting::where('key', $imageKey)->value('value');
-            if ($existing && str_starts_with($existing, '/storage/')) {
-                $oldPath = ltrim(str_replace('/storage/', '', $existing), '/');
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
+            PublicImage::delete($existing);
 
-            $storedPath = $request->file($imageKey)->store($field['directory'], 'public');
-            $publicPath = '/storage/' . ltrim($storedPath, '/');
+            $imagePath = PublicImage::store($request->file($imageKey), $field['directory']);
 
             Setting::updateOrCreate(
                 ['key' => $imageKey],
-                ['value' => $publicPath]
+                ['value' => $imagePath]
             );
         }
 

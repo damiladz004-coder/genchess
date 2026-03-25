@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $fallbackImage = asset('images/products/placeholder-board.jpg');
+    @endphp
     <div class="space-y-6 max-w-7xl mx-auto">
         <div class="flex items-center justify-between gap-3">
             <h1 class="text-3xl gc-heading">Store Products</h1>
@@ -66,10 +69,16 @@
                 </thead>
                 <tbody>
                 @foreach($products as $product)
+                    @php
+                        $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
+                        $productImageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
+                            ? asset('images/' . $imagePath)
+                            : $fallbackImage;
+                    @endphp
                     <tr>
                         <td>
                             <div class="flex items-center gap-3">
-                                <img src="{{ $product->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $product->name }}" class="h-12 w-12 rounded object-cover border border-slate-200">
+                                <img src="{{ $productImageUrl }}" alt="{{ $product->name }}" class="h-12 w-12 rounded object-cover border border-slate-200">
                                 <div>
                                     {{ $product->name }}
                                     @if($product->featured)
@@ -118,4 +127,3 @@
         </div>
     </div>
 </x-app-layout>
-

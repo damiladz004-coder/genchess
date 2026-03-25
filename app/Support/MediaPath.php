@@ -33,6 +33,14 @@ class MediaPath
             return asset($relativePath);
         }
 
+        if (str_starts_with($relativePath, 'images/')) {
+            return asset($relativePath);
+        }
+
+        if (file_exists(public_path('images/'.$relativePath))) {
+            return asset('images/'.$relativePath);
+        }
+
         if (Storage::disk('public')->exists($relativePath)) {
             return Storage::url($relativePath);
         }
@@ -49,6 +57,10 @@ class MediaPath
             return asset($relativePath);
         }
 
-        return str_starts_with($path, '/') ? $path : asset($relativePath);
+        if (str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return asset('images/'.$relativePath);
     }
 }

@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $fallbackImage = asset('images/products/placeholder-board.jpg');
+    @endphp
     <div class="space-y-6 max-w-6xl mx-auto">
         <h1 class="text-3xl gc-heading">Store Categories</h1>
 
@@ -43,10 +46,16 @@
                 </thead>
                 <tbody>
                     @foreach($categories as $category)
+                        @php
+                            $imagePath = \App\Support\PublicImage::normalizeRelativePath($category->getRawOriginal('image'));
+                            $categoryImageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
+                                ? asset('images/' . $imagePath)
+                                : $fallbackImage;
+                        @endphp
                         <tr>
                             <td>
                                 <div class="flex items-center gap-3">
-                                    <img src="{{ $category->image ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $category->title }}" class="h-12 w-12 rounded object-cover border border-slate-200">
+                                    <img src="{{ $categoryImageUrl }}" alt="{{ $category->title }}" class="h-12 w-12 rounded object-cover border border-slate-200">
                                     <span>{{ $category->title }}</span>
                                 </div>
                             </td>

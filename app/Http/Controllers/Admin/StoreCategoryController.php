@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\PublicImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class StoreCategoryController extends Controller
@@ -22,7 +22,7 @@ class StoreCategoryController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -38,7 +38,7 @@ class StoreCategoryController extends Controller
             'slug' => $slug,
             'description' => $data['description'] ?? null,
             'image' => $request->hasFile('image')
-                ? '/storage/' . ltrim($request->file('image')->store('store/category-images', 'public'), '/')
+                ? PublicImage::store($request->file('image'), 'categories')
                 : null,
             'status' => $data['status'],
         ]);
@@ -51,21 +51,14 @@ class StoreCategoryController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'status' => 'required|in:active,inactive',
         ]);
 
-        $imagePath = $category->image;
+        $imagePath = $category->getRawOriginal('image');
         if ($request->hasFile('image')) {
-            if ($imagePath && str_starts_with($imagePath, '/storage/store/category-images/')) {
-                $oldPath = ltrim(str_replace('/storage/', '', $imagePath), '/');
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-
-            $storedPath = $request->file('image')->store('store/category-images', 'public');
-            $imagePath = '/storage/' . ltrim($storedPath, '/');
+            PublicImage::delete($imagePath);
+            $imagePath = PublicImage::store($request->file('image'), 'categories');
         }
 
         $category->update([

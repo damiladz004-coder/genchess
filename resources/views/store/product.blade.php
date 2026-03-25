@@ -2,16 +2,34 @@
 
 @section('content')
 @php
-    $defaultImage = $product->image_placeholder ?: '/images/products/placeholder-board.jpg';
-    $galleryImages = $product->images->pluck('image_path')->filter()->values();
+    $fallbackImage = asset('images/products/placeholder-board.jpg');
+
+    $resolveImage = function (?string $path) use ($fallbackImage): string {
+        $imagePath = \App\Support\PublicImage::normalizeRelativePath($path);
+        if (!$imagePath) {
+            return $fallbackImage;
+        }
+
+        return file_exists(public_path('images/' . $imagePath))
+            ? asset('images/' . $imagePath)
+            : $fallbackImage;
+    };
+
+    $defaultImagePath = $product->getRawOriginal('image_placeholder');
+    $defaultImage = $resolveImage($defaultImagePath);
+    $galleryImages = $product->images
+        ->map(fn ($image) => $image->getRawOriginal('image_path'))
+        ->filter()
+        ->map($resolveImage)
+        ->values();
 
     if ($galleryImages->isEmpty()) {
         $galleryImages = collect([$defaultImage]);
-    } elseif ($product->image_placeholder && !$galleryImages->contains($product->image_placeholder)) {
-        $galleryImages->prepend($product->image_placeholder);
+    } elseif ($defaultImagePath && !$galleryImages->contains($defaultImage)) {
+        $galleryImages->prepend($defaultImage);
     }
 
-    $initialIndex = $galleryImages->search($product->image_placeholder ?: $defaultImage);
+    $initialIndex = $galleryImages->search($defaultImage);
     $initialIndex = $initialIndex === false ? 0 : $initialIndex;
 @endphp
 <section class="bg-white">
@@ -114,8 +132,14 @@
             <h3 class="text-xl gc-heading mt-10 mb-4">Related Products</h3>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach($relatedProducts as $related)
+                    @php
+                        $relatedPath = \App\Support\PublicImage::normalizeRelativePath($related->getRawOriginal('image_placeholder'));
+                        $relatedImage = $relatedPath && file_exists(public_path('images/' . $relatedPath))
+                            ? asset('images/' . $relatedPath)
+                            : $fallbackImage;
+                    @endphp
                     <a href="{{ route('store.product', $related) }}" class="gc-panel p-3">
-                        <img src="{{ $related->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" class="w-full h-28 object-cover rounded" alt="{{ $related->name }}">
+                        <img src="{{ $relatedImage }}" class="w-full h-28 object-cover rounded" alt="{{ $related->name }}">
                         <div class="mt-2 text-sm font-semibold">{{ $related->name }}</div>
                     </a>
                 @endforeach

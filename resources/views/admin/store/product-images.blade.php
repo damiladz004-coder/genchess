@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+        $fallbackImage = asset('images/products/placeholder-board.jpg');
+    @endphp
     <div class="space-y-6 max-w-7xl mx-auto">
         <div class="flex items-center justify-between gap-3">
             <div>
@@ -44,9 +47,15 @@
             @else
                 <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     @foreach($product->images as $image)
+                        @php
+                            $imagePath = \App\Support\PublicImage::normalizeRelativePath($image->getRawOriginal('image_path'));
+                            $imageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
+                                ? asset('images/' . $imagePath)
+                                : $fallbackImage;
+                        @endphp
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2 bg-white dark:bg-slate-900">
-                            <img src="{{ $image->image_path }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded-lg">
-                            <div class="text-xs text-slate-600 break-all">{{ $image->image_path }}</div>
+                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded-lg">
+                            <div class="text-xs text-slate-600 break-all">{{ $imagePath ?? 'missing-path' }}</div>
                             <div class="text-xs text-slate-700 dark:text-slate-300">Sort: {{ $image->sort_order }}</div>
                             @if($image->is_primary)
                                 <div class="text-xs inline-block bg-emerald-100 text-emerald-700 rounded-full px-2.5 py-1 font-semibold">Primary</div>

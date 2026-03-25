@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\MediaPath;
 use App\Models\TrainingCourse;
 
 class PageController extends Controller
@@ -155,6 +156,8 @@ class PageController extends Controller
 
     private function settingValue(string $key, string $fallback): string
     {
-        return Setting::where('key', $key)->value('value') ?: $fallback;
+        $value = Setting::where('key', $key)->value('value');
+
+        return MediaPath::toUrl($value) ?: $fallback;
     }
 }

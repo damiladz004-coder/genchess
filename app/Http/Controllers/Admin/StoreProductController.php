@@ -7,8 +7,8 @@ use App\Models\Category;
 use App\Models\InventoryLog;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Support\PublicImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
@@ -114,13 +114,12 @@ class StoreProductController extends Controller
     public function storeImage(Request $request, Product $product)
     {
         $data = $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:4096',
             'sort_order' => 'nullable|integer|min:0|max:9999',
             'is_primary' => 'nullable|boolean',
         ]);
 
-        $path = $request->file('image')->store('store/product-images', 'public');
-        $publicPath = '/storage/' . ltrim($path, '/');
+        $path = PublicImage::store($request->file('image'), 'products');
 
         $isPrimary = $request->boolean('is_primary');
         if (!$isPrimary && !$product->images()->where('is_primary', true)->exists()) {
@@ -133,13 +132,13 @@ class StoreProductController extends Controller
 
         ProductImage::create([
             'product_id' => $product->id,
-            'image_path' => $publicPath,
+            'image_path' => $path,
             'is_primary' => $isPrimary,
             'sort_order' => (int) ($data['sort_order'] ?? 0),
         ]);
 
         if ($isPrimary) {
-            $product->update(['image_placeholder' => $publicPath]);
+            $product->update(['image_placeholder' => $path]);
         }
 
         return back()->with('success', 'Product image uploaded.');
@@ -149,9 +148,11 @@ class StoreProductController extends Controller
     {
         abort_unless($image->product_id === $product->id, 404);
 
+        $rawImagePath = $image->getRawOriginal('image_path');
+
         $product->images()->update(['is_primary' => false]);
         $image->update(['is_primary' => true]);
-        $product->update(['image_placeholder' => $image->image_path]);
+        $product->update(['image_placeholder' => $rawImagePath]);
 
         return back()->with('success', 'Primary image updated.');
     }
@@ -160,12 +161,7 @@ class StoreProductController extends Controller
     {
         abort_unless($image->product_id === $product->id, 404);
 
-        if (str_starts_with($image->image_path, '/storage/')) {
-            $storagePath = ltrim(str_replace('/storage/', '', $image->image_path), '/');
-            if (Storage::disk('public')->exists($storagePath)) {
-                Storage::disk('public')->delete($storagePath);
-            }
-        }
+        PublicImage::delete($image->getRawOriginal('image_path'));
 
         $wasPrimary = (bool) $image->is_primary;
         $image->delete();
@@ -174,7 +170,9 @@ class StoreProductController extends Controller
             $newPrimary = $product->images()->orderBy('sort_order')->first();
             if ($newPrimary) {
                 $newPrimary->update(['is_primary' => true]);
-                $product->update(['image_placeholder' => $newPrimary->image_path]);
+                $product->update(['image_placeholder' => $newPrimary->getRawOriginal('image_path')]);
+            } else {
+                $product->update(['image_placeholder' => null]);
             }
         }
 

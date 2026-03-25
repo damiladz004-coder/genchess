@@ -1,6 +1,19 @@
 @extends('layouts.public')
 
 @section('content')
+@php
+    $fallbackImage = asset('images/products/placeholder-board.jpg');
+    $resolveImage = function (?string $path) use ($fallbackImage): string {
+        $imagePath = \App\Support\PublicImage::normalizeRelativePath($path);
+        if (!$imagePath) {
+            return $fallbackImage;
+        }
+
+        return file_exists(public_path('images/' . $imagePath))
+            ? asset('images/' . $imagePath)
+            : $fallbackImage;
+    };
+@endphp
 <section class="bg-slate-900 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 md:py-20 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center">
         <div>
@@ -11,7 +24,7 @@
         </div>
         <div>
             <img
-                src="{{ $storeHeroImage ?: asset('images/products/placeholder-board.jpg') }}"
+                src="{{ $resolveImage($storeHeroImage) }}"
                 alt="Genchess store hero"
                 class="w-full h-64 md:h-80 object-cover rounded-2xl border border-slate-700 shadow-soft"
             >
@@ -24,8 +37,14 @@
         <h2 class="text-2xl gc-heading mb-5">Categories</h2>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             @forelse($categories as $category)
+                @php
+                    $categoryImagePath = \App\Support\PublicImage::normalizeRelativePath($category->getRawOriginal('image'));
+                    $categoryImage = $categoryImagePath && file_exists(public_path('images/' . $categoryImagePath))
+                        ? asset('images/' . $categoryImagePath)
+                        : $fallbackImage;
+                @endphp
                 <a href="{{ route('store.category', $category) }}" class="gc-panel p-4 hover:border-brand-500 transition">
-                    <img src="{{ $category->image ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $category->title }}" class="w-full h-32 object-cover rounded">
+                    <img src="{{ $categoryImage }}" alt="{{ $category->title }}" class="w-full h-32 object-cover rounded">
                     <h3 class="mt-3 font-semibold text-slate-900">{{ $category->title }}</h3>
                 </a>
             @empty
@@ -40,8 +59,14 @@
         <h2 class="text-2xl gc-heading mb-5">Featured Products</h2>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($featuredProducts as $product)
+                @php
+                    $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
+                    $productImage = $imagePath && file_exists(public_path('images/' . $imagePath))
+                        ? asset('images/' . $imagePath)
+                        : $fallbackImage;
+                @endphp
                 <article class="gc-panel p-4">
-                    <img src="{{ $product->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded">
+                    <img src="{{ $productImage }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded">
                     <h3 class="mt-3 font-semibold text-slate-900">{{ $product->name }}</h3>
                     <p class="text-slate-700 text-sm mt-1">NGN {{ number_format($product->price_kobo / 100, 2) }}</p>
                     @if($product->stock_quantity < 1)
@@ -66,7 +91,7 @@
                 Upload your logo, list the materials you need, and we will prepare a bulk quote for your school, club, or organization.
             </p>
             <img
-                src="{{ $storeBulkOrderImage ?: asset('images/products/placeholder-board.jpg') }}"
+                src="{{ $resolveImage($storeBulkOrderImage) }}"
                 alt="Bulk order request"
                 class="w-full h-72 rounded-2xl object-cover border border-slate-200 shadow-soft"
             >

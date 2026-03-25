@@ -120,7 +120,13 @@
                             <td>{{ $profile?->genchess_instructor_id ?? 'Pending' }}</td>
                             <td>
                                 @if($profile?->passport_photo_path)
-                                    <img src="{{ asset('storage/'.$profile->passport_photo_path) }}" alt="{{ $profile->full_name }}" class="h-12 w-12 rounded-full object-cover">
+                                    @php
+                                        $passportPath = \App\Support\PublicImage::normalizeRelativePath($profile->passport_photo_path);
+                                        $passportUrl = $passportPath && file_exists(public_path('images/' . $passportPath))
+                                            ? asset('images/' . $passportPath)
+                                            : asset('images/products/placeholder-board.jpg');
+                                    @endphp
+                                    <img src="{{ $passportUrl }}" alt="{{ $profile->full_name }}" class="h-12 w-12 rounded-full object-cover">
                                 @else
                                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xs text-slate-500">N/A</div>
                                 @endif
@@ -165,7 +171,13 @@
                 <article class="gc-panel p-4 space-y-4">
                     <div class="flex items-start gap-3">
                         @if($profile?->passport_photo_path)
-                            <img src="{{ asset('storage/'.$profile->passport_photo_path) }}" alt="{{ $profile->full_name }}" class="h-16 w-16 rounded-2xl object-cover">
+                            @php
+                                $passportPath = \App\Support\PublicImage::normalizeRelativePath($profile->passport_photo_path);
+                                $passportUrl = $passportPath && file_exists(public_path('images/' . $passportPath))
+                                    ? asset('images/' . $passportPath)
+                                    : asset('images/products/placeholder-board.jpg');
+                            @endphp
+                            <img src="{{ $passportUrl }}" alt="{{ $profile->full_name }}" class="h-16 w-16 rounded-2xl object-cover">
                         @else
                             <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-xs text-slate-500">No photo</div>
                         @endif

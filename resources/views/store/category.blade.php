@@ -1,6 +1,9 @@
 @extends('layouts.public')
 
 @section('content')
+@php
+    $fallbackImage = asset('images/products/placeholder-board.jpg');
+@endphp
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <h1 class="text-3xl gc-heading">{{ $category->title }}</h1>
@@ -10,8 +13,14 @@
 
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($products as $product)
+                @php
+                    $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
+                    $productImage = $imagePath && file_exists(public_path('images/' . $imagePath))
+                        ? asset('images/' . $imagePath)
+                        : $fallbackImage;
+                @endphp
                 <article class="gc-panel p-4">
-                    <img src="{{ $product->image_placeholder ?: '/images/products/placeholder-board.jpg' }}" class="w-full h-40 object-cover rounded" alt="{{ $product->name }}">
+                    <img src="{{ $productImage }}" class="w-full h-40 object-cover rounded" alt="{{ $product->name }}">
                     <h3 class="mt-3 font-semibold">{{ $product->name }}</h3>
                     <p class="text-sm text-slate-700 mt-1">NGN {{ number_format($product->price_kobo / 100, 2) }}</p>
                     <a href="{{ route('store.product', $product) }}" class="gc-btn-secondary mt-3">Open</a>
@@ -24,4 +33,3 @@
     </div>
 </section>
 @endsection
-
