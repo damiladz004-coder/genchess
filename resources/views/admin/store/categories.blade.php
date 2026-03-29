@@ -24,7 +24,7 @@
             <form method="POST" action="{{ route('admin.store.categories.store') }}" enctype="multipart/form-data" class="grid md:grid-cols-2 gap-3">
                 @csrf
                 <input name="title" placeholder="Title" required>
-                <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+                <input type="file" name="image" accept=".jpg,.jpeg,.png">
                 <textarea name="description" class="md:col-span-2" rows="2" placeholder="Description"></textarea>
                 <select name="status">
                     <option value="active">Active</option>
@@ -47,10 +47,7 @@
                 <tbody>
                     @foreach($categories as $category)
                         @php
-                            $imagePath = \App\Support\PublicImage::normalizeRelativePath($category->getRawOriginal('image'));
-                            $categoryImageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
-                                ? asset('images/' . $imagePath)
-                                : $fallbackImage;
+                            $categoryImageUrl = \App\Support\PublicImage::url($category->getRawOriginal('image'), 'images/products/placeholder-board.jpg');
                         @endphp
                         <tr>
                             <td>
@@ -66,7 +63,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <input name="title" value="{{ $category->title }}">
-                                    <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+                                    <input type="file" name="image" accept=".jpg,.jpeg,.png">
                                     <select name="status">
                                         <option value="active" @selected($category->status==='active')>active</option>
                                         <option value="inactive" @selected($category->status==='inactive')>inactive</option>

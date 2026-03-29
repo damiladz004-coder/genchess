@@ -5,14 +5,7 @@
     $fallbackImage = asset('images/products/placeholder-board.jpg');
 
     $resolveImage = function (?string $path) use ($fallbackImage): string {
-        $imagePath = \App\Support\PublicImage::normalizeRelativePath($path);
-        if (!$imagePath) {
-            return $fallbackImage;
-        }
-
-        return file_exists(public_path('images/' . $imagePath))
-            ? asset('images/' . $imagePath)
-            : $fallbackImage;
+        return \App\Support\PublicImage::url($path, 'images/products/placeholder-board.jpg') ?? $fallbackImage;
     };
 
     $defaultImagePath = $product->getRawOriginal('image_placeholder');
@@ -132,14 +125,8 @@
             <h3 class="text-xl gc-heading mt-10 mb-4">Related Products</h3>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach($relatedProducts as $related)
-                    @php
-                        $relatedPath = \App\Support\PublicImage::normalizeRelativePath($related->getRawOriginal('image_placeholder'));
-                        $relatedImage = $relatedPath && file_exists(public_path('images/' . $relatedPath))
-                            ? asset('images/' . $relatedPath)
-                            : $fallbackImage;
-                    @endphp
                     <a href="{{ route('store.product', $related) }}" class="gc-panel p-3">
-                        <img src="{{ $relatedImage }}" class="w-full h-28 object-cover rounded" alt="{{ $related->name }}">
+                        <img src="{{ \App\Support\PublicImage::url($related->getRawOriginal('image_placeholder'), 'images/products/placeholder-board.jpg') }}" class="w-full h-28 object-cover rounded" alt="{{ $related->name }}">
                         <div class="mt-2 text-sm font-semibold">{{ $related->name }}</div>
                     </a>
                 @endforeach

@@ -114,12 +114,18 @@ class StoreProductController extends Controller
     public function storeImage(Request $request, Product $product)
     {
         $data = $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:4096',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'sort_order' => 'nullable|integer|min:0|max:9999',
             'is_primary' => 'nullable|boolean',
         ]);
 
-        $path = PublicImage::store($request->file('image'), 'products');
+        $path = PublicImage::store($request->file('image'), PublicImage::PRODUCTS_DIRECTORY);
+
+        if (!PublicImage::exists($path)) {
+            return back()->withErrors([
+                'image' => 'The uploaded image could not be saved to public/images/products.',
+            ]);
+        }
 
         $isPrimary = $request->boolean('is_primary');
         if (!$isPrimary && !$product->images()->where('is_primary', true)->exists()) {
@@ -141,7 +147,7 @@ class StoreProductController extends Controller
             $product->update(['image_placeholder' => $path]);
         }
 
-        return back()->with('success', 'Product image uploaded.');
+        return back()->with('success', 'Product image uploaded and is now available in public/images/products.');
     }
 
     public function setPrimaryImage(Product $product, ProductImage $image)

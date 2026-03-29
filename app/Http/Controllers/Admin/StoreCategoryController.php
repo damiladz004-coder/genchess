@@ -22,7 +22,7 @@ class StoreCategoryController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -38,7 +38,7 @@ class StoreCategoryController extends Controller
             'slug' => $slug,
             'description' => $data['description'] ?? null,
             'image' => $request->hasFile('image')
-                ? PublicImage::store($request->file('image'), 'categories')
+                ? PublicImage::store($request->file('image'), PublicImage::PRODUCTS_DIRECTORY.'/categories')
                 : null,
             'status' => $data['status'],
         ]);
@@ -51,14 +51,14 @@ class StoreCategoryController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
 
         $imagePath = $category->getRawOriginal('image');
         if ($request->hasFile('image')) {
             PublicImage::delete($imagePath);
-            $imagePath = PublicImage::store($request->file('image'), 'categories');
+            $imagePath = PublicImage::store($request->file('image'), PublicImage::PRODUCTS_DIRECTORY.'/categories');
         }
 
         $category->update([

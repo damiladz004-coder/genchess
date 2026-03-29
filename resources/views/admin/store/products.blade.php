@@ -70,10 +70,7 @@
                 <tbody>
                 @foreach($products as $product)
                     @php
-                        $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
-                        $productImageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
-                            ? asset('images/' . $imagePath)
-                            : $fallbackImage;
+                        $productImageUrl = \App\Support\PublicImage::url($product->getRawOriginal('image_placeholder'), 'images/products/placeholder-board.jpg');
                     @endphp
                     <tr>
                         <td>

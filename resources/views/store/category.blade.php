@@ -13,14 +13,8 @@
 
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($products as $product)
-                @php
-                    $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
-                    $productImage = $imagePath && file_exists(public_path('images/' . $imagePath))
-                        ? asset('images/' . $imagePath)
-                        : $fallbackImage;
-                @endphp
                 <article class="gc-panel p-4">
-                    <img src="{{ $productImage }}" class="w-full h-40 object-cover rounded" alt="{{ $product->name }}">
+                    <img src="{{ \App\Support\PublicImage::url($product->getRawOriginal('image_placeholder'), 'images/products/placeholder-board.jpg') }}" class="w-full h-40 object-cover rounded" alt="{{ $product->name }}">
                     <h3 class="mt-3 font-semibold">{{ $product->name }}</h3>
                     <p class="text-sm text-slate-700 mt-1">NGN {{ number_format($product->price_kobo / 100, 2) }}</p>
                     <a href="{{ route('store.product', $product) }}" class="gc-btn-secondary mt-3">Open</a>

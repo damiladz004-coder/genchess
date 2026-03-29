@@ -27,10 +27,10 @@
 
         <div class="gc-panel p-4">
             <h2 class="text-lg font-semibold mb-3">Upload Image</h2>
-            <p class="text-sm text-slate-600 mb-3">Mark one image as primary. Primary image is used on product cards and detail page.</p>
+            <p class="text-sm text-slate-600 mb-3">Mark one image as primary. Files are saved directly to public/images/products and become immediately available on the live site.</p>
             <form method="POST" action="{{ route('admin.store.products.images.store', $product) }}" enctype="multipart/form-data" class="grid md:grid-cols-4 gap-3">
                 @csrf
-                <input type="file" name="image" class="md:col-span-2" required>
+                <input type="file" name="image" accept=".jpg,.jpeg,.png" class="md:col-span-2" required>
                 <input type="number" name="sort_order" min="0" value="0" placeholder="Sort order">
                 <label class="inline-flex items-center gap-2 text-sm">
                     <input type="checkbox" name="is_primary" value="1">
@@ -48,14 +48,16 @@
                 <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     @foreach($product->images as $image)
                         @php
-                            $imagePath = \App\Support\PublicImage::normalizeRelativePath($image->getRawOriginal('image_path'));
-                            $imageUrl = $imagePath && file_exists(public_path('images/' . $imagePath))
-                                ? asset('images/' . $imagePath)
-                                : $fallbackImage;
+                            $debug = \App\Support\PublicImage::debug($image->getRawOriginal('image_path'), 'images/products/placeholder-board.jpg');
                         @endphp
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2 bg-white dark:bg-slate-900">
-                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded-lg">
-                            <div class="text-xs text-slate-600 break-all">{{ $imagePath ?? 'missing-path' }}</div>
+                            <img src="{{ $debug['asset_url'] }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded-lg">
+                            <div class="space-y-1 text-xs text-slate-600 break-all">
+                                <div>DB Path: {{ $debug['database_path'] ?? 'missing-path' }}</div>
+                                <div>Public File: {{ $debug['public_path'] ?? 'missing-file-path' }}</div>
+                                <div>Exists: {{ $debug['file_exists'] ? 'yes' : 'no' }}</div>
+                                <div>Asset URL: {{ $debug['asset_url'] }}</div>
+                            </div>
                             <div class="text-xs text-slate-700 dark:text-slate-300">Sort: {{ $image->sort_order }}</div>
                             @if($image->is_primary)
                                 <div class="text-xs inline-block bg-emerald-100 text-emerald-700 rounded-full px-2.5 py-1 font-semibold">Primary</div>

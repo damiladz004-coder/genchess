@@ -4,14 +4,7 @@
 @php
     $fallbackImage = asset('images/products/placeholder-board.jpg');
     $resolveImage = function (?string $path) use ($fallbackImage): string {
-        $imagePath = \App\Support\PublicImage::normalizeRelativePath($path);
-        if (!$imagePath) {
-            return $fallbackImage;
-        }
-
-        return file_exists(public_path('images/' . $imagePath))
-            ? asset('images/' . $imagePath)
-            : $fallbackImage;
+        return \App\Support\PublicImage::url($path, 'images/products/placeholder-board.jpg') ?? $fallbackImage;
     };
 @endphp
 <section class="bg-slate-900 text-white">
@@ -37,14 +30,8 @@
         <h2 class="text-2xl gc-heading mb-5">Categories</h2>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             @forelse($categories as $category)
-                @php
-                    $categoryImagePath = \App\Support\PublicImage::normalizeRelativePath($category->getRawOriginal('image'));
-                    $categoryImage = $categoryImagePath && file_exists(public_path('images/' . $categoryImagePath))
-                        ? asset('images/' . $categoryImagePath)
-                        : $fallbackImage;
-                @endphp
                 <a href="{{ route('store.category', $category) }}" class="gc-panel p-4 hover:border-brand-500 transition">
-                    <img src="{{ $categoryImage }}" alt="{{ $category->title }}" class="w-full h-32 object-cover rounded">
+                    <img src="{{ \App\Support\PublicImage::url($category->getRawOriginal('image'), 'images/products/placeholder-board.jpg') }}" alt="{{ $category->title }}" class="w-full h-32 object-cover rounded">
                     <h3 class="mt-3 font-semibold text-slate-900">{{ $category->title }}</h3>
                 </a>
             @empty
@@ -59,14 +46,8 @@
         <h2 class="text-2xl gc-heading mb-5">Featured Products</h2>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($featuredProducts as $product)
-                @php
-                    $imagePath = \App\Support\PublicImage::normalizeRelativePath($product->getRawOriginal('image_placeholder'));
-                    $productImage = $imagePath && file_exists(public_path('images/' . $imagePath))
-                        ? asset('images/' . $imagePath)
-                        : $fallbackImage;
-                @endphp
                 <article class="gc-panel p-4">
-                    <img src="{{ $productImage }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded">
+                    <img src="{{ \App\Support\PublicImage::url($product->getRawOriginal('image_placeholder'), 'images/products/placeholder-board.jpg') }}" alt="{{ $product->name }}" class="w-full h-40 object-cover rounded">
                     <h3 class="mt-3 font-semibold text-slate-900">{{ $product->name }}</h3>
                     <p class="text-slate-700 text-sm mt-1">NGN {{ number_format($product->price_kobo / 100, 2) }}</p>
                     @if($product->stock_quantity < 1)

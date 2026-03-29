@@ -53,7 +53,7 @@
         <div class="pt-2 border-t border-slate-200">
             <h3 class="text-lg font-semibold mb-3">Public Page Images</h3>
             <p class="text-sm text-slate-600 mb-4">
-                These images show automatically on the public pages after you save.
+                These images are stored inside public/images/settings and show automatically on the public pages after you save.
             </p>
 
             <div class="space-y-6">
@@ -64,7 +64,7 @@
                             @foreach($fields as $field)
                                 <div>
                                     <label class="block text-sm font-medium text-slate-600 mb-1">{{ $field['label'] }}</label>
-                                    <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png,.webp" class="w-full">
+                                    <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png" class="w-full">
                                     @if(!empty($settings[$field['key']]->value))
                                         <img
                                             src="{{ $settings[$field['key']]->value }}"
@@ -83,14 +83,14 @@
         <div class="pt-2 border-t border-slate-200">
             <h3 class="text-lg font-semibold mb-3">Chess in Schools Images</h3>
             <p class="text-sm text-slate-600 mb-4">
-                Upload real classroom photos to replace homepage and service page placeholders.
+                Upload real classroom photos to replace homepage and service page placeholders. These files are saved inside public/images/schools.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($schoolImageFields as $field)
                     <div class="{{ $field['key'] === 'chess_school_competition_image' ? 'md:col-span-2' : '' }}">
                         <label class="block text-sm font-medium text-slate-600 mb-1">{{ $field['label'] }}</label>
-                        <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png,.webp" class="w-full">
+                        <input type="file" name="{{ $field['key'] }}" accept=".jpg,.jpeg,.png" class="w-full">
                         @if(!empty($settings[$field['key']]->value))
                             <img
                                 src="{{ $settings[$field['key']]->value }}"
