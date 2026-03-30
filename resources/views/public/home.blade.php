@@ -1,6 +1,11 @@
 @extends('layouts.public')
 
 @section('content')
+@php
+    $serviceImageFallback = asset('images/hero/genchess-hero.jpg');
+    $classroomHeroFallback = asset('images/instructors/certified-coach.jpg');
+    $classroomCardFallback = asset('images/hero/genchess-hero.jpg');
+@endphp
 <section class="relative overflow-hidden py-20 md:py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         <div>
@@ -26,7 +31,7 @@
         <h2 class="text-3xl gc-heading mb-8">What We Do</h2>
         <div class="grid md:grid-cols-3 gap-6">
             <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['schools'] }}" alt="Chess in Schools" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
+                <img src="{{ $homepageServiceImages['schools'] }}" alt="Chess in Schools" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
                 <h3 class="text-xl font-semibold mb-2">Chess in Schools</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Structured programs for primary and secondary classes, delivered as subject or club.
@@ -35,7 +40,7 @@
             </article>
 
             <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['communities'] }}" alt="Chess in Communities and Homes" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
+                <img src="{{ $homepageServiceImages['communities'] }}" alt="Chess in Communities and Homes" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
                 <h3 class="text-xl font-semibold mb-2">Chess in Communities & Homes</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Home tutorials available online or offline. Families submit location and preference, then a certified instructor is assigned within that area/community.
@@ -44,7 +49,7 @@
             </article>
 
             <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['store'] }}" alt="Chess products" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
+                <img src="{{ $homepageServiceImages['store'] }}" alt="Chess products" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
                 <h3 class="text-xl font-semibold mb-2">Chess Products</h3>
                 <p class="text-slate-600 text-sm mb-4">
                     Boards, clocks, books, and materials for schools, clubs, and individual learners. The store is temporarily unavailable while product images are being uploaded.
@@ -62,6 +67,7 @@
                 src="{{ $classroomImages['hero'] ?? asset('images/placeholders/chess-classroom-hero.svg') }}"
                 alt="Chess classroom hero placeholder showing instructor teaching students with demonstration board"
                 class="w-full h-64 md:h-96 object-cover"
+                onerror="this.onerror=null;this.src='{{ $classroomHeroFallback }}';"
             >
         </div>
 
@@ -74,7 +80,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Classroom chess lesson placeholder" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Classroom chess lesson placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
                 <figcaption class="mt-3">
                     <h3 class="font-semibold text-slate-900">Classroom Chess Lessons</h3>
                     <p class="text-sm text-slate-600">Students learn openings, tactics, and checkmates.</p>
@@ -82,7 +88,7 @@
             </figure>
 
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess in class placeholder" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess in class placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
                 <figcaption class="mt-3">
                     <h3 class="font-semibold text-slate-900">Students Playing in Class</h3>
                     <p class="text-sm text-slate-600">Learners practice positions and apply lesson concepts.</p>
@@ -90,7 +96,7 @@
             </figure>
 
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving chess puzzles placeholder" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving chess puzzles placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
                 <figcaption class="mt-3">
                     <h3 class="font-semibold text-slate-900">Puzzle Solving Sessions</h3>
                     <p class="text-sm text-slate-600">Students sharpen analysis through guided puzzles.</p>
@@ -98,7 +104,7 @@
             </figure>
 
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
                 <figcaption class="mt-3">
                     <h3 class="font-semibold text-slate-900">School Chess Competition</h3>
                     <p class="text-sm text-slate-600">Students develop confidence through competition.</p>

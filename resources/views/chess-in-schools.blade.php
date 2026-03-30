@@ -1,6 +1,10 @@
 @extends('layouts.public')
 
 @section('content')
+@php
+    $schoolHeroFallback = asset('images/instructors/certified-coach.jpg');
+    $schoolCardFallback = asset('images/hero/genchess-hero.jpg');
+@endphp
 <section class="bg-white py-16">
     <div class="max-w-6xl mx-auto px-6 space-y-6">
         <nav aria-label="Breadcrumb" class="text-sm text-slate-500">
@@ -29,24 +33,25 @@
                 src="{{ $classroomImages['hero'] ?? asset('images/placeholders/chess-classroom-hero.svg') }}"
                 alt="Chess classroom hero placeholder with instructor and demonstration board"
                 class="w-full h-64 md:h-96 object-cover"
+                onerror="this.onerror=null;this.src='{{ $schoolHeroFallback }}';"
             >
         </div>
         <h2 class="text-3xl gc-heading mb-6">Classroom Chess Activities</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Instructor teaching classroom lesson placeholder" class="w-full h-48 object-cover rounded-lg">
+                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Instructor teaching classroom lesson placeholder" class="w-full h-48 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Classroom Chess Lessons</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess placeholder" class="w-full h-48 object-cover rounded-lg">
+                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess placeholder" class="w-full h-48 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Students Playing Chess in Class</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving puzzle placeholder" class="w-full h-48 object-cover rounded-lg">
+                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving puzzle placeholder" class="w-full h-48 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Students Solving Chess Puzzles</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-48 object-cover rounded-lg">
+                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-48 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">School Chess Competition</figcaption>
             </figure>
         </div>
@@ -77,23 +82,23 @@
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             <figure class="gc-panel p-3">
-                <img src="{{ $programImages['hero'] }}" alt="Chess instructor leading a classroom session" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $programImages['hero'] }}" alt="Chess instructor leading a classroom session" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Classroom Instructor Support</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $programImages['lesson'] }}" alt="Instructor teaching chess inside the classroom" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $programImages['lesson'] }}" alt="Instructor teaching chess inside the classroom" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Instructor-Led Lessons</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $programImages['play'] }}" alt="Student practicing chess during a school program" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $programImages['play'] }}" alt="Student practicing chess during a school program" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Student Practice Games</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $programImages['puzzle'] }}" alt="Students solving chess puzzles" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $programImages['puzzle'] }}" alt="Students solving chess puzzles" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Puzzle Sessions</figcaption>
             </figure>
             <figure class="gc-panel p-3">
-                <img src="{{ $programImages['competition'] }}" alt="Students competing in a chess competition" class="w-full h-44 object-cover rounded-lg">
+                <img src="{{ $programImages['competition'] }}" alt="Students competing in a chess competition" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $schoolCardFallback }}';">
                 <figcaption class="mt-2 text-sm text-slate-600">Chess Competitions</figcaption>
             </figure>
         </div>
