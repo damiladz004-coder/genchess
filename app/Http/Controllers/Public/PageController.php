@@ -14,9 +14,9 @@ class PageController extends Controller
         return view('public.home', [
             'homepageHeroImage' => $this->settingValue('homepage_hero_image', asset('images/hero/genchess-hero.jpg')),
             'homepageServiceImages' => [
-                'schools' => $this->settingValue('homepage_schools_image', asset('images/placeholders/chess-classroom-lesson.svg')),
-                'communities' => $this->settingValue('homepage_communities_image', asset('images/placeholders/chess-classroom-play.svg')),
-                'store' => $this->settingValue('homepage_store_image', asset('images/products/placeholder-board.jpg')),
+                'schools' => $this->settingValue('homepage_schools_image', asset('images/chess-in-schools.jpg')),
+                'communities' => $this->settingValue('homepage_communities_image', asset('images/placeholders/chess-in-communities.jpg')),
+                'store' => $this->settingValue('homepage_store_image', asset('images/chess%20products/chessproducts.jpg')),
             ],
             'homepageInstructorImage' => $this->settingValue('homepage_instructor_image', asset('images/instructors/certified-coach.jpg')),
             'classroomImages' => $this->classroomImages(),
@@ -53,6 +53,7 @@ class PageController extends Controller
     {
         return view('chess-in-schools', [
             'classroomImages' => $this->classroomImages(),
+            'programImages' => $this->programImages(),
         ]);
     }
 
@@ -146,11 +147,22 @@ class PageController extends Controller
         $settings = Setting::whereIn('key', $keys)->get()->keyBy('key');
 
         return [
-            'hero' => $settings['chess_school_hero_image']->value ?? asset('images/placeholders/chess-classroom-hero.svg'),
-            'lesson' => $settings['chess_school_lesson_image']->value ?? asset('images/placeholders/chess-classroom-lesson.svg'),
-            'play' => $settings['chess_school_play_image']->value ?? asset('images/placeholders/chess-classroom-play.svg'),
-            'puzzle' => $settings['chess_school_puzzle_image']->value ?? asset('images/placeholders/chess-classroom-puzzle.svg'),
-            'competition' => $settings['chess_school_competition_image']->value ?? asset('images/placeholders/chess-classroom-competition.svg'),
+            'hero' => $settings['chess_school_hero_image']->value ?? asset('images/herochessclassroom.jpg'),
+            'lesson' => $settings['chess_school_lesson_image']->value ?? asset('images/chess-in-classroom.jpg'),
+            'play' => $settings['chess_school_play_image']->value ?? asset('images/placeholders/student-playing-chess.jpg'),
+            'puzzle' => $settings['chess_school_puzzle_image']->value ?? asset('images/placeholders/students-puzzles.jpg'),
+            'competition' => $settings['chess_school_competition_image']->value ?? asset('images/tournaments/chess-competition.jpg'),
+        ];
+    }
+
+    private function programImages(): array
+    {
+        return [
+            'hero' => asset('images/instructors/classroom-instructor.jpg'),
+            'lesson' => asset('images/placeholders/instructor-classroom.jpg'),
+            'play' => asset('images/placeholders/student-plays.jpg'),
+            'puzzle' => asset('images/puzzles.jpg'),
+            'competition' => asset('images/tournaments/chess-competition.jpg'),
         ];
     }
 

@@ -47,9 +47,9 @@
                 <img src="{{ $homepageServiceImages['store'] }}" alt="Chess products" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200">
                 <h3 class="text-xl font-semibold mb-2">Chess Products</h3>
                 <p class="text-slate-600 text-sm mb-4">
-                    Boards, clocks, books, and materials for schools, clubs, and individual learners.
+                    Boards, clocks, books, and materials for schools, clubs, and individual learners. The store is temporarily unavailable while product images are being uploaded.
                 </p>
-                <a href="{{ route('store.index') }}" class="gc-btn-secondary">Shop Products</a>
+                <a href="{{ route('store.index') }}" class="gc-btn-secondary">Store Update</a>
             </article>
         </div>
     </div>

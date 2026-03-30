@@ -75,6 +75,29 @@
     <div class="max-w-6xl mx-auto px-6 space-y-8">
         <h2 class="text-3xl gc-heading">How Genchess Implements Chess in Schools</h2>
 
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            <figure class="gc-panel p-3">
+                <img src="{{ $programImages['hero'] }}" alt="Chess instructor leading a classroom session" class="w-full h-44 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Classroom Instructor Support</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="{{ $programImages['lesson'] }}" alt="Instructor teaching chess inside the classroom" class="w-full h-44 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Instructor-Led Lessons</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="{{ $programImages['play'] }}" alt="Student practicing chess during a school program" class="w-full h-44 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Student Practice Games</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="{{ $programImages['puzzle'] }}" alt="Students solving chess puzzles" class="w-full h-44 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Puzzle Sessions</figcaption>
+            </figure>
+            <figure class="gc-panel p-3">
+                <img src="{{ $programImages['competition'] }}" alt="Students competing in a chess competition" class="w-full h-44 object-cover rounded-lg">
+                <figcaption class="mt-2 text-sm text-slate-600">Chess Competitions</figcaption>
+            </figure>
+        </div>
+
         <article class="gc-panel p-6 space-y-4">
             <h3 class="text-2xl font-semibold">Early Years: Nursery 2</h3>
             <p class="text-slate-700">Chess is introduced from Nursery 2 using play-based learning methods:</p>
