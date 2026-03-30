@@ -47,4 +47,11 @@ return [
         'secret' => env('WHATSAPP_WEBHOOK_SECRET'),
     ],
 
+    'selar' => [
+        'training_product_url' => env('SELAR_TRAINING_PRODUCT_URL'),
+        'training_checkout_url' => env('SELAR_TRAINING_CHECKOUT_URL'),
+        'training_checkout_mode' => env('SELAR_TRAINING_CHECKOUT_MODE', 'redirect'),
+        'training_success_url' => env('SELAR_TRAINING_SUCCESS_URL'),
+    ],
+
 ];

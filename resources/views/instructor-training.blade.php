@@ -4,21 +4,44 @@
 @php
     $standardPrice = ($course->price_kobo ?? 3500000) / 100;
     $discountPrice = ($course->discount_price_kobo ?? 2500000) / 100;
+    $selarProductUrl = config('services.selar.training_product_url');
+    $selarCheckoutUrl = config('services.selar.training_checkout_url');
+    $selarCheckoutMode = config('services.selar.training_checkout_mode', 'redirect');
+    $selarEnabled = filled($selarProductUrl) || filled($selarCheckoutUrl);
+    $selarSuccess = request()->query('enrollment') === 'success' || request()->query('selar') === 'success';
 @endphp
 
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20">
         <div class="max-w-4xl">
+            @if($selarSuccess)
+                <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-emerald-900">
+                    <p class="font-semibold">Enrollment received.</p>
+                    <p class="mt-1 text-sm text-emerald-800">Your Selar checkout was completed. Our team will confirm access details and next steps shortly.</p>
+                </div>
+            @endif
+
             <h1 class="text-4xl md:text-5xl gc-heading leading-tight">Genchess Certified Chess Instructor Program (GCCIP)</h1>
             <p class="mt-4 text-lg text-slate-600">
                 Premium certification training for chess instructors. Course content is unlocked only after successful payment.
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-                @auth
-                    <a href="{{ route('training.checkout') }}" class="gc-btn-primary">Register Now</a>
+                @if($selarEnabled)
+                    <x-selar-enroll-button
+                        :product-url="$selarProductUrl"
+                        :checkout-url="$selarCheckoutUrl"
+                        :mode="$selarCheckoutMode"
+                        campaign="instructor-training"
+                        content="hero-cta"
+                        label="Enroll Now"
+                    />
                 @else
-                    <a href="{{ route('register', ['intent' => 'training']) }}" class="gc-btn-primary">Register Now</a>
-                @endauth
+                    @auth
+                        <a href="{{ route('training.checkout') }}" class="gc-btn-primary">Register Now</a>
+                    @else
+                        <a href="{{ route('register', ['intent' => 'training']) }}" class="gc-btn-primary">Register Now</a>
+                    @endauth
+                @endif
                 <a href="{{ route('contact') }}?service=instructor" class="gc-btn-secondary">Ask a Question</a>
             </div>
         </div>
@@ -105,31 +128,47 @@
         </article>
         <article class="rounded-xl border border-amber-400/40 bg-slate-800 p-6">
             <h3 class="text-xl font-display">Pricing</h3>
-            <p class="mt-3 text-slate-300 text-sm">Standard Price: <span class="font-semibold text-white">₦{{ number_format($standardPrice) }}</span></p>
-            <p class="mt-1 text-emerald-300 text-sm">Early Bird / Referral Price: <span class="font-semibold">₦{{ number_format($discountPrice) }}</span> (Save ₦10,000)</p>
+            <p class="mt-3 text-slate-300 text-sm">Standard Price: <span class="font-semibold text-white">&#8358;{{ number_format($standardPrice) }}</span></p>
+            <p class="mt-1 text-emerald-300 text-sm">Early Bird / Referral Price: <span class="font-semibold">&#8358;{{ number_format($discountPrice) }}</span> (Save &#8358;10,000)</p>
             <div class="mt-4">
-                @auth
-                    <a href="{{ route('training.checkout') }}" class="gc-btn-primary">Register Now</a>
+                @if($selarEnabled)
+                    <x-selar-enroll-button
+                        :product-url="$selarProductUrl"
+                        :checkout-url="$selarCheckoutUrl"
+                        :mode="$selarCheckoutMode"
+                        campaign="instructor-training"
+                        content="pricing-card"
+                        label="Enroll Now"
+                    />
                 @else
-                    <a href="{{ route('register', ['intent' => 'training']) }}" class="gc-btn-primary">Register Now</a>
-                @endauth
+                    @auth
+                        <a href="{{ route('training.checkout') }}" class="gc-btn-primary">Register Now</a>
+                    @else
+                        <a href="{{ route('register', ['intent' => 'training']) }}" class="gc-btn-primary">Register Now</a>
+                    @endauth
+                @endif
             </div>
             <div class="mt-5 rounded-lg border border-slate-700 bg-slate-900/60 p-4">
-                <p class="text-sm text-slate-300 mb-3">Have a coupon or referral code? Enter it before registration.</p>
-                @auth
-                    <form method="GET" action="{{ route('training.checkout') }}" class="space-y-2">
-                        <input type="text" name="coupon" placeholder="Coupon code" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
-                        <input type="text" name="ref" placeholder="Referral code (optional)" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
-                        <button type="submit" class="gc-btn-secondary w-full">Continue with Code</button>
-                    </form>
+                @if($selarEnabled)
+                    <p class="text-sm text-slate-300 mb-3">Marketing tags from this page are passed to Selar automatically so you can track campaign performance and conversions.</p>
+                    <p class="text-xs text-slate-400">Optional: set Selar to redirect back here with <code class="rounded bg-slate-800 px-1 py-0.5 text-slate-200">?enrollment=success</code> after payment.</p>
                 @else
-                    <form method="GET" action="{{ route('register') }}" class="space-y-2">
-                        <input type="hidden" name="intent" value="training">
-                        <input type="text" name="coupon" placeholder="Coupon code" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
-                        <input type="text" name="ref" placeholder="Referral code (optional)" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
-                        <button type="submit" class="gc-btn-secondary w-full">Register with Code</button>
-                    </form>
-                @endauth
+                    <p class="text-sm text-slate-300 mb-3">Have a coupon or referral code? Enter it before registration.</p>
+                    @auth
+                        <form method="GET" action="{{ route('training.checkout') }}" class="space-y-2">
+                            <input type="text" name="coupon" placeholder="Coupon code" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
+                            <input type="text" name="ref" placeholder="Referral code (optional)" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
+                            <button type="submit" class="gc-btn-secondary w-full">Continue with Code</button>
+                        </form>
+                    @else
+                        <form method="GET" action="{{ route('register') }}" class="space-y-2">
+                            <input type="hidden" name="intent" value="training">
+                            <input type="text" name="coupon" placeholder="Coupon code" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
+                            <input type="text" name="ref" placeholder="Referral code (optional)" class="w-full rounded border-slate-600 bg-slate-800 text-white placeholder:text-slate-400">
+                            <button type="submit" class="gc-btn-secondary w-full">Register with Code</button>
+                        </form>
+                    @endauth
+                @endif
             </div>
         </article>
     </div>
