@@ -1,28 +1,72 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
+        @php
+            $defaultTitle = 'Genchess.ng - Chess Education in Nigeria';
+            $defaultDescription = 'Genchess Educational Services Ltd provides chess training in schools, homes, and communities across Nigeria.';
+            $defaultKeywords = 'chess Nigeria, chess training Lagos, Genchess, chess schools Nigeria';
+            $defaultImage = asset('images/hero/genchess-hero.jpg');
+
+            $pageTitle = trim($__env->yieldContent('title')) ?: ($seo['title'] ?? $defaultTitle);
+            $pageDescription = trim($__env->yieldContent('description')) ?: ($seo['description'] ?? $defaultDescription);
+            $pageKeywords = trim($__env->yieldContent('keywords')) ?: ($seo['keywords'] ?? $defaultKeywords);
+            $pageCanonical = trim($__env->yieldContent('canonical')) ?: ($seo['canonical'] ?? url()->current());
+            $pageRobots = trim($__env->yieldContent('robots')) ?: ($seo['robots'] ?? 'index, follow');
+            $pageImage = trim($__env->yieldContent('image')) ?: ($seo['image'] ?? $defaultImage);
+            $pageType = trim($__env->yieldContent('og_type')) ?: ($seo['og_type'] ?? 'website');
+            $twitterCard = trim($__env->yieldContent('twitter_card')) ?: ($seo['twitter_card'] ?? 'summary_large_image');
+
+            $organizationSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => 'Genchess Educational Services Ltd',
+                'url' => config('app.url', 'https://genchess.ng'),
+                'logo' => asset('images/logo/genchess-logo-brick.png'),
+                'description' => $defaultDescription,
+                'sameAs' => [
+                    'https://web.facebook.com/genchesssacademy',
+                    'https://www.instagram.com/genchesseducation/',
+                    'https://x.com/genchess1234',
+                    'https://www.youtube.com/@GenchessAcademy-c2z',
+                ],
+                'contactPoint' => [
+                    '@type' => 'ContactPoint',
+                    'telephone' => '+2348078462223',
+                    'contactType' => 'customer support',
+                    'areaServed' => 'NG',
+                    'availableLanguage' => ['en'],
+                ],
+            ];
+        @endphp
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Genchess Educational Services</title>
+        <title>{{ $pageTitle }}</title>
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-        <meta name="description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
-        <meta name="keywords" content="chess, chess educational services, chess in homes, chess in communities, chess in schools, certified chess instructor program">
-        <meta name="robots" content="index, follow">
-        <link rel="canonical" href="https://genchess.ng">
+        <meta name="description" content="{{ $pageDescription }}">
+        <meta name="keywords" content="{{ $pageKeywords }}">
+        <meta name="robots" content="{{ $pageRobots }}">
+        <link rel="canonical" href="{{ $pageCanonical }}">
 
-        <meta property="og:type" content="website">
+        <meta property="og:type" content="{{ $pageType }}">
         <meta property="og:site_name" content="Genchess Educational Services">
-        <meta property="og:title" content="Genchess Educational Services">
-        <meta property="og:description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
-        <meta property="og:url" content="https://genchess.ng">
+        <meta property="og:title" content="{{ $pageTitle }}">
+        <meta property="og:description" content="{{ $pageDescription }}">
+        <meta property="og:image" content="{{ $pageImage }}">
+        <meta property="og:url" content="{{ $pageCanonical }}">
 
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="Genchess Educational Services">
-        <meta name="twitter:description" content="Genchess Educational Services promotes structured chess education for schools, homes, and communities.">
+        <meta name="twitter:card" content="{{ $twitterCard }}">
+        <meta name="twitter:title" content="{{ $pageTitle }}">
+        <meta name="twitter:description" content="{{ $pageDescription }}">
+        <meta name="twitter:image" content="{{ $pageImage }}">
+
+        <script type="application/ld+json">
+            {!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+        </script>
+        @yield('structured_data')
 
         <script>
             (function () {
@@ -58,5 +102,4 @@
         </div>
     </body>
 </html>
-
 

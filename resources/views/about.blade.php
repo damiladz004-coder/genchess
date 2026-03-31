@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'About Genchess Educational Services | Chess Education in Nigeria')
+@section('description', 'Learn about Genchess Educational Services, our mission, teaching philosophy, and how we use chess to build confident learners in Nigeria.')
+@section('keywords', 'about Genchess, chess education company Nigeria, chess academy Lagos, chess learning Nigeria')
+@section('image', asset('images/hero/genchess-hero.jpg'))
+
 @section('content')
 
 <!-- HERO SECTION -->
@@ -145,4 +150,3 @@
 </section>
 
 @endsection
-

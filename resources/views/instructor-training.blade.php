@@ -1,5 +1,30 @@
 @extends('layouts.public')
 
+@section('title', 'Instructor Training Program in Nigeria | Genchess GCCIP')
+@section('description', 'Join the Genchess Certified Chess Instructor Program in Nigeria and gain practical training, mentorship, and certification to teach confidently.')
+@section('keywords', 'chess instructor training Nigeria, chess certification Nigeria, Genchess GCCIP, chess coaching course Lagos')
+@section('image', asset('images/instructors/certified-coach.jpg'))
+@section('og_type', 'course')
+@section('structured_data')
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'Course',
+            'name' => 'Genchess Certified Chess Instructor Program (GCCIP)',
+            'description' => 'Professional instructor training program for chess educators in Nigeria covering teaching practice, quizzes, assignments, and mentor review.',
+            'provider' => [
+                '@type' => 'Organization',
+                'name' => 'Genchess Educational Services Ltd',
+                'url' => config('app.url', 'https://genchess.ng'),
+            ],
+            'url' => url()->current(),
+            'image' => asset('images/instructors/certified-coach.jpg'),
+            'courseMode' => 'online and offline',
+            'educationalCredentialAwarded' => 'Genchess Certified Chess Instructor Program (GCCIP)',
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+    </script>
+@endsection
+
 @section('content')
 @php
     $standardPrice = ($course->price_kobo ?? 3500000) / 100;

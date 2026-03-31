@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Chess in Schools Nigeria | Genchess Educational Services')
+@section('description', 'Discover how Genchess delivers structured chess programs in Nigerian schools through classroom lessons, puzzles, competitions, and age-based learning.')
+@section('keywords', 'chess in schools Nigeria, school chess program Lagos, chess curriculum Nigeria, Genchess schools')
+@section('image', asset('images/classrooms/classroom-hero.jpg'))
+
 @section('content')
 @php
     $schoolHeroFallback = asset('images/instructors/certified-coach.jpg');

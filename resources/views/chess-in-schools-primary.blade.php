@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Primary School Chess Program | Genchess Nigeria')
+@section('description', 'Explore the Genchess primary school chess program designed to build concentration, tactics, discipline, and confidence for young learners in Nigeria.')
+@section('keywords', 'primary school chess Nigeria, chess for children Lagos, Genchess primary program, school chess lessons')
+@section('image', asset('images/classrooms/classroom-lesson.jpg'))
+
 @section('content')
 <section class="bg-white py-16">
     <div class="max-w-6xl mx-auto px-6 space-y-6">

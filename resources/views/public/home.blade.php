@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Genchess.ng - Chess Education in Schools, Homes and Communities')
+@section('description', 'Genchess delivers structured chess education in schools, homes, and communities across Nigeria with expert instructors and practical programs.')
+@section('keywords', 'chess education Nigeria, chess in schools Nigeria, chess lessons Lagos, Genchess training')
+@section('image', asset('images/hero/genchess-hero.jpg'))
+
 @section('content')
 @php
     $serviceImageFallback = asset('images/hero/genchess-hero.jpg');

@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Contact Genchess.ng | Chess Programs and Instructor Support')
+@section('description', 'Contact Genchess for school chess programs, home lessons, community chess projects, instructor training, and partnership enquiries in Nigeria.')
+@section('keywords', 'contact Genchess, chess training contact Nigeria, chess schools Lagos, instructor training contact')
+@section('image', asset('images/hero/genchess-hero.jpg'))
+
 @section('content')
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-20 grid gap-8 lg:grid-cols-[1fr_0.9fr] items-center">

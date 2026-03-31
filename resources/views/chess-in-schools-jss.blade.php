@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Junior Secondary School Chess Program | Genchess Nigeria')
+@section('description', 'See how Genchess supports junior secondary students with structured chess training focused on analysis, strategy, and competitive growth.')
+@section('keywords', 'junior secondary chess Nigeria, JSS chess program Lagos, Genchess secondary program, chess strategy students')
+@section('image', asset('images/classrooms/classroom-competition.jpg'))
+
 @section('content')
 <section class="bg-white py-16">
     <div class="max-w-6xl mx-auto px-6 space-y-6">

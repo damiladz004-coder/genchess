@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@section('title', 'Chess in Communities and Homes | Genchess Nigeria')
+@section('description', 'Book Genchess community and home chess programs in Nigeria for families, estates, clubs, and private learners with flexible lesson formats.')
+@section('keywords', 'home chess lessons Nigeria, community chess programs Lagos, private chess coaching Nigeria, Genchess homes')
+@section('image', asset('images/home/chess-in-communities-home.jpg'))
+
 @section('content')
 <section class="bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
