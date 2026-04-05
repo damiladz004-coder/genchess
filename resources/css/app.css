@@ -353,6 +353,47 @@
         object-fit: contain;
     }
 
+    /* Accessibility guardrails: in light mode force readable black text on public pages */
+    html:not(.dark) .public-content .text-slate-900,
+    html:not(.dark) .public-content .text-slate-800,
+    html:not(.dark) .public-content .text-slate-700,
+    html:not(.dark) .public-content .text-slate-600,
+    html:not(.dark) .public-content .text-slate-500,
+    html:not(.dark) .public-content .text-gray-900,
+    html:not(.dark) .public-content .text-gray-800,
+    html:not(.dark) .public-content .text-gray-700,
+    html:not(.dark) .public-content .text-gray-600,
+    html:not(.dark) .public-content .text-gray-500,
+    html:not(.dark) .public-content .text-emerald-900,
+    html:not(.dark) .public-content .text-emerald-800,
+    html:not(.dark) .public-content .text-emerald-700,
+    html:not(.dark) .public-content .text-amber-900,
+    html:not(.dark) .public-content .text-amber-800,
+    html:not(.dark) .public-content .text-amber-700,
+    html:not(.dark) .public-content [class*="text-[#"] {
+        color: #000 !important;
+    }
+
+    html.dark .public-content .text-slate-500,
+    html.dark .public-content .text-slate-600,
+    html.dark .public-content .text-gray-500,
+    html.dark .public-content .text-gray-600 {
+        color: #d1d5db !important;
+    }
+
+    /* If a light custom background remains in dark mode, force dark readable text on it */
+    html.dark .public-content [class*="bg-[#f"],
+    html.dark .public-content [class*="bg-[#e"],
+    html.dark .public-content [class*="bg-[#d"] {
+        color: #0f172a;
+    }
+
+    html.dark .public-content [class*="bg-[#f"] .text-white,
+    html.dark .public-content [class*="bg-[#e"] .text-white,
+    html.dark .public-content [class*="bg-[#d"] .text-white {
+        color: #0f172a !important;
+    }
+
     @media (max-width: 640px) {
         .public-content img[src*='/images/'] {
             max-height: 260px;

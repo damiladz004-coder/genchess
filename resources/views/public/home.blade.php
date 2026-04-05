@@ -1,202 +1,302 @@
 @extends('layouts.public')
 
-@section('title', 'Genchess.ng - Chess Education in Schools, Homes and Communities')
-@section('description', 'Genchess delivers structured chess education in schools, homes, and communities across Nigeria with expert instructors and practical programs.')
-@section('keywords', 'chess education Nigeria, chess in schools Nigeria, chess lessons Lagos, Genchess training')
+@section('title', 'Genchess.ng | Raise Focused, Confident Children Through Chess')
+@section('description', 'Genchess Educational Services Ltd helps children in schools, homes, and communities build focus, confidence, and strong thinking skills through storytelling-based chess education in Nigeria.')
+@section('keywords', 'Genchess Nigeria, chess for kids Nigeria, chess in schools, chess home lessons, chess communities')
 @section('image', asset('images/hero/genchess-hero.jpg'))
 
 @section('content')
 @php
-    $serviceImageFallback = asset('images/hero/genchess-hero.jpg');
-    $classroomHeroFallback = asset('images/instructors/certified-coach.jpg');
-    $classroomCardFallback = asset('images/hero/genchess-hero.jpg');
+    $whatsAppLink = 'https://wa.me/2348078462223?text=' . urlencode('Hello Genchess, I want to book a free trial for my child.');
+    $trialLink = route('chess.communities.homes') . '#booking-form';
+    $schoolLink = route('register.school');
+    $communityLink = route('chess.communities.homes');
 @endphp
-<section class="relative overflow-hidden py-20 md:py-24 bg-white">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-        <div>
-            <h1 class="text-4xl md:text-5xl gc-heading leading-tight">
-                Genchess Educational Services
-            </h1>
-            <p class="mt-5 text-lg text-slate-600">
-                We use chess to build critical thinking, discipline, confidence, and strategic decision-making in children across schools, homes, and communities.
+
+<style>
+    .gc-home-bg {
+        background:
+            radial-gradient(1100px 520px at 10% -10%, rgba(228, 178, 72, 0.28) 0%, transparent 62%),
+            radial-gradient(800px 400px at 100% 10%, rgba(26, 95, 74, 0.22) 0%, transparent 65%),
+            linear-gradient(180deg, #fbf7ee 0%, #fff 62%);
+    }
+
+    .gc-fade-up {
+        animation: gcFadeUp 0.7s ease-out both;
+    }
+
+    .gc-fade-up-delay {
+        animation: gcFadeUp 0.95s ease-out both;
+    }
+
+    .gc-whatsapp-float {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 60;
+    }
+
+    @keyframes gcFadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .gc-whatsapp-float {
+            right: 1.5rem;
+            bottom: 1.5rem;
+        }
+    }
+</style>
+
+<section class="gc-home-bg relative overflow-hidden py-14 md:py-20 dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 items-center">
+        <div class="gc-fade-up">
+            <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-semibold tracking-wide uppercase">
+                unlocking the genius within every child through chess
             </p>
-            <div class="mt-8 flex flex-wrap gap-3">
-                <a href="{{ route('register.school') }}" class="gc-btn-primary">Register Your School</a>
-                <a href="{{ route('contact') }}" class="gc-btn-secondary">Talk to Us</a>
+            <h1 class="mt-5 text-4xl md:text-5xl leading-tight font-display text-slate-900 dark:text-slate-100">
+                Raise a child who can think clearly, solve problems, and lead with confidence.
+            </h1>
+            <p class="mt-5 text-base md:text-lg text-slate-700 dark:text-slate-300 max-w-xl">
+                At Genchess Educational Services Ltd, children do not just learn chess rules. They learn how to stay calm, think ahead, and make wise decisions in school and in life.
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                <a href="{{ $trialLink }}" class="inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-white bg-[#8b5e34] hover:bg-[#72482a] transition">
+                    Book a Free Trial
+                </a>
+                <a href="{{ $whatsAppLink }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-white border border-purple-300/40 bg-purple-900 hover:bg-purple-950 transition">
+                    Chat on WhatsApp
+                </a>
             </div>
+            <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">Trusted by parents, schools, and communities across Nigeria.</p>
         </div>
-        <div>
-            <img src="{{ $homepageHeroImage }}" alt="Genchess Educational Services" class="w-full rounded-xl2 shadow-soft border border-slate-200">
-        </div>
-    </div>
-</section>
 
-<section class="py-16">
-    <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-3xl gc-heading mb-8">What We Do</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-            <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['schools'] }}" alt="Chess in Schools" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
-                <h3 class="text-xl font-semibold mb-2">Chess in Schools</h3>
-                <p class="text-slate-600 text-sm mb-4">
-                    Structured programs for primary and secondary classes, delivered as subject or club.
-                </p>
-                <a href="{{ route('register.school') }}" class="gc-btn-secondary">Register Your School</a>
-            </article>
-
-            <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['communities'] }}" alt="Chess in Communities and Homes" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
-                <h3 class="text-xl font-semibold mb-2">Chess in Communities & Homes</h3>
-                <p class="text-slate-600 text-sm mb-4">
-                    Home tutorials available online or offline. Families submit location and preference, then a certified instructor is assigned within that area/community.
-                </p>
-                <a href="{{ route('chess.communities.homes') }}#booking-form" class="gc-btn-secondary">Book Appointment</a>
-            </article>
-
-            <article class="gc-panel p-5">
-                <img src="{{ $homepageServiceImages['store'] }}" alt="Chess products" class="mb-3 h-40 w-full rounded-lg object-cover border border-slate-200" onerror="this.onerror=null;this.src='{{ $serviceImageFallback }}';">
-                <h3 class="text-xl font-semibold mb-2">Chess Products</h3>
-                <p class="text-slate-600 text-sm mb-4">
-                    Boards, clocks, books, and materials for schools, clubs, and individual learners. The store is temporarily unavailable while product images are being uploaded.
-                </p>
-                <a href="{{ route('store.index') }}" class="gc-btn-secondary">Store Update</a>
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="py-16 md:py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-6 space-y-8 md:space-y-10">
-        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+        <div class="gc-fade-up-delay relative">
+            <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-amber-200/50 via-transparent to-emerald-200/45 blur-md"></div>
             <img
-                src="{{ $classroomImages['hero'] ?? asset('images/placeholders/chess-classroom-hero.svg') }}"
-                alt="Chess classroom hero placeholder showing instructor teaching students with demonstration board"
-                class="w-full h-64 md:h-96 object-cover"
-                onerror="this.onerror=null;this.src='{{ $classroomHeroFallback }}';"
+                src="{{ $homepageHeroImage }}"
+                alt="Happy children learning chess with a Genchess instructor"
+                class="relative w-full rounded-[1.75rem] border border-amber-200/60 shadow-xl object-cover"
             >
         </div>
+    </div>
+</section>
 
-        <div class="space-y-3">
-            <h2 class="text-3xl md:text-4xl gc-heading">Chess in Schools Classroom Experience</h2>
-            <p class="text-slate-600 max-w-3xl">
-                See how Genchess runs practical chess lessons inside schools through instructor-led classes, puzzle sessions, and healthy competitions.
+<section class="py-14 md:py-20 bg-purple-50 dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 md:gap-10 items-start">
+        <div>
+            <h2 class="text-3xl md:text-4xl font-display text-slate-900 dark:text-slate-100">The Chess Empire of Sixty-Four Estates</h2>
+            <p class="mt-4 text-slate-700 dark:text-slate-300">
+                Every Genchess lesson is a journey into a living story world called <strong>The Chess Empire of Sixty-Four Estates</strong>.
+            </p>
+            <p class="mt-3 text-slate-700 dark:text-slate-300">
+                The King learns responsibility. The Queen models courage. The Rooks protect community. Through stories children understand values, not only moves.
+            </p>
+            <p class="mt-3 text-slate-700 dark:text-slate-300">
+                This makes learning fun for young minds and easier for parents to connect chess to behavior, confidence, and classroom success.
+            </p>
+            <a href="{{ route('about') }}" class="mt-6 inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold text-slate-900 dark:text-slate-100 border border-[#d8c5a8] bg-[#fff7e8] dark:bg-slate-800 hover:bg-[#fcefd8] dark:hover:bg-slate-700 transition">
+                Read the Story Philosophy
+            </a>
+        </div>
+
+        <div class="rounded-2xl border border-[#dfd0b8] dark:border-slate-700 bg-white dark:bg-slate-800 p-3 shadow-sm">
+            <div class="aspect-video rounded-xl overflow-hidden bg-slate-100">
+                <iframe
+                    class="h-full w-full"
+                    src="https://www.youtube.com/embed/bvf8ZuZzarY"
+                    title="The Chess Empire of Sixty-Four Estates"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                ></iframe>
+            </div>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                Suggested video: A short introduction to Genchess storytelling classes and student transformation.
             </p>
         </div>
+    </div>
+</section>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['lesson'] ?? asset('images/placeholders/chess-classroom-lesson.svg') }}" alt="Classroom chess lesson placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
-                <figcaption class="mt-3">
-                    <h3 class="font-semibold text-slate-900">Classroom Chess Lessons</h3>
-                    <p class="text-sm text-slate-600">Students learn openings, tactics, and checkmates.</p>
-                </figcaption>
-            </figure>
-
-            <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['play'] ?? asset('images/placeholders/chess-classroom-play.svg') }}" alt="Students playing chess in class placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
-                <figcaption class="mt-3">
-                    <h3 class="font-semibold text-slate-900">Students Playing in Class</h3>
-                    <p class="text-sm text-slate-600">Learners practice positions and apply lesson concepts.</p>
-                </figcaption>
-            </figure>
-
-            <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['puzzle'] ?? asset('images/placeholders/chess-classroom-puzzle.svg') }}" alt="Students solving chess puzzles placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
-                <figcaption class="mt-3">
-                    <h3 class="font-semibold text-slate-900">Puzzle Solving Sessions</h3>
-                    <p class="text-sm text-slate-600">Students sharpen analysis through guided puzzles.</p>
-                </figcaption>
-            </figure>
-
-            <figure class="gc-panel p-3">
-                <img src="{{ $classroomImages['competition'] ?? asset('images/placeholders/chess-classroom-competition.svg') }}" alt="School chess competition placeholder" class="w-full h-44 object-cover rounded-lg" onerror="this.onerror=null;this.src='{{ $classroomCardFallback }}';">
-                <figcaption class="mt-3">
-                    <h3 class="font-semibold text-slate-900">School Chess Competition</h3>
-                    <p class="text-sm text-slate-600">Students develop confidence through competition.</p>
-                </figcaption>
-            </figure>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <article class="gc-panel p-4">
-                <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17l6-10m-7 5h8M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <h3 class="font-semibold text-slate-900">Critical Thinking</h3>
-                <p class="text-sm text-slate-600 mt-1">Chess teaches planning and strategic thinking.</p>
+<section class="py-14 md:py-20 bg-purple-100/40 dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl md:text-4xl font-display text-slate-900 dark:text-slate-100">Why Parents Choose Genchess</h2>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <article class="rounded-2xl border border-amber-100 dark:border-slate-700 bg-[#fffaf0] dark:bg-slate-800 p-5">
+                <p class="font-semibold text-slate-900 dark:text-slate-100">Improves concentration</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Children learn to focus deeply, listen carefully, and complete tasks.</p>
             </article>
-
-            <article class="gc-panel p-4">
-                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17a4 4 0 100-8 4 4 0 000 8zm0 0v4m-7-4h14"/>
-                    </svg>
-                </div>
-                <h3 class="font-semibold text-slate-900">Academic Improvement</h3>
-                <p class="text-sm text-slate-600 mt-1">Chess strengthens mathematics and reading skills.</p>
+            <article class="rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[#f2fbf7] dark:bg-slate-800 p-5">
+                <p class="font-semibold text-slate-900 dark:text-slate-100">Builds problem-solving skills</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Every game teaches your child to think before acting and find smart solutions.</p>
             </article>
-
-            <article class="gc-panel p-4">
-                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3l2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3z"/>
-                    </svg>
-                </div>
-                <h3 class="font-semibold text-slate-900">Confidence</h3>
-                <p class="text-sm text-slate-600 mt-1">Students gain confidence through tournament play.</p>
+            <article class="rounded-2xl border border-amber-100 dark:border-slate-700 bg-[#fffaf0] dark:bg-slate-800 p-5">
+                <p class="font-semibold text-slate-900 dark:text-slate-100">Boosts confidence</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">With each lesson and match, shy children become bolder and more expressive.</p>
             </article>
-
-            <article class="gc-panel p-4">
-                <div class="w-10 h-10 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
-                    </svg>
-                </div>
-                <h3 class="font-semibold text-slate-900">Leadership</h3>
-                <p class="text-sm text-slate-600 mt-1">Chess clubs build leadership and teamwork.</p>
+            <article class="rounded-2xl border border-emerald-100 dark:border-slate-700 bg-[#f2fbf7] dark:bg-slate-800 p-5">
+                <p class="font-semibold text-slate-900 dark:text-slate-100">Enhances academic performance</p>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Students apply chess logic to mathematics, reading, and class decision-making.</p>
             </article>
         </div>
+    </div>
+</section>
 
-        <div class="pt-2">
-            <a href="https://school.genchess.ng/register" class="gc-btn-primary inline-flex">
-                Register Your School
+<section class="py-14 md:py-20 bg-purple-50 dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl md:text-4xl font-display text-slate-900 dark:text-slate-100">Programs Designed for Every Child</h2>
+        <p class="mt-3 text-slate-700 dark:text-slate-300 max-w-3xl">From school timetables to living rooms and estates, we make quality chess education accessible.</p>
+
+        <div class="mt-8 grid md:grid-cols-3 gap-5">
+            <article class="rounded-2xl border border-[#ddc8a7] dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                <img src="{{ $homepageServiceImages['schools'] }}" alt="Chess in schools program" class="h-44 w-full rounded-xl object-cover border border-[#eee0c7]">
+                <h3 class="mt-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Schools Program</h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Structured classes for primary and secondary schools, delivered by trained Genchess instructors.</p>
+                <a href="{{ $schoolLink }}" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-white bg-[#8b5e34] hover:bg-[#72482a] transition">Enroll Your School</a>
+            </article>
+
+            <article class="rounded-2xl border border-[#cce3d7] dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                <img src="{{ $classroomImages['play'] ?? $homepageHeroImage }}" alt="Chess at home with children" class="h-44 w-full rounded-xl object-cover border border-[#dceee6]">
+                <h3 class="mt-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Homes Program</h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Private or small-group lessons for children at home, online or physical, based on your schedule.</p>
+                <a href="{{ $trialLink }}" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-[#114232] dark:text-[#0f2e23] bg-[#dff3ea] dark:bg-[#d3ecdf] hover:bg-[#cfeede] transition">Book Home Trial</a>
+            </article>
+
+            <article class="rounded-2xl border border-[#ddc8a7] dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                <img src="{{ $homepageServiceImages['communities'] }}" alt="Chess in communities program" class="h-44 w-full rounded-xl object-cover border border-[#eee0c7]">
+                <h3 class="mt-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Communities Program</h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Estate, church, and youth-center chess clubs that build unity, character, and healthy competition.</p>
+                <a href="{{ $communityLink }}#booking-form" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-white bg-[#8b5e34] hover:bg-[#72482a] transition">Start Community Club</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="py-14 md:py-20 bg-white dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="grid lg:grid-cols-2 gap-8 items-start">
+            <div>
+                <h2 class="text-3xl md:text-4xl font-display text-slate-900 dark:text-slate-100">Become a Genchess Instructor</h2>
+                <p class="mt-3 text-slate-700 dark:text-slate-300">
+                    Passionate about teaching children? Join our growing team and help raise Africa's next generation of strategic thinkers.
+                </p>
+                <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-md">
+                    <img src="{{ $homepageInstructorImage }}" alt="Genchess instructor teaching children chess" class="w-full h-64 object-cover">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 shadow-sm">
+                    <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Apply to Become a Chess Instructor</h3>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                        For experienced candidates. Complete screening and interviews to join our teaching network.
+                    </p>
+                    <a href="{{ route('instructor.screening.create') }}" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-white bg-purple-900 hover:bg-purple-950 transition">
+                        Start Instructor Application
+                    </a>
+                </article>
+
+                <article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 shadow-sm">
+                    <h3 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Apply for Instructor Training Program</h3>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                        New to structured chess teaching? Join the Genchess Certified Chess Instructor Program (GCCIP).
+                    </p>
+                    <a href="{{ route('instructor.training') }}" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-white bg-purple-900 hover:bg-purple-950 transition">
+                        Apply for Training Program
+                    </a>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-14 md:py-20 bg-purple-100/30 dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl md:text-4xl font-display text-slate-900 dark:text-slate-100">Parents See the Difference</h2>
+        <div class="mt-8 grid md:grid-cols-3 gap-4">
+            <blockquote class="rounded-2xl border border-[#e7dcc8] dark:border-slate-700 bg-[#fffdf8] dark:bg-slate-800 p-5 shadow-md">
+                <p class="text-slate-700 dark:text-slate-300">"After 6 weeks, my son became calmer during homework and more patient with his siblings."</p>
+                <cite class="mt-3 block text-sm font-semibold text-slate-900 dark:text-slate-100">Parent Testimonial Placeholder</cite>
+            </blockquote>
+            <blockquote class="rounded-2xl border border-[#e7dcc8] dark:border-slate-700 bg-[#fffdf8] dark:bg-slate-800 p-5 shadow-md">
+                <p class="text-slate-700 dark:text-slate-300">"Our pupils now think before answering. We can clearly see better reasoning in class."</p>
+                <cite class="mt-3 block text-sm font-semibold text-slate-900 dark:text-slate-100">School Testimonial Placeholder</cite>
+            </blockquote>
+            <blockquote class="rounded-2xl border border-[#e7dcc8] dark:border-slate-700 bg-[#fffdf8] dark:bg-slate-800 p-5 shadow-md">
+                <p class="text-slate-700 dark:text-slate-300">"My daughter used to fear competitions. Now she asks to join every chess challenge."</p>
+                <cite class="mt-3 block text-sm font-semibold text-slate-900 dark:text-slate-100">Parent Testimonial Placeholder</cite>
+            </blockquote>
+        </div>
+
+        <div class="mt-8 rounded-2xl border border-[#cce3d7] dark:border-slate-700 bg-[#f2fbf7] dark:bg-slate-800 p-6 shadow-md">
+            <h3 class="text-2xl font-display text-emerald-900 dark:text-emerald-200">Student Success Stories</h3>
+            <p class="mt-2 text-emerald-900 dark:text-emerald-200">
+                Placeholder for before-and-after stories: confidence growth, improved grades, tournament milestones, and leadership wins.
+            </p>
+            <a href="{{ route('tournaments') }}" class="mt-4 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-[#114232] dark:text-[#0f2e23] bg-white dark:bg-[#e8f6ef] border border-[#afd5c3] hover:bg-[#f7fffb] transition">
+                View Student Milestones
             </a>
         </div>
     </div>
 </section>
 
-<section class="py-16 bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl md:text-4xl font-display mb-3">Instructor Pathways</h2>
-        <p class="text-slate-300 mb-8">
-            Choose the path that matches your experience level.
-        </p>
-        <div class="grid md:grid-cols-2 gap-6">
-            <article class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-                <h3 class="text-xl font-semibold mb-3">1. Apply to Become a Chess Instructor (Screening Route)</h3>
-                <p class="text-slate-300 text-sm mb-4">
-                    For experienced candidates. Stage 1 screening test, Stage 2 interview (chess knowledge), Stage 3 interview (classroom management/teaching).
-                </p>
-                <a href="{{ route('instructor.screening.create') }}" class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold bg-white text-slate-900">
-                    Start Screening Route
-                </a>
+<section class="py-14 md:py-20 bg-slate-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl md:text-4xl font-display">How It Works</h2>
+        <div class="mt-8 grid md:grid-cols-3 gap-4">
+            <article class="rounded-2xl border border-white/20 bg-white/10 p-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-200">Step 1</p>
+                <h3 class="mt-2 text-xl font-semibold">Sign up</h3>
+                <p class="mt-2 text-sm text-amber-50/90">Book a free trial for home, community, or school learning.</p>
             </article>
-
-            <article class="rounded-xl border border-slate-700 bg-slate-800 p-6">
-                <h3 class="text-xl font-semibold mb-3">2. Apply for Certified Chess Instructor Training Program</h3>
-                <p class="text-slate-300 text-sm mb-4">
-                    For candidates who need structured preparation. Successful completion leads to certification and Instructor Dashboard access.
-                </p>
-                <a href="{{ route('instructor.training') }}" class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold bg-white text-slate-900">
-                    Apply for Training
-                </a>
+            <article class="rounded-2xl border border-white/20 bg-white/10 p-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-200">Step 2</p>
+                <h3 class="mt-2 text-xl font-semibold">Training begins</h3>
+                <p class="mt-2 text-sm text-amber-50/90">Your child starts guided lessons with fun storytelling and structured chess practice.</p>
             </article>
-        </div>
-        <div class="mt-8">
-            <img src="{{ $homepageInstructorImage }}" alt="Chess instructor training" class="w-full rounded-xl2 border border-slate-700 object-cover">
+            <article class="rounded-2xl border border-white/20 bg-white/10 p-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-200">Step 3</p>
+                <h3 class="mt-2 text-xl font-semibold">Child improves</h3>
+                <p class="mt-2 text-sm text-amber-50/90">Watch growth in focus, confidence, discipline, and school performance.</p>
+            </article>
         </div>
     </div>
 </section>
+
+<section class="py-16 md:py-20 bg-gradient-to-br from-[#063321] via-[#0b442d] to-[#14523a] text-black">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+        <h2 class="text-3xl md:text-5xl font-display leading-tight">Give your child a mind that sees possibilities, not problems.</h2>
+        <p class="mt-4 text-emerald-50/95 max-w-3xl mx-auto">
+            The next generation of African leaders is being shaped one thoughtful move at a time. Start your child's Genchess journey today.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+            <a href="{{ $trialLink }}" class="inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-[#0f5132] dark:text-[#2f1f14] bg-[#f5d18c] dark:bg-[#f2cc82] hover:bg-[#efc26f] transition">
+                Book a Free Trial
+            </a>
+            <a href="{{ $whatsAppLink }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-white border border-purple-300/40 bg-purple-900 hover:bg-purple-950 transition">
+                Chat on WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<a
+    href="{{ $whatsAppLink }}"
+    target="_blank"
+    rel="noopener"
+    class="gc-whatsapp-float inline-flex items-center gap-2 rounded-full px-4 py-3 bg-purple-900 text-white font-semibold border border-purple-300/40 shadow-lg hover:bg-purple-950 transition"
+    aria-label="Chat with Genchess on WhatsApp"
+>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M19.05 4.94A9.87 9.87 0 0012.02 2C6.56 2 2.11 6.45 2.1 11.92c0 1.75.46 3.47 1.33 4.99L2 22l5.24-1.37a9.87 9.87 0 004.77 1.22h.01c5.47 0 9.92-4.45 9.93-9.92a9.83 9.83 0 00-2.9-6.99zm-7.03 15.2h-.01a8.16 8.16 0 01-4.16-1.14l-.3-.18-3.11.81.83-3.03-.2-.31a8.16 8.16 0 01-1.26-4.37c0-4.51 3.67-8.19 8.2-8.19a8.14 8.14 0 015.8 2.4 8.14 8.14 0 012.39 5.8c0 4.52-3.68 8.2-8.18 8.21zm4.49-6.12c-.24-.12-1.41-.7-1.63-.78-.22-.08-.38-.12-.55.12-.16.24-.63.78-.77.94-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.97-1.22-.73-.65-1.22-1.45-1.36-1.69-.14-.24-.02-.37.1-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.47-.41-.41-.55-.42l-.47-.01c-.16 0-.43.06-.65.3-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.65.58.25 1.04.4 1.39.51.58.19 1.1.16 1.52.1.46-.07 1.41-.58 1.61-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/>
+    </svg>
+    WhatsApp
+</a>
 @endsection

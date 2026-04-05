@@ -3,7 +3,7 @@
         <div>
             <h3 class="text-2xl font-display mb-2 text-white">Genchess Educational Services </h3>
             <p class="text-sm text-purple-200">
-                Structured chess education for schools, homes, and communities.
+                Premium chess education for children in schools, homes, and communities across Nigeria.
             </p>
             <div class="flex items-center gap-3 mt-4">
                 <a href="https://web.facebook.com/genchesssacademy" class="inline-flex items-center justify-center w-8 h-8 rounded-full border border-purple-300 text-purple-200 hover:text-white hover:border-white" aria-label="Facebook">
@@ -49,4 +49,3 @@
         &copy; {{ date('Y') }} Genchess Educational Services. All rights reserved.
     </div>
 </footer>
-
