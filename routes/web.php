@@ -97,6 +97,7 @@ Route::get('/checkout/success/{order}', [\App\Http\Controllers\Public\StoreCheck
 Route::post('/store/bulk-order', [\App\Http\Controllers\Public\BulkOrderController::class, 'store'])
     ->name('store.bulk-order.store');
 Route::get('/tournaments', [\App\Http\Controllers\Public\PageController::class, 'tournaments'])->name('tournaments');
+Route::view('/elite', 'public.elite')->name('elite.program');
 Route::get('/register-school', [\App\Http\Controllers\Public\PageController::class, 'registerSchool'])
     ->name('register.school');
 Route::get('/verify-certificate', [\App\Http\Controllers\Public\CertificateVerificationController::class, 'index'])

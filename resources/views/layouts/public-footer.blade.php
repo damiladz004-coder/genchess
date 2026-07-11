@@ -19,6 +19,9 @@
                     <span class="text-xs font-semibold">yt</span>
                 </a>
             </div>
+            <div class="mt-4">
+                <a href="{{ route('elite.program') }}" class="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-amber-400 text-[#0B1F4D] font-semibold hover:opacity-90" aria-label="Genchess Elite">Genchess Elite — Apply Now</a>
+            </div>
         </div>
 
         <div>
