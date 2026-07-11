@@ -7,9 +7,8 @@
                 <h1 class="mt-4 text-4xl md:text-5xl font-extrabold text-[#0B1F4D] leading-tight">Genchess Elite Online Chess Coaching Programme</h1>
                 <p class="mt-4 text-lg text-gray-700 max-w-2xl">Preparing young champions for competitive chess — intensive, mentor-led online coaching that builds tournament-ready players with strong strategy, discipline, and winning confidence.</p>
 
-                <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <div class="mt-8">
                     <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold text-white bg-[#0B1F4D] hover:bg-[#081737] shadow-md transition">Register Now</a>
-                    <a href="#elite-welcome" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold text-[#0B1F4D] bg-white border border-gray-200 hover:shadow-sm transition">Learn More</a>
                 </div>
 
                 <ul class="mt-8 flex flex-wrap items-center gap-4 text-sm text-gray-600 justify-center lg:justify-start">
