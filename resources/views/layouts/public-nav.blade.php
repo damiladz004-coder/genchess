@@ -29,6 +29,7 @@
                 >
                     <a href="{{ route('chess.in.schools') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Schools</a>
                     <a href="{{ route('chess.communities.homes') }}" class="block px-4 py-2 text-purple-100 hover:bg-purple-700 hover:text-white">Chess in Communities & Homes</a>
+                    <a href="{{ route('elite.program') }}" class="block px-4 py-2 text-amber-400 hover:bg-purple-700 hover:text-white">Genchess Elite</a>
                 </div>
             </div>
             <a href="{{ route('instructor.training') }}" class="text-purple-100 transition-all duration-200 hover:text-white">Instructor Training</a>
@@ -104,6 +105,7 @@
                 <div x-show="mobileProgramsOpen" x-cloak class="pb-2">
                     <a href="{{ route('chess.in.schools') }}" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess in Schools</a>
                     <a href="{{ route('chess.communities.homes') }}" class="block rounded-md px-4 py-1 text-purple-100 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Chess in Communities & Homes</a>
+                    <a href="{{ route('elite.program') }}" class="block rounded-md px-4 py-1 text-amber-400 transition-colors duration-200 hover:bg-purple-700 hover:text-white">Genchess Elite</a>
                 </div>
             </div>
 
