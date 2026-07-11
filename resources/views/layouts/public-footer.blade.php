@@ -20,7 +20,7 @@
                 </a>
             </div>
             <div class="mt-4">
-                <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-amber-400 text-[#0B1F4D] font-semibold hover:opacity-90" aria-label="Genchess Elite">Genchess Elite — Apply Now</a>
+                <a id="elite-footer-cta" href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" data-analytics="elite_cta_footer" class="inline-flex items-center gap-3 rounded-full px-6 py-3 bg-amber-400 text-[#0B1F4D] font-bold text-lg shadow-lg hover:opacity-95 transform hover:-translate-y-0.5 transition" aria-label="Genchess Elite">Genchess Elite — Apply Now</a>
             </div>
         </div>
 
