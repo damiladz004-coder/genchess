@@ -20,7 +20,7 @@
                 <a href="#elite-why" class="hover:underline">Why</a>
                 <a href="#elite-schedule" class="hover:underline">Schedule</a>
                 <a href="#elite-fees" class="hover:underline">Fees</a>
-                <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="rounded-full px-4 py-2 bg-[#D4AF37] text-white font-semibold">Register</a>
+                <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="rounded-full px-4 py-2 bg-[#0B1F4D] text-white font-semibold shadow-sm">Register</a>
             </nav>
             <button id="nav-toggle" class="md:hidden p-2 rounded-md text-gray-600">Menu</button>
         </div>
@@ -293,7 +293,7 @@
             </div>
 
             <div class="mt-6 text-right">
-                <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="inline-flex items-center rounded-full px-6 py-3 bg-[#0B1F4D] text-white font-semibold">Register Now</a>
+                <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="inline-flex items-center rounded-full px-6 py-3 bg-[#0B1F4D] text-white font-semibold shadow-sm">Register Now</a>
             </div>
         </div>
     </div>
