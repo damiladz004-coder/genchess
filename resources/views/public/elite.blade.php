@@ -8,7 +8,7 @@
 @section('content')
 
 <!-- Sticky Nav -->
-<div id="elite-nav" class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-200 dark:bg-slate-900/70 dark:border-slate-700">
+<div id="elite-nav" class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-200 text-black dark:bg-slate-900/70 dark:border-slate-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="/" class="flex items-center gap-3">
@@ -30,18 +30,18 @@
 @include('components.elite.hero')
 
 <!-- Welcome -->
-<section id="elite-welcome" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-welcome" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             <h2 class="text-3xl font-display text-[#0B1F4D]">Welcome to Genchess Elite</h2>
-            <p class="mt-4 text-lg text-gray-700 max-w-3xl mx-auto">Does your child enjoy chess? Have they shown excitement during lessons, or asked for more practice? Genchess Elite is a selective online programme designed to turn interest into competitive success. Through mentor-led sessions, rigorous practice, and tournament exposure, we prepare students to perform confidently at state, national and international levels.</p>
+            <p class="mt-4 text-lg text-black max-w-3xl mx-auto">Does your child enjoy chess? Have they shown excitement during lessons, or asked for more practice? Genchess Elite is a selective online programme designed to turn interest into competitive success. Through mentor-led sessions, rigorous practice, and tournament exposure, we prepare students to perform confidently at state, national and international levels.</p>
         </div>
 
         <div class="mt-8 grid md:grid-cols-3 gap-6">
             <div class="md:col-span-2">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                     <h3 class="text-xl font-semibold text-[#0B1F4D]">Who this is for</h3>
-                    <ul class="mt-3 space-y-2 text-gray-700">
+                    <ul class="mt-3 space-y-2 text-black">
                         <li>Students who love playing chess and want structured progression.</li>
                         <li>Young players who show exceptional interest in lessons and practice.</li>
                         <li>Families who want their child to compete and represent at higher levels.</li>
@@ -52,7 +52,7 @@
             <aside>
                 <div class="rounded-2xl border-l-4 border-amber-400 bg-white p-5 shadow-sm">
                     <h4 class="font-semibold text-[#0B1F4D]">Note</h4>
-                    <p class="mt-2 text-gray-700">This programme is <strong>NOT compulsory</strong>. Enrollment is voluntary and designed for students seeking competitive development.</p>
+                    <p class="mt-2 text-black">This programme is <strong>NOT compulsory</strong>. Enrollment is voluntary and designed for students seeking competitive development.</p>
                 </div>
             </aside>
         </div>
@@ -60,10 +60,10 @@
 </section>
 
 <!-- Why This Programme -->
-<section id="elite-why" class="py-16">
+<section id="elite-why" class="py-16 text-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Why This Programme?</h2>
-        <p class="mt-3 text-center text-gray-700 max-w-2xl mx-auto">An accelerated pathway for students who are serious about chess competition. Each element is crafted to build skill, resilience, and tournament experience.</p>
+        <p class="mt-3 text-center text-black max-w-2xl mx-auto">An accelerated pathway for students who are serious about chess competition. Each element is crafted to build skill, resilience, and tournament experience.</p>
 
         <div class="mt-8 grid sm:grid-cols-2 md:grid-cols-4 gap-6">
             @include('components.elite.icon-card', ['title' => 'Intensive Coaching', 'description' => 'Focused training sessions with experienced coaches.', 'icon' => '<svg class="w-8 h-8 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2H2V5zM2 9h16v6a2 2 0 01-2 2H4a2 2 0 01-2-2V9z"/></svg>'])
@@ -78,10 +78,10 @@
 </section>
 
 <!-- Objectives -->
-<section id="elite-objectives" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-objectives" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Programme Objectives</h2>
-        <p class="mt-3 text-center text-gray-700">Clear, measurable goals that guide every training block.</p>
+        <p class="mt-3 text-center text-black">Clear, measurable goals that guide every training block.</p>
 
         <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @include('components.elite.icon-card', ['title' => 'Develop Opening Repertoires', 'description' => 'Tailored openings to match each player\'s style.'])
@@ -95,7 +95,7 @@
 </section>
 
 <!-- Who Should Enrol -->
-<section id="elite-who" class="py-16">
+<section id="elite-who" class="py-16 text-black">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Who Should Enrol?</h2>
         <div class="mt-6 grid md:grid-cols-2 gap-6 items-start">
@@ -105,35 +105,35 @@
                         <svg class="w-6 h-6 text-emerald-600 mt-1" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
                         <div>
                             <strong class="text-[#0B1F4D]">Students who love chess</strong>
-                            <p class="text-gray-600">Passionate players who want clear progression.</p>
+                            <p class="text-black">Passionate players who want clear progression.</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <svg class="w-6 h-6 text-emerald-600 mt-1" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
                         <div>
                             <strong class="text-[#0B1F4D]">Students willing to practise</strong>
-                            <p class="text-gray-600">Those ready to commit time to assignments and study.</p>
+                            <p class="text-black">Those ready to commit time to assignments and study.</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <svg class="w-6 h-6 text-emerald-600 mt-1" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
                         <div>
                             <strong class="text-[#0B1F4D]">Students wanting to represent their schools</strong>
-                            <p class="text-gray-600">Ambitious players aiming for team selection and representation.</p>
+                            <p class="text-black">Ambitious players aiming for team selection and representation.</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <svg class="w-6 h-6 text-emerald-600 mt-1" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
                         <div>
                             <strong class="text-[#0B1F4D]">Students willing to play tournaments</strong>
-                            <p class="text-gray-600">Ready to test their skills in real competitive settings.</p>
+                            <p class="text-black">Ready to test their skills in real competitive settings.</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <svg class="w-6 h-6 text-emerald-600 mt-1" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
                         <div>
                             <strong class="text-[#0B1F4D]">Students committed to improving</strong>
-                            <p class="text-gray-600">Consistent learners who respond to feedback.</p>
+                            <p class="text-black">Consistent learners who respond to feedback.</p>
                         </div>
                     </li>
                 </ul>
@@ -142,7 +142,7 @@
             <div>
                 <div class="rounded-2xl border-l-4 border-amber-400 bg-white p-5 shadow-sm">
                     <h4 class="font-semibold text-[#0B1F4D]">Reminder</h4>
-                    <p class="mt-2 text-gray-700">This programme is <strong>voluntary</strong>. Students join because they choose to pursue competitive excellence.</p>
+                    <p class="mt-2 text-black">This programme is <strong>voluntary</strong>. Students join because they choose to pursue competitive excellence.</p>
                 </div>
             </div>
         </div>
@@ -150,17 +150,17 @@
 </section>
 
 <!-- Training Schedule -->
-<section id="elite-schedule" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-schedule" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Training Schedule</h2>
-        <p class="mt-3 text-center text-gray-700">Hands-on live coaching and structured practice to build tournament-ready skills.</p>
+        <p class="mt-3 text-center text-black">Hands-on live coaching and structured practice to build tournament-ready skills.</p>
 
         <div class="mt-8 space-y-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-xl font-semibold text-[#0B1F4D]">Weekly Cadence</h3>
-                        <p class="text-gray-600">2–3 coaching sessions weekly · 2–3 hours per session · Live, interactive coaching</p>
+                        <p class="text-black">2–3 coaching sessions weekly · 2–3 hours per session · Live, interactive coaching</p>
                     </div>
                     <div class="text-3xl font-bold text-[#0B1F4D]">2–3× / week</div>
                 </div>
@@ -197,10 +197,10 @@
 </section>
 
 <!-- Tournament Preparation -->
-<section id="elite-tournaments" class="py-16">
+<section id="elite-tournaments" class="py-16 text-black">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Tournament Preparation</h2>
-        <p class="mt-3 text-center text-gray-700">We guide players through local, state, national and online competitions with targeted preparation and entry support.</p>
+        <p class="mt-3 text-center text-black">We guide players through local, state, national and online competitions with targeted preparation and entry support.</p>
 
         <div class="mt-8 grid md:grid-cols-2 gap-6">
             <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -227,28 +227,28 @@
 </section>
 
 <!-- Online Tournament Participation -->
-<section id="elite-online" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-online" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Online Tournament Participation</h2>
         <div class="mt-8 grid md:grid-cols-3 gap-6">
             <div class="rounded-2xl bg-white p-6 shadow-sm text-center">
                 <h4 class="font-semibold text-[#0B1F4D]">Play</h4>
-                <p class="text-gray-600 mt-2">Regular online matches to sharpen instincts.</p>
+                <p class="text-black mt-2">Regular online matches to sharpen instincts.</p>
             </div>
             <div class="rounded-2xl bg-white p-6 shadow-sm text-center">
                 <h4 class="font-semibold text-[#0B1F4D]">Analyse</h4>
-                <p class="text-gray-600 mt-2">Post-game reviews with coach feedback.</p>
+                <p class="text-black mt-2">Post-game reviews with coach feedback.</p>
             </div>
             <div class="rounded-2xl bg-white p-6 shadow-sm text-center">
                 <h4 class="font-semibold text-[#0B1F4D]">Improve</h4>
-                <p class="text-gray-600 mt-2">Targeted drills for consistent progress.</p>
+                <p class="text-black mt-2">Targeted drills for consistent progress.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Benefits -->
-<section id="elite-benefits" class="py-16">
+<section id="elite-benefits" class="py-16 text-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Benefits of Enrolment</h2>
         <div class="mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -265,7 +265,7 @@
 </section>
 
 <!-- Programme Fee -->
-<section id="elite-fees" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-fees" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="rounded-3xl bg-white border border-gray-200 p-8 shadow-xl">
             <div class="flex items-center justify-between gap-6">
@@ -300,27 +300,27 @@
 </section>
 
 <!-- Parent Commitment -->
-<section id="elite-commit" class="py-16">
+<section id="elite-commit" class="py-16 text-black">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Parent Commitment</h2>
-        <p class="mt-3 text-center text-gray-700">A supportive home environment amplifies progress. These are simple commitments that make a big difference.</p>
+        <p class="mt-3 text-center text-black">A supportive home environment amplifies progress. These are simple commitments that make a big difference.</p>
 
         <div class="mt-8 grid md:grid-cols-4 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
                 <h4 class="font-semibold">Attendance</h4>
-                <p class="text-sm text-gray-600 mt-2">Ensure timely participation in sessions.</p>
+                <p class="text-sm text-black mt-2">Ensure timely participation in sessions.</p>
             </div>
             <div class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
                 <h4 class="font-semibold">Practice</h4>
-                <p class="text-sm text-gray-600 mt-2">Encourage daily tactics and assignments.</p>
+                <p class="text-sm text-black mt-2">Encourage daily tactics and assignments.</p>
             </div>
             <div class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
                 <h4 class="font-semibold">Tournament Participation</h4>
-                <p class="text-sm text-gray-600 mt-2">Support entries and travel where needed.</p>
+                <p class="text-sm text-black mt-2">Support entries and travel where needed.</p>
             </div>
             <div class="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
                 <h4 class="font-semibold">Positive Support</h4>
-                <p class="text-sm text-gray-600 mt-2">Celebrate effort and progress, not just wins.</p>
+                <p class="text-sm text-black mt-2">Celebrate effort and progress, not just wins.</p>
             </div>
         </div>
     </div>
@@ -330,7 +330,7 @@
 <section id="elite-cta" class="py-16 bg-gradient-to-br from-[#0B1F4D] to-[#063321] text-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-display">Ready to Raise a Future Chess Champion?</h2>
-        <p class="mt-4 text-gray-200">Join Genchess Elite for mentor-led coaching and competition readiness. Spaces are limited to ensure quality instruction.</p>
+        <p class="mt-4 text-white">Join Genchess Elite for mentor-led coaching and competition readiness. Spaces are limited to ensure quality instruction.</p>
         <div class="mt-6">
                 <a href="https://forms.gle/5zxFtYQiDmVoT7LE7" target="_blank" rel="noopener" class="inline-flex items-center rounded-full px-8 py-4 bg-amber-400 text-[#0B1F4D] font-bold">Register Now</a>
         </div>
@@ -338,25 +338,25 @@
 </section>
 
 <!-- FAQ & Accordion -->
-<section id="elite-faq" class="py-16 bg-gray-50 dark:bg-slate-900">
+<section id="elite-faq" class="py-16 bg-gray-50 text-black dark:bg-slate-900">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-display text-[#0B1F4D] text-center">Frequently Asked Questions</h2>
         <div class="mt-6 space-y-3">
             <div class="border rounded-lg bg-white p-4">
-                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>Who can enrol?</strong><div class="text-sm text-gray-600">Any child who shows interest in chess and a willingness to learn.</div></span><span class="ml-4">+</span></button>
-                <div class="mt-3 faq-content hidden text-gray-700">Students aged 6 and up, beginners with interest, and experienced players seeking competitive development are welcome.</div>
+                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>Who can enrol?</strong><div class="text-sm text-black">Any child who shows interest in chess and a willingness to learn.</div></span><span class="ml-4">+</span></button>
+                <div class="mt-3 faq-content hidden text-black">Students aged 6 and up, beginners with interest, and experienced players seeking competitive development are welcome.</div>
             </div>
             <div class="border rounded-lg bg-white p-4">
-                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>Is it compulsory?</strong><div class="text-sm text-gray-600">No — participation is voluntary.</div></span><span class="ml-4">+</span></button>
-                <div class="mt-3 faq-content hidden text-gray-700">This programme is optional and designed for those pursuing competitive progress.</div>
+                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>Is it compulsory?</strong><div class="text-sm text-black">No — participation is voluntary.</div></span><span class="ml-4">+</span></button>
+                <div class="mt-3 faq-content hidden text-black">This programme is optional and designed for those pursuing competitive progress.</div>
             </div>
             <div class="border rounded-lg bg-white p-4">
-                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>What devices are needed?</strong><div class="text-sm text-gray-600">A phone, tablet or laptop with a stable internet connection.</div></span><span class="ml-4">+</span></button>
-                <div class="mt-3 faq-content hidden text-gray-700">Most classes work well on tablets and laptops; ensure good audio and a quiet space for focus.</div>
+                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>What devices are needed?</strong><div class="text-sm text-black">A phone, tablet or laptop with a stable internet connection.</div></span><span class="ml-4">+</span></button>
+                <div class="mt-3 faq-content hidden text-black">Most classes work well on tablets and laptops; ensure good audio and a quiet space for focus.</div>
             </div>
             <div class="border rounded-lg bg-white p-4">
-                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>How are classes conducted?</strong><div class="text-sm text-gray-600">Live online sessions via secure platforms with interactive boards.</div></span><span class="ml-4">+</span></button>
-                <div class="mt-3 faq-content hidden text-gray-700">We use interactive teaching, screen-sharing and live game analysis to maximise learning.</div>
+                <button class="w-full text-left flex items-center justify-between faq-toggle"><span><strong>How are classes conducted?</strong><div class="text-sm text-black">Live online sessions via secure platforms with interactive boards.</div></span><span class="ml-4">+</span></button>
+                <div class="mt-3 faq-content hidden text-black">We use interactive teaching, screen-sharing and live game analysis to maximise learning.</div>
             </div>
         </div>
     </div>

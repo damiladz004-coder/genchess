@@ -15,9 +15,9 @@
             @endif
         </div>
         <div>
-            <h4 class="text-lg font-semibold text-[#0B1F4D]">{{ $title }}</h4>
+            <h4 class="text-lg font-semibold text-black">{{ $title }}</h4>
             @if($description)
-                <p class="mt-1 text-sm text-gray-600">{{ $description }}</p>
+                <p class="mt-1 text-sm text-black">{{ $description }}</p>
             @endif
         </div>
     </div>
